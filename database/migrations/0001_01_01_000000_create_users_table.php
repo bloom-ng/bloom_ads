@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('oauth_id')->nullable();
             $table->string('oauth_provider')->nullable();
+            $table->foreignId('current_organization_id')->nullable()->constrained('organizations')->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();
 
