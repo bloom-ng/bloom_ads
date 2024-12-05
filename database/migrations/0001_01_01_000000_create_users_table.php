@@ -16,9 +16,22 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->enum('user_type', ['direct_advertiser', 'agency', 'partner']);
+            $table->string('business_name')->nullable();
+            $table->string('phone_country_code')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('weblink')->nullable();
+            $table->string('country')->nullable();
+            $table->string('oauth_id')->nullable();
+            $table->string('oauth_provider')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            // Indexes for better query performance
+            $table->index('email');
+            $table->index(['oauth_id', 'oauth_provider']);
+            $table->index('user_type');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
