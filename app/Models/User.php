@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -20,7 +22,7 @@ class User extends Authenticatable
         'weblink',
         'country',
         'oauth_id',
-        'oauth_provider'
+        'oauth_provider',
     ];
 
     protected $hidden = [
@@ -51,5 +53,15 @@ class User extends Authenticatable
     public function getFullPhoneAttribute()
     {
         return $this->phone_country_code . $this->phone;
+    }
+
+    public function settings(): HasOne
+    {
+        return $this->hasOne(UserSettings::class);
+    }
+
+    public function currentOrganization(): BelongsTo
+    {
+        return $this->settings->currentOrganization();
     }
 }
