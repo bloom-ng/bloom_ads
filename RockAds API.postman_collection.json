@@ -1,0 +1,340 @@
+{
+	"info": {
+		"_postman_id": "369118c6-9b1d-4aa7-8dfc-0fc3ed70866c",
+		"name": "RockAds API",
+		"description": "Collection for testing RockAds API integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19666283"
+	},
+	"item": [
+		{
+			"name": "Ad Platforms",
+			"item": [
+				{
+					"name": "Get Ad Platforms",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-secret",
+								"value": "{{api_secret}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ad-platforms",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-platforms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timezones",
+			"item": [
+				{
+					"name": "Get Timezones",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-secret",
+								"value": "{{api_secret}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/timezones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"timezones"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ad Accounts",
+			"item": [
+				{
+					"name": "List Ad Accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-secret",
+								"value": "{{api_secret}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ad-accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ad Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-secret",
+								"value": "{{api_secret}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/ad-accounts/{{ad_account_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts",
+								"{{ad_account_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Ad Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/ad-accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ad Account",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/ad-accounts/{{ad_account_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts",
+								"{{ad_account_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallets",
+			"item": [
+				{
+					"name": "List Wallets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Secret",
+								"value": "{{api_secret}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wallets",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wallets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wallets/{{wallet_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wallets",
+								"{{wallet_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet Transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wallets/{{wallet_id}}/transactions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wallets",
+								"{{wallet_id}}",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ad Account Payments",
+			"item": [
+				{
+					"name": "Deposit to Ad Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/ad-accounts/{{ad_account_id}}/deposit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts",
+								"{{ad_account_id}}",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw from Ad Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/ad-accounts/{{ad_account_id}}/withdraw",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ad-accounts",
+								"{{ad_account_id}}",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{api_key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-Api-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://b2b-api.rockads.com/v1",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "1780561282118717442",
+			"type": "string"
+		},
+		{
+			"key": "api_secret",
+			"value": "dMYFFYvUms55NlhS3KAT3YuiC4Ke0iVF",
+			"type": "string"
+		}
+	]
+}

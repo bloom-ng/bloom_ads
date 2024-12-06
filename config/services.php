@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'rockads' => [
+        'api_key' => env('ROCKADS_API_KEY'),
+        'api_secret' => env('ROCKADS_API_SECRET'),
+    ],
+
 ];

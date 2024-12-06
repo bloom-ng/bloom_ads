@@ -1,0 +1,10 @@
+Created Admin System User
+
+Assigned Finance Editor Role to System User
+
+Assigned Admin App Role to System User
+
+Generated Token: Added to Google Keep
+
+
+
