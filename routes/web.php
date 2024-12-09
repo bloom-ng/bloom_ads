@@ -91,4 +91,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet', [WalletController::class, 'create'])->name('wallet.create');
+    Route::post('/wallet/fund/paypal', [WalletController::class, 'fundWithPaypal'])->name('wallet.fund.paypal');
+    Route::post('/wallet/fund/flutterwave', [WalletController::class, 'fundWithFlutterwave'])->name('wallet.fund.flutterwave');
+    Route::post('/wallet/fund/paystack', [WalletController::class, 'fundWithPaystack'])->name('wallet.fund.paystack');
+
+    // Payment callbacks
+    Route::get('/wallet/fund/flutterwave/callback', [WalletController::class, 'handleFlutterwaveCallback'])
+        ->name('wallet.fund.flutterwave.callback');
+    Route::get('/wallet/fund/paystack/callback', [WalletController::class, 'handlePaystackCallback'])
+        ->name('wallet.fund.paystack.callback');
+    Route::get('/wallet/fund/paypal/success', [WalletController::class, 'handlePaypalSuccess'])
+        ->name('wallet.fund.paypal.success');
+    Route::get('/wallet/fund/paypal/cancel', [WalletController::class, 'handlePaypalCancel'])
+        ->name('wallet.fund.paypal.cancel');
 });

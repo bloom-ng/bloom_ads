@@ -64,4 +64,9 @@ return [
         'mode' => env('PAYPAL_MODE', 'sandbox'), // or 'live' for production
     ],
 
+    'paystack' => [
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+    ],
+
 ];

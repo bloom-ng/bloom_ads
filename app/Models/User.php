@@ -60,8 +60,30 @@ class User extends Authenticatable
         return $this->hasOne(UserSettings::class);
     }
 
+    public function setCurrentOrganization(?Organization $organization): void
+    {
+        if (!$this->settings) {
+            $this->settings()->create();
+            $this->load('settings');
+        }
+
+        $this->settings->update([
+            'current_organization_id' => $organization->id
+        ]);
+
+        $this->load('settings.currentOrganization');
+    }
+
     public function currentOrganization(): BelongsTo
     {
-        return $this->settings->currentOrganization();
+        return $this->belongsTo(Organization::class, 'current_organization_id', 'id')
+            ->whereId($this->settings->current_organization_id ?? null);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->settings()->create();
+        });
     }
 }
