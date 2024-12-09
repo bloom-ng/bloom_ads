@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SettingsController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $organizations = $user->organizations;
-        $currentOrganization = $user->currentOrganization;
 
-        return view('dashboard.settings.index', compact('organizations', 'currentOrganization'));
+        return view('dashboard.settings.index', compact('organizations'));
     }
 
     public function setCurrentOrganization(Request $request)
@@ -22,16 +22,17 @@ class SettingsController extends Controller
             'organization_id' => 'required|exists:organizations,id'
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
+        $organization = Organization::findOrFail($validated['organization_id']);
 
         // Verify user belongs to this organization
         if (!$user->organizations()
-            ->where('organizations.id', $validated['organization_id'])
+            ->where('organizations.id', $organization->id)
             ->exists()) {
             return back()->with('error', 'You do not belong to this organization.');
         }
 
-        $user->update(['current_organization_id' => $validated['organization_id']]);
+        $user->setCurrentOrganization($organization);
 
         return back()->with('success', 'Current organization updated successfully.');
     }

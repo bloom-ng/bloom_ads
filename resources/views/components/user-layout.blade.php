@@ -102,7 +102,8 @@
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
         <div class="p-6 bg-[#F48857]">
             <a href="index.html" class="">
-                <img src="/images/Sharepadi_White.png" alt="SharePadi_logo">
+                {{-- <img src="/images/Sharepadi_White.png" alt="SharePadi_logo"> --}}
+                <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
             </a>
         </div>
         <nav class="text-black text-base font-semibold pt-3">
