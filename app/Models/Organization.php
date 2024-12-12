@@ -35,4 +35,9 @@ class Organization extends Model
     {
         return $this->hasMany(Wallet::class);
     }
+
+    public function invites(): HasMany
+    {
+        return $this->hasMany(OrganizationInvite::class);
+    }
 }
