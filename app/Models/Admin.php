@@ -11,6 +11,8 @@ class Admin extends Authenticatable
 
     protected $guard = 'admin';
 
+    
+
     protected $fillable = [
         'email',
         'password',
@@ -25,4 +27,9 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 } 

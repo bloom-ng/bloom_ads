@@ -66,8 +66,8 @@
                 <button type="submit"
                     class="w-full py-3 bg-[#FF8C00] font-semibold text-black rounded-xl">Login</button>
 
-                <p class="font-semibold">Not Registered? <a href="/signup"><span class="text-[#FF8C00]">Sign Up
-                            Now</span></a></p>
+                <!-- <p class="font-semibold">Not Registered? <a href="/signup"><span class="text-[#FF8C00]">Sign Up
+                            Now</span></a></p> -->
             </form>
         </div>
     </section>

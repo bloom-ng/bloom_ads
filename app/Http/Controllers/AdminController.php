@@ -22,17 +22,18 @@ class AdminController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
-        ]);
+        ])->onlyInput('email');
     }
 
     public function dashboard()
     {
-        return view('admin-dashboard.index');
+        return redirect('/admin/login');
     }
 
     public function logout(Request $request)

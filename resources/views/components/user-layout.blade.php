@@ -213,8 +213,12 @@
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
                     <a href="/user/account" class="block px-4 py-2 account-link hover:text-white">Account</a>
-                    <!-- <a href="" class="block px-4 py-2 account-link hover:text-white">Support</a> -->
-                    <a href="/user/logout" class="block px-4 py-2 account-link hover:text-white">Logout</a>
+                    <form method="POST" action="{{ route('user.logout') }}" class="block">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </header>
@@ -243,10 +247,13 @@
                     <i class="fas fa-table mr-3"></i>
                     Wallet
                 </a>
-                <a href="/user/logout" class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-sign-out-alt mr-3"></i>
-                    Sign Out
-                </a>
+                <form method="POST" action="{{ route('user.logout') }}" class="block">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        Sign Out
+                    </button>
+                </form>
             </nav>
         </header>
 

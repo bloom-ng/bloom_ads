@@ -10,6 +10,8 @@ use App\Http\Controllers\AdmindashController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AdminWalletController;
 use App\Http\Controllers\AdAccountsController;
+use App\Http\Controllers\AdminAdAccountsController;
+use App\Http\Controllers\AdminOrganizationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +24,29 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Guest admin routes (for login)
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.authenticate');
+});
+
+
+// Admin protected routes
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdmindashController::class, 'index'])->name('admin.dashboard');
+    Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UsersController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
+    Route::get('/wallets', [AdminWalletController::class, 'index'])->name('admin.wallets.index');
+    Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('admin.adaccounts.index');
+    Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('admin.adaccounts.edit');
+    Route::put('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'update'])->name('admin.adaccounts.update');
+    Route::delete('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'destroy'])->name('admin.adaccounts.destroy');
+    Route::get('/organizations', [AdminOrganizationsController::class, 'index'])->name('admin.organizations.index');
+    Route::get('/organizations/{organization}', [AdminOrganizationsController::class, 'show'])->name('admin.organizations.show');
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -107,6 +132,9 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(\App\Http\Middleware\CheckRockAdsConfig::class);
     Route::post('/dashboard/adaccounts', [AdAccountsController::class, 'store'])
         ->name('adaccounts.store');
+    Route::get('/dashboard/adaccounts/{adAccount}/edit', [AdAccountsController::class, 'edit'])->name('adaccounts.edit');
+    Route::put('/dashboard/adaccounts/{adAccount}', [AdAccountsController::class, 'update'])->name('adaccounts.update');
+    Route::delete('/dashboard/adaccounts/{adAccount}', [AdAccountsController::class, 'destroy'])->name('adaccounts.destroy');
 
     // Payment callbacks
     Route::get('/wallet/fund/flutterwave/callback', [WalletController::class, 'handleFlutterwaveCallback'])
@@ -117,24 +145,13 @@ Route::middleware(['auth'])->group(function () {
         ->name('wallet.fund.paypal.success');
     Route::get('/wallet/fund/paypal/cancel', [WalletController::class, 'handlePaypalCancel'])
         ->name('wallet.fund.paypal.cancel');
+
+    // Add this with your other user routes
+    Route::post('/logout', [UsersController::class, 'logout'])->name('user.logout');
 });
 
 
 
-// Guest admin routes (for login)
-Route::middleware('guest:admin')->group(function () {
-    Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.authenticate');
-});
 
-// Admin protected routes
-Route::middleware('auth:admin')->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdmindashController::class, 'index'])->name('admin.dashboard');
-    Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}/edit', [UsersController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
-    Route::get('/wallets', [AdminWalletController::class, 'index'])->name('admin.wallets.index');
-});
 
 

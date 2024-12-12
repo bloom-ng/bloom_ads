@@ -17,7 +17,11 @@ class OrganizationController extends Controller
 
     public function index()
     {
-        $organizations = auth()->user()->organizations;
+        $organizations = auth()->user()
+            ->organizations()
+            ->withPivot('role')
+            ->get();
+
         return view('dashboard.organization.index', compact('organizations'));
     }
 

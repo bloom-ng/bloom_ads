@@ -13,3 +13,15 @@ the Organisational multitenancy should be implemented for the user,
 so that each user can only see and manage the organisations they are 
 assigned to and they can switch between them in the settings.
 
+
+Admin should be able to manage ad accounts(list delete edit[update the ad itself]) 
+within an organisation....while in the org section, show org(sam cars)
+and action of view ads(that lists all ads for that org) and lets admin delete edit
+(update the ad itself)
+
+user too should be able to edit ads
+
+Also…you need to generate excel file of the list of all pending
+ ad accounts from admin
+
+youre going to add settings model ...check textplug for admin settings

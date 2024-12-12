@@ -29,7 +29,24 @@
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->currency }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->organization->name }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                                <a href="#" class="text-[#F48857] hover:text-[#F48857]/80">View</a>
+                                <div class="flex space-x-4">
+                                    <a href="{{ route('adaccounts.edit', $account->id) }}" 
+                                       class="text-[#F48857] hover:text-[#F48857]/80">
+                                        Edit
+                                    </a>
+                                    @if($account->status === 'processing')
+                                        <form action="{{ route('adaccounts.destroy', $account->id) }}" 
+                                              method="POST" 
+                                              class="inline"
+                                              onsubmit="return confirm('Are you sure you want to delete this ad account?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-6 uppercase py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->status }}</td>
                         </tr>

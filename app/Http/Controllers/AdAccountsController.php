@@ -154,4 +154,69 @@ class AdAccountsController extends Controller
                 ->withInput();
         }
     }
+
+    public function edit(AdAccount $adAccount)
+    {
+        // Get the authenticated user with their organizations
+        $user = auth()->user()->load('organizations');
+        
+        // Check if user owns this ad account or is part of the organization
+        if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
+            abort(403);
+        }
+
+        return view('dashboard.adaccounts.edit', [
+            'adAccount' => $adAccount,
+            'currencies' => ['USD', 'NGN']
+        ]);
+    }
+
+    public function update(Request $request, AdAccount $adAccount)
+    {
+        // Get the authenticated user with their organizations
+        $user = auth()->user()->load('organizations');
+        
+        // Check if user owns this ad account or is part of the organization
+        if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:meta,google,tiktok',
+            'currency' => 'required|in:USD,NGN',
+            'business_manager_id' => 'nullable|string|size:32',
+            'landing_page' => 'nullable|url',
+        ]);
+
+        $adAccount->update($validated);
+
+        return redirect()
+            ->route('adaccounts.index')
+            ->with('success', 'Ad Account updated successfully');
+    }
+
+    public function destroy(AdAccount $adAccount)
+    {
+        // Get the authenticated user with their organizations
+        $user = auth()->user()->load('organizations');
+        
+        // Check if user owns this ad account or is part of the organization
+        if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
+            abort(403);
+        }
+
+        // Check if status is processing
+        if ($adAccount->status !== 'processing') {
+            return redirect()
+                ->back()
+                ->with('error', 'Only ad accounts in processing status can be deleted.');
+        }
+
+        $adAccount->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Ad Account deleted successfully');
+    }
 } 
