@@ -35,7 +35,7 @@ class PaystackService
                 'callback_url' => $data['callback_url'],
                 'metadata' => [
                     'organization_id' => $data['metadata']['organization_id'],
-                    'wallet_id' => $data['wallet_id'] ?? null,
+                    'wallet_id' => $data['metadata']['wallet_id'] ?? null,
                     'custom_fields' => [
                         [
                             'display_name' => 'Customer Name',

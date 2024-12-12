@@ -47,9 +47,18 @@
                                         <h3 class="text-lg font-semibold">{{ $wallet->currency }} Wallet</h3>
                                         <span class="text-2xl font-bold">{{ number_format($wallet->balance, 2) }}</span>
                                     </div>
+
+                                    <!-- Add Fund Button -->
+                                    <div class="mt-4">
+                                        <button
+                                            onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
+                                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Fund Wallet
+                                        </button>
+                                    </div>
                                 </div>
                             @empty
-                                <p class="text-gray-500">No wallets created yet.</p>
+                                <p class="text-gray-500">No wallets found.</p>
                             @endforelse
                         </div>
                     @endif
@@ -57,4 +66,83 @@
             </div>
         </main>
     </div>
+
+    <!-- Fund Wallet Modal -->
+    <div id="fundWalletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Fund Wallet</h2>
+            <p class="mb-4">Select your preferred payment method:</p>
+
+            <div id="ngnPaymentOptions" class="space-y-4 mb-6">
+                <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" class="w-full">
+                    @csrf
+                    <input type="hidden" name="wallet_id" id="modalWalletId">
+                    <input type="hidden" name="currency" id="modalCurrency">
+                    <input type="number" name="amount" placeholder="Enter amount" required
+                        class="w-full mb-4 p-2 border rounded">
+                    <button type="submit"
+                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                        Pay with Flutterwave
+                    </button>
+                </form>
+
+                <form action="{{ route('wallet.fund.paystack') }}" method="POST" class="w-full">
+                    @csrf
+                    <input type="hidden" name="wallet_id" id="modalWalletIdPaystack">
+                    <input type="hidden" name="currency" id="modalCurrencyPaystack">
+                    <input type="number" name="amount" placeholder="Enter amount" required
+                        class="w-full mb-4 p-2 border rounded">
+                    <button type="submit"
+                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                        Pay with Paystack
+                    </button>
+                </form>
+            </div>
+
+            <div id="otherPaymentOptions" class="space-y-4 mb-6">
+                <form action="{{ route('wallet.fund.paypal') }}" method="POST" class="w-full">
+                    @csrf
+                    <input type="hidden" name="wallet_id" id="modalWalletIdPaypal">
+                    <input type="hidden" name="currency" id="modalCurrencyPaypal">
+                    <input type="number" name="amount" placeholder="Enter amount" required
+                        class="w-full mb-4 p-2 border rounded">
+                    <button type="submit"
+                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                        Pay with PayPal
+                    </button>
+                </form>
+            </div>
+
+            <button onclick="closeFundModal()"
+                class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openFundModal(walletId, currency) {
+            document.getElementById('modalWalletId').value = walletId;
+            document.getElementById('modalWalletIdPaypal').value = walletId;
+            document.getElementById('modalWalletIdPaystack').value = walletId;
+            document.getElementById('modalCurrency').value = currency;
+            document.getElementById('modalCurrencyPaypal').value = currency;
+            document.getElementById('modalCurrencyPaystack').value = currency;
+
+            // Show/hide payment options based on currency
+            if (currency === 'NGN') {
+                document.getElementById('ngnPaymentOptions').style.display = 'block';
+                document.getElementById('otherPaymentOptions').style.display = 'none';
+            } else {
+                document.getElementById('ngnPaymentOptions').style.display = 'none';
+                document.getElementById('otherPaymentOptions').style.display = 'block';
+            }
+
+            document.getElementById('fundWalletModal').style.display = 'flex';
+        }
+
+        function closeFundModal() {
+            document.getElementById('fundWalletModal').style.display = 'none';
+        }
+    </script>
 </x-user-layout>
