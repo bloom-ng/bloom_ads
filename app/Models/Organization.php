@@ -40,4 +40,10 @@ class Organization extends Model
     {
         return $this->hasMany(OrganizationInvite::class);
     }
+
+    public function admins(): BelongsToMany
+    {
+        return $this->belongsToMany(Admin::class, 'organization_admins')
+            ->withTimestamps();
+    }
 }

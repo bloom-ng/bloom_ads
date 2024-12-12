@@ -25,7 +25,26 @@
                                 <td class="py-3 px-6 text-center">{{ $organization->users->count() }}</td>
                                 <td class="py-3 px-6 text-center">{{ $organization->created_at->format('Y-m-d') }}</td>
                                 <td class="py-3 px-6 text-center">
-                                    <a href="{{ route('admin.organizations.show', $organization->id) }}" class="text-blue-500 hover:text-blue-700">View</a>
+                                    <div class="relative inline-block text-left" x-data="{ open: false }">
+                                        <button @click="open = !open" class="flex items-center text-gray-600 hover:text-gray-800">
+                                            <span class="mr-2">View</span>
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        
+                                        <div x-show="open" 
+                                             @click.away="open = false"
+                                             class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl z-20"
+                                             style="transform: translateY(-50%); margin-top: 2rem;">
+                                            <a href="{{ route('admin.organizations.show', $organization->id) }}" 
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                View Ad Accounts
+                                            </a>
+                                            <a href="{{ route('admin.organizations.members', $organization->id) }}" 
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                View Members
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

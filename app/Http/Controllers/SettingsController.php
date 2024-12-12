@@ -10,8 +10,13 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $organizations = $user->organizations;
+        if (Auth::guard('admin')->check()) {
+            // For admin users
+            $organizations = Organization::with('users')->get();
+        } else {
+            // For regular users
+            $organizations = auth()->user()->organizations()->with('users')->get();
+        }
 
         return view('dashboard.settings.index', compact('organizations'));
     }

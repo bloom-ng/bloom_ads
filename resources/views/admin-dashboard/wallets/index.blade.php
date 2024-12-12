@@ -36,6 +36,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="mt-4 px-4">
+                    {{ $wallets->links() }}
+                </div>
             </div>
         </main>
     </div>

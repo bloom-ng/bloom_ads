@@ -1,7 +1,30 @@
 <x-admin-layout page="adaccounts">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Ad Accounts</h1>
+        <!-- Flash Messages -->
+        @if(session('warning'))
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                    <p>{{ session('warning') }}</p>
+                </div>
+            @endif
+            @if(session('success'))
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                    <p>{{ session('success') }}</p>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
+            <div class="flex justify-between items-center pb-6">
+                <h1 class="text-3xl text-black">Ad Accounts</h1>
+                <a href="{{ route('admin.adaccounts.export.processing') }}" 
+                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Export Processing Accounts
+                </a>
+            </div>
             
             <div class="w-full mt-6">
                 <div class="bg-white shadow-md rounded my-6">
@@ -52,7 +75,11 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-4 px-4">
+                    {{ $adAccounts->links() }}
                 </div>
+                </div>
+                
             </div>
         </main>
     </div>

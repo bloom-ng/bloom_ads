@@ -13,7 +13,9 @@ class UsersController extends Controller
     public function index()
     {
         $my_date = Carbon::now()->format('l, F j, Y');
-        $users = User::all();
+    $users = User::orderBy('created_at', 'desc')  // Optional: sort by creation date
+        ->paginate(10);  // This will paginate with 1 user per page
+    
         return view('admin-dashboard.users.index', compact('users', 'my_date'));
     }
 

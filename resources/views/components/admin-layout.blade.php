@@ -194,7 +194,7 @@
                 </span>
                 Organizations
             </a>
-            <a href="{{ route('settings.index') }}"
+            <a href="{{ route('admin.adminsettings.index') }}"
                 class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
@@ -221,7 +221,7 @@
         <!-- Desktop Header -->
         <header class="w-full items-center bg-[#F0F0F0] py-4 px-6 hidden sm:flex">
             
-            <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
+            <div x-data="{ isOpen: false }" class="relative w-full flex justify-end">
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                     <img src="https://source.unsplash.com/uJ8LNVCBjFQ/400x400">

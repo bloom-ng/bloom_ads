@@ -17,11 +17,18 @@ assigned to and they can switch between them in the settings.
 Admin should be able to manage ad accounts(list delete edit[update the ad itself]) 
 within an organisation....while in the org section, show org(sam cars)
 and action of view ads(that lists all ads for that org) and lets admin delete edit
-(update the ad itself)
+(update the ad itself).....view org users or as accounts(dropdown)
 
-user too should be able to edit ads
+paginate all tables
+
+list transactions on dashboard
 
 Also…you need to generate excel file of the list of all pending
  ad accounts from admin
+
+user too should be able to edit ads
+user should be able to delete when ad is still in processing
+
+
 
 youre going to add settings model ...check textplug for admin settings

@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Admin extends Authenticatable
 {
-    use Notifiable;
-
-    protected $guard = 'admin';
-
-    
+    use HasApiTokens, Notifiable;
 
     protected $fillable = [
+        'name',
         'email',
         'password',
     ];
@@ -28,8 +27,9 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function setPasswordAttribute($value)
+    public function organizations(): BelongsToMany
     {
-        $this->attributes['password'] = Hash::make($value);
+        return $this->belongsToMany(Organization::class, 'organization_admins')
+            ->withTimestamps();
     }
 } 
