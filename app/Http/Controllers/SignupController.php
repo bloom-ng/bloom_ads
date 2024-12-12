@@ -52,11 +52,6 @@ class SignupController extends Controller
                 'user_id' => $user->id
             ]);
 
-            // Update user with current organization
-            $user->update([
-                'current_organization_id' => $organization->id
-            ]);
-
             // Create user settings
             $user->settings()->create([
                 'current_organization_id' => $organization->id,
