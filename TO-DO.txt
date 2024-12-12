@@ -1,0 +1,15 @@
+Create ad account model and connect with API for the select platform 
+and Timezone inputs...USER
+
+Organisations model for ADMIN, so admin can list all Orgs
+
+for each user, it should have the Org button(among the other 
+action buttons of edit, status)..that sends them to a screen 
+that pulls organizations for that useradmin/user/id/organisations
+
+Admin edit profile should exist too(where they can change password)
+
+the Organisational multitenancy should be implemented for the user, 
+so that each user can only see and manage the organisations they are 
+assigned to and they can switch between them in the settings.
+

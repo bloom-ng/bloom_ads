@@ -5,6 +5,11 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdmindashController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AdminWalletController;
+use App\Http\Controllers\AdAccountsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -95,6 +100,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/wallet/fund/flutterwave', [WalletController::class, 'fundWithFlutterwave'])->name('wallet.fund.flutterwave');
     Route::post('/wallet/fund/paystack', [WalletController::class, 'fundWithPaystack'])->name('wallet.fund.paystack');
 
+    Route::get('/dashboard/adaccounts', [AdAccountsController::class, 'index'])
+        ->name('adaccounts.index');
+    Route::get('/dashboard/adaccounts/create', [AdAccountsController::class, 'create'])
+        ->name('adaccounts.create')
+        ->middleware(\App\Http\Middleware\CheckRockAdsConfig::class);
+    Route::post('/dashboard/adaccounts', [AdAccountsController::class, 'store'])
+        ->name('adaccounts.store');
+
     // Payment callbacks
     Route::get('/wallet/fund/flutterwave/callback', [WalletController::class, 'handleFlutterwaveCallback'])
         ->name('wallet.fund.flutterwave.callback');
@@ -105,3 +118,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/wallet/fund/paypal/cancel', [WalletController::class, 'handlePaypalCancel'])
         ->name('wallet.fund.paypal.cancel');
 });
+
+
+
+// Guest admin routes (for login)
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.authenticate');
+});
+
+// Admin protected routes
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdmindashController::class, 'index'])->name('admin.dashboard');
+    Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UsersController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
+    Route::get('/wallets', [AdminWalletController::class, 'index'])->name('admin.wallets.index');
+});
+
+

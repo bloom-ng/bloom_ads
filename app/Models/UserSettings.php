@@ -17,6 +17,15 @@ class UserSettings extends Model
         'preferences' => 'array',
     ];
 
+    
+
+    public static function getPreferences(): array
+    {
+        return [
+            'notifications_enabled' => true,
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

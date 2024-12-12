@@ -24,7 +24,7 @@
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
 
-    <title>Billiing - User Dashboard</title>
+    <title>Billiing - Admin Dashboard</title>
 
 
     <!-- Tailwind -->
@@ -102,12 +102,11 @@
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
         <div class="p-6 bg-[#F48857]">
             <a href="index.html" class="">
-                {{-- <img src="/images/Sharepadi_White.png" alt="SharePadi_logo"> --}}
-                <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
+                <img src="/images/Sharepadi_White.png" alt="SharePadi_logo">
             </a>
         </div>
         <nav class="text-black text-base font-semibold pt-3">
-            <a href="/dashboard"
+            <a href="{{ route('admin.dashboard') }}"
                 class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
@@ -125,7 +124,25 @@
                 </span>
                 Dashboard
             </a>
-            <a href="/wallet"
+            <a href="/admin/users"
+                class="flex items-center {{ $page == 'users' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <span class="mr-3">
+                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect width="52" height="52" fill="url(#pattern0_563_442)" />
+                        <defs>
+                            <pattern id="pattern0_563_442" patternContentUnits="objectBoundingBox" width="1"
+                                height="1">
+                                <use xlink:href="#image0_563_442" transform="scale(0.0104167)" />
+                            </pattern>
+                            <image id="image0_563_442" width="96" height="96"
+                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEeUlEQVR4nO2dS4gcZRDHP42PqBfRHIMi3nziCxQS9aIEDOilq1oTFA8GRTDiReLBQchO1WYT1qghRCI+8CBevYm5qAdPPg4KoqIRgyDRTKZqdkk0afkmGxlnN9ndmZ6ub6brB99tl63+/7vqe2x3dQiO4ziO4ziO4ziO4ziLKA5su1in4XZleDKOuWZ2T/FhtmbxTzqlEQXWJj4ojG8pw1/KWPQOIfxdGJ4vGvddVN5frTlFo3Fhm7MNSrA3Ctwv+lJDCD4q9mSXWcc+1gjnNwoDC8GRlYi+yASGt62vYezoTOd3CsGMMB4eRPT+0Sa41/qakkd25bcIw5QS/FiG6H2l6D3r60uS+ZnsOiV8UQm+K1v0vjL0k/W1JkNrF16vhC8pwTejFL0vA06GOtPhLeuFcLsyfi6Ep6sSvneEutHe/ei6DuE2S9FrZ0BrT3aVEjwe19/C+Le16LUw4Njsw1f+JzrBSWuha2OAULZ14U4/YS1uLQ3QBEQdawOKma1XzM08dm2Hsju0mW+SadginD8nDK8o4T5l+EAZDp3r960FTdqAeAAlnD8gjC/0ihnX3sL4mzDMDxu4JiBqcgZ019uM+5WxNerANQFRkzJAKH9WGaWqwDUBUZMwIJ6TK8OrVQeuCYiahAHK0LAIXBMQ1dwAIbxfGE65AWhkAMMXVneO1j0D4t1vGbjW3YBRTrzqBiyPMHzpBqBlBuAfbgAazgEjXv2ozwHLZoDp5KUJTKyrGfH5olIzwA3AVRoQKwa8UTSeWOsGsGE2EHxS7N10qWcAW5qA+9wAtpwP4JRwdrPPAWxail53A9jQAMZv3QA2LEOEc24AWxoA6gawl6Bl75QwITvhJcZrngFsuAydgpvcAB7TJaifBeEw4n9cNLJLhjbAj6Nx1WUn1v1SzoEWMsD/IcMrN6A9ld0QykQIv6qiXoZz3wA29bvk6xgYJZx1A9DOAH8sBW0zIBJfgPMShHYGtKdxoxD+43MA2hgQUcKX3QC0M6AowgWxsYWvgtDGgLN0mtnTStj2ZSjaGBCZ4+yaeM6hDMd9H4DVG3CWorH58jPvDnTfF/ONGBu9pqoEt7oBWH0G/K93g2dAYWZARBg7ozhDEW9VsDKU4ftRHmId82YdyxpwqKpTxJa3q1mMEL5TlQG9HG8+crU3bOoaADstDOil1i3LujvkhAJvxaZ9DDuE8etaNO1Tzh9KyQCLtpWxF2mwYtjNWKi6cSvjD6VnAOO7wYo4GY6DAUu2Lib4pQwDYtPvYMkwm7Ew7s27CQ5aX8NQm7GQCGPdvn6YzVhI9AMO3ZZsBAeV8M8lhD/SZnwmmQ84DLMZC4kTRVbKb+s2HSTM4udMYraElBh0MyaEp61jnwiUs6cGzICj1rFPBJ0m3DWQAQSfWsc+EcSaKAw/D1CCtlvHPjGc+c7WKsRnPJzEEm5SiM8PKeH7KxMf5jsMd1vHPJlfnSOcPd+RsDD86uJXcEAnhG/Gg6+FPtJHlfGzWPPjIy3BcRzHcRzHcRzHcZxQL/4FTO+Is5sl4I4AAAAASUVORK5CYII=" />
+                        </defs>
+                    </svg>
+                </span>
+                Users
+            </a>
+            <a href="{{ route('admin.wallets.index') }}"
                 class="flex items-center {{ $page == 'wallet' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
@@ -142,25 +159,7 @@
                     </svg>
 
                 </span>
-                Wallet
-            </a>
-            <a href="/dashboard/adaccounts"
-                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <rect width="52" height="52" fill="url(#pattern0_563_442)" />
-                        <defs>
-                            <pattern id="pattern0_563_442" patternContentUnits="objectBoundingBox" width="1"
-                                height="1">
-                                <use xlink:href="#image0_563_442" transform="scale(0.0104167)" />
-                            </pattern>
-                            <image id="image0_563_442" width="96" height="96"
-                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEeUlEQVR4nO2dS4gcZRDHP42PqBfRHIMi3nziCxQS9aIEDOilq1oTFA8GRTDiReLBQchO1WYT1qghRCI+8CBevYm5qAdPPg4KoqIRgyDRTKZqdkk0afkmGxlnN9ndmZ6ub6brB99tl63+/7vqe2x3dQiO4ziO4ziO4ziO4ziLKA5su1in4XZleDKOuWZ2T/FhtmbxTzqlEQXWJj4ojG8pw1/KWPQOIfxdGJ4vGvddVN5frTlFo3Fhm7MNSrA3Ctwv+lJDCD4q9mSXWcc+1gjnNwoDC8GRlYi+yASGt62vYezoTOd3CsGMMB4eRPT+0Sa41/qakkd25bcIw5QS/FiG6H2l6D3r60uS+ZnsOiV8UQm+K1v0vjL0k/W1JkNrF16vhC8pwTejFL0vA06GOtPhLeuFcLsyfi6Ep6sSvneEutHe/ei6DuE2S9FrZ0BrT3aVEjwe19/C+Le16LUw4Njsw1f+JzrBSWuha2OAULZ14U4/YS1uLQ3QBEQdawOKma1XzM08dm2Hsju0mW+SadginD8nDK8o4T5l+EAZDp3r960FTdqAeAAlnD8gjC/0ihnX3sL4mzDMDxu4JiBqcgZ019uM+5WxNerANQFRkzJAKH9WGaWqwDUBUZMwIJ6TK8OrVQeuCYiahAHK0LAIXBMQ1dwAIbxfGE65AWhkAMMXVneO1j0D4t1vGbjW3YBRTrzqBiyPMHzpBqBlBuAfbgAazgEjXv2ozwHLZoDp5KUJTKyrGfH5olIzwA3AVRoQKwa8UTSeWOsGsGE2EHxS7N10qWcAW5qA+9wAtpwP4JRwdrPPAWxail53A9jQAMZv3QA2LEOEc24AWxoA6gawl6Bl75QwITvhJcZrngFsuAydgpvcAB7TJaifBeEw4n9cNLJLhjbAj6Nx1WUn1v1SzoEWMsD/IcMrN6A9ld0QykQIv6qiXoZz3wA29bvk6xgYJZx1A9DOAH8sBW0zIBJfgPMShHYGtKdxoxD+43MA2hgQUcKX3QC0M6AowgWxsYWvgtDGgLN0mtnTStj2ZSjaGBCZ4+yaeM6hDMd9H4DVG3CWorH58jPvDnTfF/ONGBu9pqoEt7oBWH0G/K93g2dAYWZARBg7ozhDEW9VsDKU4ftRHmId82YdyxpwqKpTxJa3q1mMEL5TlQG9HG8+crU3bOoaADstDOil1i3LujvkhAJvxaZ9DDuE8etaNO1Tzh9KyQCLtpWxF2mwYtjNWKi6cSvjD6VnAOO7wYo4GY6DAUu2Lib4pQwDYtPvYMkwm7Ew7s27CQ5aX8NQm7GQCGPdvn6YzVhI9AMO3ZZsBAeV8M8lhD/SZnwmmQ84DLMZC4kTRVbKb+s2HSTM4udMYraElBh0MyaEp61jnwiUs6cGzICj1rFPBJ0m3DWQAQSfWsc+EcSaKAw/D1CCtlvHPjGc+c7WKsRnPJzEEm5SiM8PKeH7KxMf5jsMd1vHPJlfnSOcPd+RsDD86uJXcEAnhG/Gg6+FPtJHlfGzWPPjIy3BcRzHcRzHcRzHcZxQL/4FTO+Is5sl4I4AAAAASUVORK5CYII=" />
-                        </defs>
-                    </svg>
-                </span>
-                Ad Accounts
+                Wallets
             </a>
             <a href="{{ route('organizations.index') }}"
                 class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
@@ -204,7 +203,7 @@
         <!-- Desktop Header -->
         <header class="w-full items-center bg-[#F0F0F0] py-4 px-6 hidden sm:flex">
             
-            <div x-data="{ isOpen: false }" class="relative w-full flex justify-end">
+            <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                     <img src="https://source.unsplash.com/uJ8LNVCBjFQ/400x400">
@@ -213,8 +212,12 @@
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
                     <a href="/user/account" class="block px-4 py-2 account-link hover:text-white">Account</a>
-                    <!-- <a href="" class="block px-4 py-2 account-link hover:text-white">Support</a> -->
-                    <a href="/user/logout" class="block px-4 py-2 account-link hover:text-white">Logout</a>
+                    <form method="POST" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </header>
@@ -233,20 +236,28 @@
 
             <!-- Dropdown Nav -->
             <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4 text-[#F48857]">
-                <a href="/dashboard"
+                <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                     <i></i>
                     Dashboard
+                </a>
+                <a href="blank.html"
+                    class="flex items-center {{ $page == 'users' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <i class="fas fa-sticky-note mr-3"></i>
+                    Users
                 </a>
                 <a href="/wallet"
                     class="flex items-center {{ $page == 'wallet' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                     <i class="fas fa-table mr-3"></i>
                     Wallet
                 </a>
-                <a href="/user/logout" class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-sign-out-alt mr-3"></i>
-                    Sign Out
-                </a>
+                <form method="POST" action="{{ route('admin.logout') }}" class="block">
+                    @csrf
+                    <button type="submit" class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item w-full">
+                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        Sign Out
+                    </button>
+                </form>
             </nav>
         </header>
 

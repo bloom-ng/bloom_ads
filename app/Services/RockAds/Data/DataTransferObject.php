@@ -2,23 +2,14 @@
 
 namespace App\Services\RockAds\Data;
 
-use ReflectionClass;
-use ReflectionProperty;
-
 abstract class DataTransferObject
 {
     public function __construct(array $parameters = [])
     {
-        $class = new ReflectionClass(static::class);
-
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $property = $reflectionProperty->getName();
-            $this->{$property} = $parameters[$property] ?? null;
+        foreach ($parameters as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->{$property} = $value;
+            }
         }
-    }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
     }
 } 

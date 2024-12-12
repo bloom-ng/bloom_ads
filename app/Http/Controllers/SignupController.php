@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Models\OrganizationInvite;
 use App\Models\User;
+use App\Models\UserSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use App\Helpers\CountryHelper;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class SignupController extends Controller
 {
@@ -27,28 +30,58 @@ class SignupController extends Controller
             'country' => 'required|string|max:255',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => $request->user_type,
-            'business_name' => $request->business_name,
-            'phone_country_code' => $request->country_code,
-            'phone' => $request->phone_number,
-            'weblink' => $request->weblink,
-            'country' => $request->country,
-        ]);
+        try {
+            DB::beginTransaction();
+    
+            // Create user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_type' => $request->user_type,
+                'business_name' => $request->business_name,
+                'phone_country_code' => $request->country_code,
+                'phone' => $request->phone_number,
+                'weblink' => $request->weblink,
+                'country' => $request->country,
+            ]);
 
-        $organisation = new Organization();
+            // Create organization
+            $organization = Organization::create([
+                'name' => $request->business_name,
+                'user_id' => $user->id
+            ]);
 
-        $organisation->name = $request->business_name;
-        $organisation->save();
+            // Update user with current organization
+            $user->update([
+                'current_organization_id' => $organization->id
+            ]);
 
-        $user->organizations()->attach($organisation->id, ['role' => 'owner']);
+            // Create user settings
+            $user->settings()->create([
+                'current_organization_id' => $organization->id,
+                'preferences' => UserSettings::getPreferences() 
+            ]);
 
-        Auth::login($user);
+            // Attach user to organization with 'owner' role
+            $user->organizations()->attach($organization->id, ['role' => 'owner']);
+            
+            DB::commit();
 
-        return redirect('/dashboard');
+            Auth::login($user);
+
+            return redirect('/dashboard');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Log the error for debugging
+            \Log::error('Registration failed: ' . $e->getMessage());
+
+            throw ValidationException::withMessages([
+                'email' => ['Registration failed. Please try again.'],
+            ]);
+        }
     }
 
     public function login(Request $request)
@@ -61,11 +94,11 @@ class SignupController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->with('error', 'Invalid email');
+            return back()->with('error', 'Invalid Credentials');
         }
 
         if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Incorrect password');
+            return back()->with('error', 'Invalid Credentials');
         }
 
 
