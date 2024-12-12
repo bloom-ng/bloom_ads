@@ -45,8 +45,6 @@ class FlutterwaveService
                 ],
             ]);
 
-            // dd($response->body());
-
             return $response->json();
         } catch (\Exception $e) {
             Log::error('Flutterwave payment initialization failed: ' . $e->getMessage());
