@@ -1,3 +1,7 @@
+@php
+use Illuminate\Support\Facades\Auth;
+@endphp
+
 <x-admin-layout page="dashboard">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
