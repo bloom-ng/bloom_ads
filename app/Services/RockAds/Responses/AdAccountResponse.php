@@ -4,36 +4,7 @@ namespace App\Services\RockAds\Responses;
 
 use App\Services\RockAds\Data\DataTransferObject;
 
-class CommissionData extends DataTransferObject
-{
-    public string $rate;
-    public string $category_name;
-}
-
-class AdAccountData extends DataTransferObject
-{
-    public string $id;
-    public string $account_id;
-    public string $account_name;
-    public string $wallet_id;
-    public string $alias_name;
-    public string $balance;
-    public string $currency_code;
-    public string $status;
-    public string $platform_id;
-    public string $timezone;
-    public string $created_at;
-    public ?string $ads_manager_url;
-    public CommissionData $commission;
-
-    public function __construct(array $parameters = [])
-    {
-        parent::__construct($parameters);
-        $this->commission = new CommissionData($parameters['commission'] ?? []);
-    }
-}
-
-class AdAccountsResponse extends DataTransferObject
+class AdAccountResponse extends DataTransferObject
 {
     public int $total;
     /** @var AdAccountData[] */
@@ -41,7 +12,7 @@ class AdAccountsResponse extends DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        $this->total = $parameters['total'];
+        $this->total = $parameters['total'] ?? 0;
         $this->data = array_map(
             fn (array $account) => new AdAccountData($account),
             $parameters['data'] ?? []
@@ -49,12 +20,24 @@ class AdAccountsResponse extends DataTransferObject
     }
 }
 
-class SingleAdAccountResponse extends DataTransferObject
+class AdAccountData extends DataTransferObject
 {
-    public AdAccountData $data;
+    public string $account_id;
+    public string $account_name;
+    public string $platform_id;
+    public float $balance;
+    public string $currency_code;
+    public string $status;
+    public ?string $ads_manager_url;
 
     public function __construct(array $parameters = [])
     {
-        $this->data = new AdAccountData($parameters['data'] ?? []);
+        $this->account_id = $parameters['account_id'] ?? '';
+        $this->account_name = $parameters['account_name'] ?? '';
+        $this->platform_id = $parameters['platform_id'] ?? '';
+        $this->balance = $parameters['balance'] ?? 0.0;
+        $this->currency_code = $parameters['currency_code'] ?? '';
+        $this->status = $parameters['status'] ?? '';
+        $this->ads_manager_url = $parameters['ads_manager_url'] ?? null;
     }
 } 

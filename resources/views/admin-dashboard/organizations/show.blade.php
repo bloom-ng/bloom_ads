@@ -2,17 +2,17 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl text-black pb-6">Organization: {{ $organization->name }}</h1>
+                <h1 class="text-3xl text-black dark:text-white pb-6">Organization: {{ $organization->name }}</h1>
                 <a href="{{ route('admin.organizations.index') }}" class="text-blue-500 hover:text-blue-700">
                     ← Back to Organizations
                 </a>
             </div>
             
             <div class="w-full mt-6">
-                <div class="bg-white shadow-md rounded my-6">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6">
                     <table class="min-w-max w-full table-auto">
                         <thead>
-                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase text-sm leading-normal">
                                 <th class="py-3 px-6 text-left">ID</th>
                                 <th class="py-3 px-6 text-left">Name</th>
                                 <th class="py-3 px-6 text-left">Type</th>
@@ -23,9 +23,9 @@
                                 <th class="py-3 px-6 text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600 text-sm font-light">
+                        <tbody class="text-gray-600 dark:text-gray-300 text-sm font-light">
                             @foreach($adAccounts as $adAccount)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="py-3 px-6 text-left">{{ $adAccount->id }}</td>
                                 <td class="py-3 px-6 text-left">{{ $adAccount->name }}</td>
                                 <td class="py-3 px-6 text-left">{{ $adAccount->type }}</td>

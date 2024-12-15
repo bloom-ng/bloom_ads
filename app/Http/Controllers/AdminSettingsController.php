@@ -2,37 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdminSetting;
+use App\Models\UserSettings;
 use Illuminate\Http\Request;
-use App\Http\Requests\SettingRequest;
-use Illuminate\Support\Facades\Cache;
 
 class AdminSettingsController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = AdminSetting::query();
+        $userSettings = UserSettings::all();
 
-        // Search functionality
-        if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('key', 'like', "%{$search}%")
-                  ->orWhere('value', 'like', "%{$search}%");
-            });
-        }
-
-        // Sorting
-        $sort = $request->input('sort', 'newest');
-        if ($sort === 'oldest') {
-            $query->oldest();
-        } else {
-            $query->latest();
-        }
-
-        $adminSettings = $query->paginate(10);
-
-        return view('admin-dashboard.settings.index', compact('adminSettings'));
+        return view('admin-dashboard.settings.index', compact('userSettings'));
     }
 
     public function create()
@@ -40,28 +19,32 @@ class AdminSettingsController extends Controller
         return view('admin-dashboard.settings.create');
     }
 
-    public function store(SettingRequest $request)
+    public function store(Request $request)
     {
-        AdminSetting::create($request->validated());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'value' => 'required|string',
+        ]);
 
-        return redirect()
-            ->route('admin.adminsettings.index')
-            ->with('success', 'Setting created successfully');
+        UserSettings::create([
+            'user_id' => auth()->id(), // Assuming you want to associate it with the current user
+            'preferences' => [$request->input('name') => $request->input('value')],
+        ]);
+
+        return redirect()->route('admin.adminsettings.index')->with('success', 'Setting created successfully');
     }
 
-    public function edit(AdminSetting $adminsetting)
+    public function update(Request $request, UserSettings $userSetting)
     {
-        return view('admin-dashboard.settings.edit', compact('adminsetting'));
-    }
+        $request->validate([
+            'value' => 'required|string',
+        ]);
 
-    public function update(SettingRequest $request, AdminSetting $adminsetting)
-    {
-        $adminsetting->update($request->validated());
-        Cache::forget("admin_setting_{$adminsetting->key}");
+        $preferences = $userSetting->preferences;
+        $preferences[$request->input('name')] = $request->input('value');
+        $userSetting->update(['preferences' => $preferences]);
 
-        return redirect()
-            ->route('admin.adminsettings.index')
-            ->with('success', 'Setting updated successfully');
+        return redirect()->route('admin.adminsettings.index')->with('success', 'Setting updated successfully');
     }
 
     public function destroy(AdminSetting $adminsetting)

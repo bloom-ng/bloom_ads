@@ -16,9 +16,40 @@ class AdAccountsController extends Controller
         $this->rockAds = new RockAds();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $adAccounts = AdAccount::with(['organization', 'user'])->get();
+        $query = AdAccount::with(['organization', 'user']);
+
+        // Filter by name if provided
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        // Filter by status if provided
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $adAccounts = $query->paginate(10);
+
+        // Add flash message if no results found
+        if ($adAccounts->isEmpty()) {
+            if ($request->filled('name') || $request->filled('status')) {
+                // If filters were applied
+                $message = 'No ad accounts found matching your filters.';
+                if ($request->filled('name')) {
+                    $message .= " Name: '" . $request->input('name') . "'";
+                }
+                if ($request->filled('status')) {
+                    $message .= " Status: '" . $request->input('status') . "'";
+                }
+                return redirect()->back()->with('info', $message);
+            } else {
+                // If no filters were applied
+                return redirect()->back()->with('info', 'No ad accounts found.');
+            }
+        }
+
         return view('dashboard.adaccounts.index', compact('adAccounts'));
     }
 

@@ -17,11 +17,11 @@ assigned to and they can switch between them in the settings.
 Admin should be able to manage ad accounts(list delete edit[update the ad itself]) 
 within an organisation....while in the org section, show org(sam cars)
 and action of view ads(that lists all ads for that org) and lets admin delete edit
-(update the ad itself).....view org users or as accounts(dropdown)
+(update the ad itself).....view org users or ads accounts(dropdown)
 
 paginate all tables
 
-list transactions on dashboard
+
 
 Also…you need to generate excel file of the list of all pending
  ad accounts from admin
@@ -29,6 +29,26 @@ Also…you need to generate excel file of the list of all pending
 user too should be able to edit ads
 user should be able to delete when ad is still in processing
 
-
+list transactions on dashboard
 
 youre going to add settings model ...check textplug for admin settings
+
+
+
+
+admin settings should have just the one page where its dynamic and with just 
+fields: Name, Value(this is a text box that will update the db for this particular 
+entry in the db when the "update" action is selected), Action(update)
+
+adaccount filter by name and status and downloading for the excel...shouldnt be 
+all of it, it should load the data in chunks of specified filter....
+
+RockAds ad account panel on admin where we list RockAds ad accounts
+using the api getrockadsadaccounts
+
+user settings add UI mode, theme: dark or light modes
+
+Remove social login for admin
+
+**shouldn't admin settings just be a list of user settings with the ability
+to change value/preference?**

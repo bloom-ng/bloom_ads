@@ -4,11 +4,12 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Log;
 use App\Services\RockAds\Responses\AdPlatformsResponse;
 use App\Services\RockAds\Responses\TimezonesResponse;
 use App\Services\RockAds\Requests\CreateAdAccountRequest;
 use App\Services\RockAds\Requests\UpdateAdAccountRequest;
-use App\Services\RockAds\Responses\AdAccountsResponse;
+use App\Services\RockAds\Responses\AdAccountResponse;
 use App\Services\RockAds\Responses\SingleAdAccountResponse;
 use App\Services\RockAds\Responses\WalletsResponse;
 use App\Services\RockAds\Responses\SingleWalletResponse;
@@ -52,7 +53,7 @@ class RockAds
     protected function get(string $endpoint, array $params = [])
     {
         $response = $this->client()->get($endpoint, $params)->throw()->json();
-        \Log::info('API GET Response:', [
+        Log::info('API GET Response:', [
             'endpoint' => $endpoint,
             'response' => $response
         ]);
@@ -74,14 +75,14 @@ class RockAds
     {
         try {
             $response = $this->get('ad-platforms');
-            \Log::info('RockAds API Raw Response:', ['response' => $response]);
+            Log::info('RockAds API Raw Response:', ['response' => $response]);
             
             // Pass the entire response array to the AdPlatformsResponse constructor
             return new AdPlatformsResponse([
                 'response' => $response
             ]);
         } catch (\Exception $e) {
-            \Log::error('RockAds API Error in getAdPlatforms:', [
+            Log::error('RockAds API Error in getAdPlatforms:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -98,7 +99,7 @@ class RockAds
             $response = $this->get('timezones');
             
             // Add detailed debug logging
-            \Log::info('RockAds Timezones Raw Response:', [
+            Log::info('RockAds Timezones Raw Response:', [
                 'raw' => $response,
                 'structure' => json_encode($response, JSON_PRETTY_PRINT)
             ]);
@@ -108,7 +109,7 @@ class RockAds
                 'response' => $response
             ]);
         } catch (\Exception $e) {
-            \Log::error('RockAds API Error in getTimezones:', [
+            Log::error('RockAds API Error in getTimezones:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -119,10 +120,10 @@ class RockAds
     /**
      * Get list of ad accounts
      */
-    public function getAdAccounts(): AdAccountsResponse
+    public function getAdAccounts(): AdAccountResponse
     {
         $response = $this->get('ad-accounts');
-        return new AdAccountsResponse($response);
+        return new AdAccountResponse($response);
     }
 
     /**

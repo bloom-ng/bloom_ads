@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+x-bind:class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8">
@@ -7,9 +8,14 @@
     <title>Bloom Ads | The Premier Platform for Google and Meta Ads in Nigeria</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
 
-<body>
+<body class="h-full transition-colors duration-200
+             bg-white dark:bg-gray-900 
+             text-gray-900 dark:text-white">
+    <!-- Add theme toggle to your navigation -->
+    <x-theme-toggle />
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

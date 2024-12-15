@@ -32,4 +32,5 @@ class Admin extends Authenticatable
         return $this->belongsToMany(Organization::class, 'organization_admins')
             ->withTimestamps();
     }
+
 } 

@@ -20,7 +20,7 @@
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $user->email }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $user->created_at->format('Y-m-d') }}</td>
                             <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                                <a class="text-green-500" href="{{ route('users.edit', $user) }}">Edit</a>
+                                <a class="text-green-500" href="{{ route('admin.users.edit', $user) }}">Edit</a>
                                 <a class="pl-2 text-yellow-500" href="">Orgs</a><br>
                                 <a class="pl-4 text-red-500" href="">Delete</a>
                                 
