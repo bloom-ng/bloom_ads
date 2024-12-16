@@ -6,6 +6,13 @@ use App\Models\AdAccount;
 use App\Services\RockAds;
 use Illuminate\Http\Request;
 use Illuminate\Http\Client\RequestException;
+use App\Models\Wallet;
+use App\Models\AdAccountTransaction;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\FacadesLog;
 
 class AdAccountsController extends Controller
 {
@@ -18,7 +25,11 @@ class AdAccountsController extends Controller
 
     public function index(Request $request)
     {
-        $query = AdAccount::with(['organization', 'user']);
+        $user = auth()->user();
+        $currentOrganizationId = $user->settings?->current_organization_id;
+
+        $query = AdAccount::with(['organization'])
+            ->where('organization_id', $currentOrganizationId);
 
         // Filter by name if provided
         if ($request->filled('name')) {
@@ -44,9 +55,6 @@ class AdAccountsController extends Controller
                     $message .= " Status: '" . $request->input('status') . "'";
                 }
                 return redirect()->back()->with('info', $message);
-            } else {
-                // If no filters were applied
-                return redirect()->back()->with('info', 'No ad accounts found.');
             }
         }
 
@@ -58,51 +66,51 @@ class AdAccountsController extends Controller
         try {
             // Get platforms from RockAds API
             $platformsResponse = $this->rockAds->getAdPlatforms();
-            
-            \Log::info('Initial platforms response:', [
+
+            Log::info('Initial platforms response:', [
                 'platforms_count' => count($platformsResponse->platforms),
-                'platforms' => array_map(function($p) {
+                'platforms' => array_map(function ($p) {
                     return ['id' => $p->id, 'name' => $p->name];
                 }, $platformsResponse->platforms)
             ]);
 
             // Transform the data for the view
             $platforms = collect($platformsResponse->platforms)
-                ->filter(function($platform) {
+                ->filter(function ($platform) {
                     $hasRequired = $platform->id && $platform->name;
-                    \Log::info('Filtering platform:', [
+                    Log::info('Filtering platform:', [
                         'id' => $platform->id,
                         'name' => $platform->name,
                         'passes_filter' => $hasRequired
                     ]);
                     return $hasRequired;
                 })
-                ->map(function($platform) {
+                ->map(function ($platform) {
                     $data = [
                         'id' => $platform->getCode(),
                         'name' => $platform->name
                     ];
-                    \Log::info('Mapping platform:', $data);
+                    Log::info('Mapping platform:', $data);
                     return $data;
                 })
                 ->values();
 
-            \Log::info('Final platforms collection:', [
+            Log::info('Final platforms collection:', [
                 'count' => $platforms->count(),
                 'data' => $platforms->toArray()
             ]);
 
             $timezonesResponse = $this->rockAds->getTimezones();
 
-            \Log::info('Timezones Response Object:', [
+            Log::info('Timezones Response Object:', [
                 'raw' => $timezonesResponse,
                 'timezones_count' => count($timezonesResponse->timezones)
             ]);
 
             $timezones = collect($timezonesResponse->timezones)
-                ->filter(function($timezone) {
+                ->filter(function ($timezone) {
                     $hasRequired = $timezone->id && $timezone->name;
-                    \Log::info('Filtering timezone:', [
+                    Log::info('Filtering timezone:', [
                         'id' => $timezone->id,
                         'name' => $timezone->name,
                         'offset_str' => $timezone->offset_str,
@@ -110,24 +118,24 @@ class AdAccountsController extends Controller
                     ]);
                     return $hasRequired;
                 })
-                ->map(function($timezone) {
+                ->map(function ($timezone) {
                     $data = [
                         'id' => $timezone->id,
                         'name' => $timezone->name . ' (' . $timezone->offset_str . ')'
                     ];
-                    \Log::info('Mapping timezone:', $data);
+                    Log::info('Mapping timezone:', $data);
                     return $data;
                 })
                 ->values();
 
-            \Log::info('Final timezones collection:', [
+            Log::info('Final timezones collection:', [
                 'count' => $timezones->count(),
                 'data' => $timezones->toArray()
             ]);
 
             // Convert to array before passing to view and add debug
             $timezonesArray = $timezones->toArray();
-            \Log::info('Timezones being passed to view:', $timezonesArray);
+            Log::info('Timezones being passed to view:', $timezonesArray);
 
             return view('dashboard.adaccounts.create', [
                 'platforms' => $platforms->toArray(),
@@ -135,7 +143,7 @@ class AdAccountsController extends Controller
                 'currencies' => ['USD', 'NGN']
             ]);
         } catch (RequestException $e) {
-            \Log::error('RockAds API Error:', [
+            Log::error('RockAds API Error:', [
                 'message' => $e->getMessage(),
                 'response' => $e->response?->json(),
                 'status' => $e->response?->status()
@@ -157,13 +165,7 @@ class AdAccountsController extends Controller
                 'landing_page' => 'nullable|url',
             ]);
 
-            $user = auth()->user();
-            
-            if (!$user->currentOrganization) {
-                return redirect()->back()
-                    ->with('error', 'Please select an organization first')
-                    ->withInput();
-            }
+            $user = Auth::user();
 
             $validated['user_id'] = $user->id;
             $validated['organization_id'] = $user->settings?->current_organization_id;
@@ -174,12 +176,12 @@ class AdAccountsController extends Controller
             return redirect()->route('adaccounts.index')
                 ->with('success', 'Ad Account created successfully');
         } catch (\Exception $e) {
-            \Log::error('Ad Account Creation Error:', [
+            Log::error('Ad Account Creation Error:', [
                 'message' => $e->getMessage(),
                 'user_id' => auth()->id(),
                 'organization' => auth()->user()->currentOrganization
             ]);
-            
+
             return redirect()->back()
                 ->with('error', 'Error creating ad account: ' . $e->getMessage())
                 ->withInput();
@@ -190,7 +192,7 @@ class AdAccountsController extends Controller
     {
         // Get the authenticated user with their organizations
         $user = auth()->user()->load('organizations');
-        
+
         // Check if user owns this ad account or is part of the organization
         if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
             abort(403);
@@ -206,7 +208,7 @@ class AdAccountsController extends Controller
     {
         // Get the authenticated user with their organizations
         $user = auth()->user()->load('organizations');
-        
+
         // Check if user owns this ad account or is part of the organization
         if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
             abort(403);
@@ -231,7 +233,7 @@ class AdAccountsController extends Controller
     {
         // Get the authenticated user with their organizations
         $user = auth()->user()->load('organizations');
-        
+
         // Check if user owns this ad account or is part of the organization
         if ($adAccount->user_id !== $user->id && !$user->organizations->contains($adAccount->organization_id)) {
             abort(403);
@@ -250,4 +252,158 @@ class AdAccountsController extends Controller
             ->back()
             ->with('success', 'Ad Account deleted successfully');
     }
-} 
+
+    public function deposit(Request $request, AdAccount $adAccount)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:1',
+                'wallet_id' => 'required|exists:wallets,id',
+            ]);
+
+            $wallet = Wallet::findOrFail($validated['wallet_id']);
+
+            // Check if currencies match
+            if ($wallet->currency !== $adAccount->currency) {
+                return redirect()->back()
+                    ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // Calculate fees
+            $fees = $adAccount->calculateFees($validated['amount']);
+            $totalAmount = $fees['total_amount'];
+
+            // Check if wallet has sufficient balance
+            if ($wallet->balance < $totalAmount) {
+                return redirect()->back()
+                    ->with('error', 'Insufficient wallet balance');
+            }
+
+            // Create transaction record
+            $transaction = new AdAccountTransaction([
+                'ad_account_id' => $adAccount->id,
+                'wallet_id' => $wallet->id,
+                'amount' => $validated['amount'],
+                'type' => 'deposit',
+                'vat' => $fees['vat'],
+                'service_fee' => $fees['service_fee'],
+                'total_amount' => $totalAmount,
+                'reference' => 'AD-' . Str::random(20),
+                'description' => 'Deposit to ad account'
+            ]);
+
+            // Process with RockAds API
+            // $request = new AdAccountPaymentRequest([
+            //     'amount' => (string) $validated['amount'],
+            //     'wallet_id' => (string) $wallet->id
+            // ]);
+
+            DB::transaction(function () use ($adAccount, $wallet, $transaction, $request, $totalAmount) {
+                // Save transaction
+                $transaction->save();
+
+                // Deduct from wallet
+                $wallet->decrement('balance', $totalAmount);
+
+                // Call RockAds API
+                // $this->rockAds->depositToAdAccount($adAccount->provider_id, $request);
+
+                // Mark transaction as completed
+                $transaction->update(['status' => 'completed']);
+            });
+
+            return redirect()->back()
+                ->with('success', 'Funds deposited successfully');
+        } catch (\Exception $e) {
+            Log::error('Ad Account Deposit Error:', [
+                'message' => $e->getMessage(),
+                'ad_account_id' => $adAccount->id
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Error processing deposit: ' . $e->getMessage());
+        }
+    }
+
+    public function withdraw(Request $request, AdAccount $adAccount)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:1',
+                'wallet_id' => 'required|exists:wallets,id',
+            ]);
+
+            $wallet = Wallet::findOrFail($validated['wallet_id']);
+
+            // Check if currencies match
+            if ($wallet->currency !== $adAccount->currency) {
+                return redirect()->back()
+                    ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // Calculate fees
+            $fees = $adAccount->calculateFees($validated['amount']);
+            $totalAmount = $fees['total_amount'];
+
+            // Create transaction record
+            $transaction = new AdAccountTransaction([
+                'ad_account_id' => $adAccount->id,
+                'wallet_id' => $wallet->id,
+                'amount' => $validated['amount'],
+                'type' => 'withdrawal',
+                'vat' => $fees['vat'],
+                'service_fee' => $fees['service_fee'],
+                'total_amount' => $totalAmount,
+                'reference' => 'AD-' . Str::random(20),
+                'description' => 'Withdrawal from ad account'
+            ]);
+
+            // Process with RockAds API
+            // $request = new AdAccountPaymentRequest([
+            //     'amount' => (string) $validated['amount'],
+            //     'wallet_id' => (string) $wallet->id
+            // ]);
+
+            DB::transaction(function () use ($adAccount, $wallet, $transaction, $request, $totalAmount, $validated) {
+                // Save transaction
+                $transaction->save();
+
+                // Call RockAds API
+                // $this->rockAds->withdrawFromAdAccount($adAccount->provider_id, $request);
+
+                // Add to wallet
+                $wallet->increment('balance', $validated['amount']); // Only add the base amount, not fees
+
+                // Mark transaction as completed
+                $transaction->update(['status' => 'completed']);
+            });
+
+            return redirect()->back()
+                ->with('success', 'Funds withdrawn successfully');
+        } catch (\Exception $e) {
+            Log::error('Ad Account Withdrawal Error:', [
+                'message' => $e->getMessage(),
+                'ad_account_id' => $adAccount->id
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Error processing withdrawal: ' . $e->getMessage());
+        }
+    }
+
+    public function show(AdAccount $adAccount)
+    {
+        $user = auth()->user();
+        $currentOrganizationId = $user->settings?->current_organization_id;
+
+        // Ensure the ad account belongs to the current organization
+        if ($adAccount->organization_id !== $currentOrganizationId) {
+            abort(403, 'You do not have access to this ad account.');
+        }
+
+        // Get organization's wallets
+        $wallets = $adAccount->organization->wallets;
+
+        return view('dashboard.adaccounts.show', compact('adAccount', 'wallets'));
+    }
+}

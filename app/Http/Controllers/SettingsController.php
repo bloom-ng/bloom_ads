@@ -37,7 +37,9 @@ class SettingsController extends Controller
             return back()->with('error', 'You do not belong to this organization.');
         }
 
-        $user->setCurrentOrganization($organization);
+        $user->settings->update([
+            'current_organization_id' => $organization->id
+        ]);
 
         return back()->with('success', 'Current organization updated successfully.');
     }

@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Notifications\OrganizationInvitation;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
 {
@@ -38,12 +39,14 @@ class OrganizationController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
+        $validated['user_id'] = Auth::user()->id;
+
         $organization = Organization::create($validated);
 
         // Add current user as owner
-        $organization->users()->attach(auth()->id(), ['role' => 'owner']);
+        $organization->users()->attach(Auth::user()->id, ['role' => 'owner']);
 
-        return redirect()->route('dashboard.organization.index')->with('success', 'Organization created successfully');
+        return redirect()->route('organizations.index')->with('success', 'Organization created successfully');
     }
 
     public function invite(Request $request, Organization $organization)
@@ -51,6 +54,12 @@ class OrganizationController extends Controller
         $validated = $request->validate([
             'email' => 'required|email',
             'role' => 'required|in:admin,finance,advertiser',
+        ]);
+
+        // Add logging
+        \Log::info('Sending organization invitation', [
+            'email' => $validated['email'],
+            'organization' => $organization->name
         ]);
 
         // Check if user is already in organization
@@ -69,9 +78,18 @@ class OrganizationController extends Controller
             'expires_at' => now()->addDays(7),
         ]);
 
-        // Send invitation email
-        Notification::route('mail', $validated['email'])
-            ->notify(new OrganizationInvitation($organization, $invite));
+        try {
+            // Send invitation email with error handling
+            Notification::route('mail', $validated['email'])
+                ->notify(new OrganizationInvitation($organization, $invite));
+
+            \Log::info('Organization invitation sent successfully');
+        } catch (\Exception $e) {
+            \Log::error('Failed to send organization invitation', [
+                'error' => $e->getMessage()
+            ]);
+            return back()->with('error', 'Failed to send invitation email. Please try again.');
+        }
 
         return back()->with('success', 'Invitation sent');
     }

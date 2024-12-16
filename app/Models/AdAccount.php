@@ -32,6 +32,9 @@ class AdAccount extends Model
     public const STATUS_DELETED = 'deleted';
     public const STATUS_REJECTED = 'rejected';
 
+    public const VAT_RATE = 7.5; // 7.5%
+    public const SERVICE_FEE_RATE = 2.5; // 2.5%
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -41,4 +44,22 @@ class AdAccount extends Model
     {
         return $this->belongsTo(Organization::class);
     }
-} 
+
+    public function transactions()
+    {
+        return $this->hasMany(AdAccountTransaction::class);
+    }
+
+    public function calculateFees($amount)
+    {
+        $vat = ($amount * self::VAT_RATE) / 100;
+        $serviceFee = ($amount * self::SERVICE_FEE_RATE) / 100;
+        $totalAmount = $amount + $vat + $serviceFee;
+
+        return [
+            'vat' => $vat,
+            'service_fee' => $serviceFee,
+            'total_amount' => $totalAmount
+        ];
+    }
+}

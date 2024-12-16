@@ -3,6 +3,7 @@
 namespace App\Services\RockAds\Responses;
 
 use App\Services\RockAds\Data\DataTransferObject;
+use Illuminate\Support\Facades\Log;
 
 class TimezoneData extends DataTransferObject
 {
@@ -13,8 +14,8 @@ class TimezoneData extends DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        \Log::info('Creating TimezoneData with parameters:', $parameters);
-        
+        Log::info('Creating TimezoneData with parameters:', $parameters);
+
         $this->id = $parameters['key'] ?? null;
         $this->name = $parameters['name'] ?? null;
         $this->offset_str = $parameters['offset_str'] ?? null;
@@ -29,16 +30,16 @@ class TimezonesResponse extends DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        \Log::info('TimezonesResponse constructor parameters:', $parameters);
-        
+        Log::info('TimezonesResponse constructor parameters:', $parameters);
+
         // The data structure is different - it's in 'response.data'
         $timezonesData = $parameters['response']['data'] ?? [];
-        
-        \Log::info('Extracted timezones data:', ['data' => $timezonesData]);
-        
+
+        Log::info('Extracted timezones data:', ['data' => $timezonesData]);
+
         // Map the data to TimezoneData objects
         $this->timezones = array_map(
-            function(array $timezone) {
+            function (array $timezone) {
                 return new TimezoneData([
                     'key' => $timezone['key'],
                     'name' => $timezone['name'],
@@ -48,10 +49,10 @@ class TimezonesResponse extends DataTransferObject
             },
             $timezonesData
         );
-        
-        \Log::info('Final timezones array:', [
+
+        Log::info('Final timezones array:', [
             'count' => count($this->timezones),
-            'timezones' => array_map(function($tz) {
+            'timezones' => array_map(function ($tz) {
                 return [
                     'id' => $tz->id,
                     'name' => $tz->name,
@@ -60,4 +61,4 @@ class TimezonesResponse extends DataTransferObject
             }, $this->timezones)
         ]);
     }
-} 
+}

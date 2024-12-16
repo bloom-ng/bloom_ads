@@ -50,7 +50,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('adaccounts.edit');
     Route::put('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'update'])->name('adaccounts.update');
     Route::delete('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'destroy'])->name('adaccounts.destroy');
-       Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
+    Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/export/processing', [AdminAdAccountsController::class, 'exportProcessingAccounts'])
         ->name('adaccounts.export.processing');
 
@@ -61,7 +61,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/organizations/{organization}', [AdminOrganizationsController::class, 'show'])->name('organizations.show');
     Route::get('/organizations/{organization}/members', [AdminOrganizationsController::class, 'members'])
         ->name('organizations.members');
-        
+
     Route::resource('adminsettings', AdminSettingsController::class);
     Route::post('adminsettings/{adminSetting}/update-value', [AdminSettingsController::class, 'updateValue'])->name('adminsettings.update-value');
 
@@ -156,6 +156,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/adaccounts/{adAccount}/edit', [AdAccountsController::class, 'edit'])->name('adaccounts.edit');
     Route::put('/dashboard/adaccounts/{adAccount}', [AdAccountsController::class, 'update'])->name('adaccounts.update');
     Route::delete('/dashboard/adaccounts/{adAccount}', [AdAccountsController::class, 'destroy'])->name('adaccounts.destroy');
+    Route::get('/dashboard/adaccounts/{adAccount}', [AdAccountsController::class, 'show'])
+        ->name('adaccounts.show');
 
     // Payment callbacks
     Route::get('/wallet/fund/flutterwave/callback', [WalletController::class, 'handleFlutterwaveCallback'])
@@ -172,3 +174,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Add this with your other wallet routes
     Route::post('/wallet/transfer', [WalletController::class, 'transfer'])->name('wallet.transfer');
+
+    // Inside the authenticated routes group
+    Route::post('/dashboard/adaccounts/{adAccount}/deposit', [AdAccountsController::class, 'deposit'])
+        ->name('adaccounts.deposit');
+    Route::post('/dashboard/adaccounts/{adAccount}/withdraw', [AdAccountsController::class, 'withdraw'])
+        ->name('adaccounts.withdraw');
+});

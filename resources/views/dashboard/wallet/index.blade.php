@@ -48,12 +48,21 @@
                                         <span class="text-2xl font-bold">{{ number_format($wallet->balance, 2) }}</span>
                                     </div>
 
-                                    <!-- Add Fund Button -->
-                                    <div class="mt-4">
+                                    <div class="mt-4 space-y-2">
+                                        @if ($wallet->currency === 'NGN')
+                                            <!-- Fund Button - Only for NGN wallet -->
+                                            <button
+                                                onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
+                                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                Fund Wallet
+                                            </button>
+                                        @endif
+
+                                        <!-- Transfer Button -->
                                         <button
-                                            onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
-                                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Fund Wallet
+                                            onclick="openTransferModal('{{ $wallet->id }}', '{{ $wallet->currency }}', {{ $wallet->balance }})"
+                                            class="w-full border border-[#F48857] text-[#F48857] hover:bg-[#F48857]/10 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Transfer
                                         </button>
                                     </div>
                                 </div>
@@ -120,6 +129,46 @@
         </div>
     </div>
 
+    <!-- Add Transfer Modal -->
+    <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Transfer Funds</h2>
+            <form action="{{ route('wallet.transfer') }}" method="POST" class="space-y-4">
+                @csrf
+                <input type="hidden" name="source_wallet_id" id="transferSourceWalletId">
+                <input type="hidden" name="source_currency" id="transferSourceCurrency">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <input type="number" name="amount" id="transferAmount" required
+                        class="w-full p-2 border rounded" step="0.01" min="0">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Destination Currency</label>
+                    <select name="destination_currency" id="transferDestinationCurrency" required
+                        class="w-full p-2 border rounded">
+                        <option value="NGN">NGN</option>
+                        <option value="USD">USD</option>
+                        <option value="GBP">GBP</option>
+                    </select>
+                </div>
+
+                <div id="conversionPreview" class="text-sm text-gray-600"></div>
+
+                <button type="submit"
+                    class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                    Transfer
+                </button>
+            </form>
+
+            <button onclick="closeTransferModal()"
+                class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <script>
         function openFundModal(walletId, currency) {
             document.getElementById('modalWalletId').value = walletId;
@@ -143,6 +192,24 @@
 
         function closeFundModal() {
             document.getElementById('fundWalletModal').style.display = 'none';
+        }
+
+        function openTransferModal(walletId, currency, balance) {
+            document.getElementById('transferSourceWalletId').value = walletId;
+            document.getElementById('transferSourceCurrency').value = currency;
+            document.getElementById('transferAmount').max = balance;
+
+            // Remove current currency from destination options
+            const destinationSelect = document.getElementById('transferDestinationCurrency');
+            Array.from(destinationSelect.options).forEach(option => {
+                option.disabled = option.value === currency;
+            });
+
+            document.getElementById('transferModal').style.display = 'flex';
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').style.display = 'none';
         }
     </script>
 </x-user-layout>

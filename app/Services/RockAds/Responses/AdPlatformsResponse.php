@@ -11,8 +11,8 @@ class PlatformData extends DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        \Log::info('Creating PlatformData with parameters:', $parameters);
-        
+        // \Log::info('Creating PlatformData with parameters:', $parameters);
+
         $this->id = $parameters['id'] ?? null;
         $this->name = $parameters['name'] ?? null;
     }
@@ -25,15 +25,15 @@ class PlatformData extends DataTransferObject
             3 => 'tiktok',
             4 => 'google'
         ];
-        
+
         $code = $platformCodes[$this->id] ?? strtolower($this->name);
-        
-        \Log::info('Platform Code:', [
-            'id' => $this->id,
-            'name' => $this->name,
-            'code' => $code
-        ]);
-        
+
+        // \Log::info('Platform Code:', [
+        //     'id' => $this->id,
+        //     'name' => $this->name,
+        //     'code' => $code
+        // ]);
+
         return $code;
     }
 }
@@ -45,16 +45,16 @@ class AdPlatformsResponse extends DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        \Log::info('AdPlatformsResponse constructor parameters:', $parameters);
-        
+        // \Log::info('AdPlatformsResponse constructor parameters:', $parameters);
+
         // The data structure is different - it's directly in 'response.ad_platforms'
         $platformsData = $parameters['response']['ad_platforms'] ?? [];
-        
-        \Log::info('Extracted platforms data:', ['data' => $platformsData]);
-        
+
+        // \Log::info('Extracted platforms data:', ['data' => $platformsData]);
+
         // Map the data to PlatformData objects
         $this->platforms = array_map(
-            function(array $platform) {
+            function (array $platform) {
                 return new PlatformData([
                     'id' => $platform['id'],
                     'name' => $platform['name']
@@ -62,16 +62,16 @@ class AdPlatformsResponse extends DataTransferObject
             },
             $platformsData
         );
-        
-        \Log::info('Final platforms array:', [
-            'count' => count($this->platforms),
-            'platforms' => array_map(function($p) {
-                return [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                    'code' => $p->getCode()
-                ];
-            }, $this->platforms)
-        ]);
+
+        // \Log::info('Final platforms array:', [
+        //     'count' => count($this->platforms),
+        //     'platforms' => array_map(function ($p) {
+        //         return [
+        //             'id' => $p->id,
+        //             'name' => $p->name,
+        //             'code' => $p->getCode()
+        //         ];
+        //     }, $this->platforms)
+        // ]);
     }
-} 
+}
