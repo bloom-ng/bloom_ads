@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('reference')->unique();
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+            $table->decimal('rate', 20, 4)->nullable();
+            $table->enum('source_currency', ['NGN', 'USD', 'GBP'])->nullable();
             $table->timestamps();
 
             // Indexes for better query performance

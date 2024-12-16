@@ -169,10 +169,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Add this with your other user routes
     Route::post('/logout', [UsersController::class, 'logout'])->name('user.logout');
-});
 
-
-
-
-
-
+    // Add this with your other wallet routes
+    Route::post('/wallet/transfer', [WalletController::class, 'transfer'])->name('wallet.transfer');
