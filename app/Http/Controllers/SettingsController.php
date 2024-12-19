@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use App\Models\UserSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,9 +38,14 @@ class SettingsController extends Controller
             return back()->with('error', 'You do not belong to this organization.');
         }
 
-        $user->settings->update([
-            'current_organization_id' => $organization->id
-        ]);
+        // Create or update user settings
+        UserSettings::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'current_organization_id' => $organization->id,
+                'preferences' => UserSettings::getPreferences()
+            ]
+        );
 
         return back()->with('success', 'Current organization updated successfully.');
     }

@@ -19,7 +19,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'current_organization_id'
+        'current_organization_id',
+        'user_type',
+        'business_name',
+        'weblink',
+        'country',
+        'oauth_id',
+        'oauth_provider',
+        'phone',
+        'phone_country_code',
     ];
 
     protected $hidden = [

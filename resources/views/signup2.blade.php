@@ -7,12 +7,12 @@
 
             <!-- OAuth Buttons -->
             <div class="flex flex-col gap-4 mb-8">
-                <a href="/auth/google"
+                <a href="/auth/google?user_type=agency"
                     class="flex items-center justify-center gap-2 p-2 border rounded-xl bg-white hover:bg-gray-50">
                     <img src="/images/google.svg" alt="google logo">
                     <span>Continue with Google</span>
                 </a>
-                <a href="/auth/facebook"
+                <a href="/auth/facebook?user_type=agency"
                     class="flex items-center justify-center gap-2 p-2 border rounded-xl bg-[#1877F2] hover:bg-[#1877F9] text-white">
                     <img src="/images/facebook.svg" alt="facebook logo">
                     <span>Continue with Facebook</span>

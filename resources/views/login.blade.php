@@ -6,7 +6,7 @@
             <p class="text-2xl font-light mb-10">Welcome Back!</p>
 
             <div class="flex flex-col lg:px-5 gap-5 mb-10 ">
-                <a href="#"
+                <a href="/auth/facebook"
                     class="flex flex-row space-x-3 text-sm font-semibold text-center items-center justify-center text-white bg-[#1877F2] rounded-2xl px-8 p-2">
                     <svg width="30" height="30" viewBox="0 0 40 40" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mr-2">
@@ -23,7 +23,7 @@
                     Login with Facebook
                 </a>
 
-                <a href="#"
+                <a href="/auth/google"
                     class="flex flex-row space-x-3 text-sm font-semibold text-center items-center justify-center text-white bg-[#181818] rounded-2xl px-8 p-2">
                     <svg width="30" height="30" viewBox="0 0 40 40" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mr-2">
