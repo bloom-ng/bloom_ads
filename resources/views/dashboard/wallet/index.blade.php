@@ -141,20 +141,24 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                     <input type="number" name="amount" id="transferAmount" required
-                        class="w-full p-2 border rounded" step="0.01" min="0">
+                        class="w-full p-2 border rounded" step="0.01" min="0"
+                        oninput="updateConversionPreview()">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Destination Currency</label>
                     <select name="destination_currency" id="transferDestinationCurrency" required
-                        class="w-full p-2 border rounded">
+                        class="w-full p-2 border rounded" onchange="updateConversionPreview()">
                         <option value="NGN">NGN</option>
                         <option value="USD">USD</option>
                         <option value="GBP">GBP</option>
                     </select>
                 </div>
 
-                <div id="conversionPreview" class="text-sm text-gray-600"></div>
+                <div id="conversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                    <p id="rateDisplay" class="mb-2"></p>
+                    <p id="convertedAmountDisplay"></p>
+                </div>
 
                 <button type="submit"
                     class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
@@ -194,6 +198,52 @@
             document.getElementById('fundWalletModal').style.display = 'none';
         }
 
+        function getConversionRate(fromCurrency, toCurrency) {
+            const NGN_TO_USD = {{ \App\Models\Wallet::NGN_TO_USD_RATE }};
+            const NGN_TO_GBP = {{ \App\Models\Wallet::NGN_TO_GBP_RATE }};
+
+            if (fromCurrency === toCurrency) return 1;
+
+            if (fromCurrency === 'NGN' && toCurrency === 'USD') return 1 / NGN_TO_USD;
+            if (fromCurrency === 'NGN' && toCurrency === 'GBP') return 1 / NGN_TO_GBP;
+            if (fromCurrency === 'USD' && toCurrency === 'NGN') return NGN_TO_USD;
+            if (fromCurrency === 'GBP' && toCurrency === 'NGN') return NGN_TO_GBP;
+            if (fromCurrency === 'USD' && toCurrency === 'GBP') return NGN_TO_USD / NGN_TO_GBP;
+            if (fromCurrency === 'GBP' && toCurrency === 'USD') return NGN_TO_GBP / NGN_TO_USD;
+
+            return 0;
+        }
+
+        function formatCurrency(amount, currency) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function updateConversionPreview() {
+            const amount = parseFloat(document.getElementById('transferAmount').value) || 0;
+            const sourceCurrency = document.getElementById('transferSourceCurrency').value;
+            const destCurrency = document.getElementById('transferDestinationCurrency').value;
+            const rate = getConversionRate(sourceCurrency, destCurrency);
+            const convertedAmount = amount * rate;
+
+            const rateDisplay = document.getElementById('rateDisplay');
+            const convertedAmountDisplay = document.getElementById('convertedAmountDisplay');
+
+            if (sourceCurrency !== destCurrency) {
+                rateDisplay.textContent = `Exchange Rate: 1 ${sourceCurrency} = ${rate.toFixed(4)} ${destCurrency}`;
+                convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, destCurrency)}`;
+            } else {
+                rateDisplay.textContent = '';
+                convertedAmountDisplay.textContent = `Amount: ${formatCurrency(amount, sourceCurrency)}`;
+            }
+
+            document.getElementById('conversionPreview').style.display = amount > 0 ? 'block' : 'none';
+        }
+
         function openTransferModal(walletId, currency, balance) {
             document.getElementById('transferSourceWalletId').value = walletId;
             document.getElementById('transferSourceCurrency').value = currency;
@@ -204,6 +254,10 @@
             Array.from(destinationSelect.options).forEach(option => {
                 option.disabled = option.value === currency;
             });
+
+            // Reset and hide conversion preview
+            document.getElementById('transferAmount').value = '';
+            document.getElementById('conversionPreview').style.display = 'none';
 
             document.getElementById('transferModal').style.display = 'flex';
         }
