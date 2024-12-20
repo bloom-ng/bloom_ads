@@ -21,7 +21,7 @@
                                         </div>
                                         <form method="POST" action="{{ route('settings.set-organization') }}"
                                             class="flex items-center">
-                                            @csrf
+                                            @csrf   
                                             <input type="hidden" name="organization_id" value="{{ $org->id }}">
                                             <button type="submit"
                                                 class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#F48857] focus:ring-offset-2 {{ $org->id === auth()->user()->settings?->current_organization_id ? 'bg-green-200' : 'bg-gray-200' }}"

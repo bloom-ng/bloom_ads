@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->belongsTo(Organization::class, 'current_organization_id');
     }
 
+    public function currentOrganizationId()
+    {
+        return $this->currentOrganization->id;
+    }
+
     public function organizations(): BelongsToMany
     {
         return $this->belongsToMany(Organization::class, 'organization_users')

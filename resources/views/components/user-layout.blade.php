@@ -101,7 +101,7 @@
 
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
         <div class="p-6 bg-[#F48857]">
-            <a href="index.html" class="">
+            <a href="/dashboard" class="">
                 {{-- <img src="/images/Sharepadi_White.png" alt="SharePadi_logo"> --}}
                 <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
             </a>
@@ -259,17 +259,17 @@
 
         {{ $slot }}
         <div class="flex-grow"></div>
-        <footer class="flex justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
+        <footer class="flex bg-gradient-to-r from-gray-200 to-blue-800 bg-opacity-30 justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
             <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank"><img src="/images/Instagram2.svg" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.svg"
+                    target="_blank"><img src="/images/Instagram.png" alt="Instagram Link"/></a>
+                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.png"
                         alt="X Link" /></a><a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
-                        src="/images/Facebook2.png" alt="Facebook Link" /></a>
+                        src="/images/Facebook.png" alt="Facebook Link" /></a>
                 <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/LinkedIn2.png" alt="LinkedIn Link" /></a>
+                        src="/images/LinkedIn.png" alt="LinkedIn Link" /></a>
             </div>
         </footer>
     </div>
