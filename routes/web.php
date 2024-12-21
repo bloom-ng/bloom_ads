@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminAdAccountsController;
 use App\Http\Controllers\AdminOrganizationsController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
+use App\Http\Controllers\AdminMetaAdAccountsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
     // Add this new route for RockAds accounts
     Route::get('/rockads-accounts', [AdminRockAdsAccountsController::class, 'index'])->name('rockads.accounts.index');
+
+    Route::get('/meta/accounts', [AdminMetaAdAccountsController::class, 'index'])
+        ->name('meta.accounts.index');
 });
 
 Route::get('/', function () {
