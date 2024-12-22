@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class Wallet extends Model
 {
-    const NGN_TO_USD_RATE = 1300.00;  // 1 USD = 1300 NGN
-    const NGN_TO_GBP_RATE = 1650.00;  // 1 GBP = 1650 NGN
-
-    protected $fillable = ['organization_id', 'currency', 'balance'];
+    protected $fillable = ['organization_id', 'currency'];
 
     public function organization()
     {
@@ -21,36 +20,89 @@ class Wallet extends Model
         return $this->hasMany(WalletTransaction::class);
     }
 
-    public function getConversionRate($toCurrency)
+    public static function getRate($currency)
     {
-        if ($this->currency === $toCurrency) {
+        // Cache the rate for 5 minutes to avoid frequent DB hits
+        return Cache::remember("currency_rate_{$currency}", 300, function () use ($currency) {
+            return AdminSetting::where('key', "{$currency}_rate")->value('value') ?? 0;
+        });
+    }
+
+    public function getConversionRate($fromCurrency)
+    {
+        if ($this->currency === $fromCurrency) {
             return 1;
         }
 
-        if ($this->currency === 'NGN' && $toCurrency === 'USD') {
-            return 1 / self::NGN_TO_USD_RATE;
+        // When converting FROM NGN TO other currencies
+        if ($fromCurrency === 'NGN') {
+            if ($this->currency === 'USD') {
+                return 1 / self::getRate('usd');
+            }
+            if ($this->currency === 'GBP') {
+                return 1 / self::getRate('gbp');
+            }
         }
 
-        if ($this->currency === 'NGN' && $toCurrency === 'GBP') {
-            return 1 / self::NGN_TO_GBP_RATE;
+        // When converting TO NGN FROM other currencies
+        if ($this->currency === 'NGN') {
+            if ($fromCurrency === 'USD') {
+                return self::getRate('usd');
+            }
+            if ($fromCurrency === 'GBP') {
+                return self::getRate('gbp');
+            }
         }
 
-        if ($this->currency === 'USD' && $toCurrency === 'NGN') {
-            return self::NGN_TO_USD_RATE;
+        // For USD to GBP and vice versa
+        if ($fromCurrency === 'USD' && $this->currency === 'GBP') {
+            return self::getRate('usd') / self::getRate('gbp');
         }
-
-        if ($this->currency === 'GBP' && $toCurrency === 'NGN') {
-            return self::NGN_TO_GBP_RATE;
-        }
-
-        if ($this->currency === 'USD' && $toCurrency === 'GBP') {
-            return self::NGN_TO_USD_RATE / self::NGN_TO_GBP_RATE;
-        }
-
-        if ($this->currency === 'GBP' && $toCurrency === 'USD') {
-            return self::NGN_TO_GBP_RATE / self::NGN_TO_USD_RATE;
+        if ($fromCurrency === 'GBP' && $this->currency === 'USD') {
+            return self::getRate('gbp') / self::getRate('usd');
         }
 
         throw new \Exception('Invalid currency conversion');
+    }
+
+    // Add this method for better query performance when loading multiple wallets
+    public static function withBalances()
+    {
+        return static::select('wallets.*')
+            ->addSelect(DB::raw('
+                (
+                    COALESCE(
+                        (SELECT SUM(amount) 
+                        FROM wallet_transactions 
+                        WHERE wallet_transactions.wallet_id = wallets.id 
+                        AND type = "credit" 
+                        AND status = "completed"), 
+                        0
+                    ) - 
+                    COALESCE(
+                        (SELECT SUM(amount) 
+                        FROM wallet_transactions 
+                        WHERE wallet_transactions.wallet_id = wallets.id 
+                        AND type = "debit" 
+                        AND status = "completed"), 
+                        0
+                    )
+                ) as calculated_balance
+            '));
+    }
+
+    public function getBalance()
+    {
+        $credits = $this->transactions()
+            ->where('type', 'credit')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $debits = $this->transactions()
+            ->where('type', 'debit')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        return $credits - $debits;
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('organization_id')->constrained()->onDelete('cascade');
             $table->enum('currency', ['NGN', 'USD', 'GBP']);
-            $table->decimal('balance', 20, 2)->default(0);
             $table->timestamps();
 
             // Each organization can only have one wallet per currency
