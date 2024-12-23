@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
 
 class SignupController extends Controller
 {
@@ -65,15 +66,15 @@ class SignupController extends Controller
 
             DB::commit();
 
+            // Send verification email
+            event(new Registered($user));
+
             Auth::login($user);
 
-            return redirect('/dashboard');
+            return redirect()->route('verification.notice');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Log the error for debugging
             Log::error('Registration failed: ' . $e->getMessage());
-
             throw ValidationException::withMessages([
                 'email' => ['Registration failed. Please try again.'],
             ]);
