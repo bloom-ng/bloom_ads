@@ -11,6 +11,8 @@ class SettingsController extends Controller
 {
     public function index()
     {
+        $currentOrganization = Auth::user()->settings->current_organization_id ?? null;
+
         if (Auth::guard('admin')->check()) {
             // For admin users
             $organizations = Organization::with('users')->get();
@@ -19,7 +21,7 @@ class SettingsController extends Controller
             $organizations = auth()->user()->organizations()->with('users')->get();
         }
 
-        return view('dashboard.settings.index', compact('organizations'));
+        return view('dashboard.settings.index', compact('organizations', 'currentOrganization'));
     }
 
     public function setCurrentOrganization(Request $request)

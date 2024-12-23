@@ -2,30 +2,21 @@
 
 namespace App\View\Components;
 
-use Carbon\Carbon;
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class UserLayout extends Component
 {
     public $page;
-    public $my_date;
+    public $currentOrganization;
 
-    /**
-     * Create a new component instance.
-     */
-    public function __construct($page)
+    public function __construct($page, $currentOrganization = null)
     {
         $this->page = $page;
-        $this->my_date = Carbon::now()->format('l, F j, Y');
+        $this->currentOrganization = $currentOrganization;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
-    public function render(): View|Closure|string
+    public function render()
     {
-        return view('components.user-layout', ['my_date' => $this->my_date]);
+        return view('components.user-layout');
     }
 }

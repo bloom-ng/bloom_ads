@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 class WalletController extends Controller
 {
-    public function index()
+     public function index()
     {
         $user = Auth::user();
         $currentOrgId = $user->settings->current_organization_id ?? null;
@@ -24,13 +24,19 @@ class WalletController extends Controller
                 ->with('error', 'Please select a current organization first.');
         }
 
-        $organization = Organization::with(['wallets', 'users' => function ($query) use ($user) {
+        $organization = Organization::with(['users' => function ($query) use ($user) {
             $query->where('users.id', $user->id);
         }])->findOrFail($currentOrgId);
 
+        $wallets = $organization->wallets()->with('transactions')->get();
+        $organization->setRelation('wallets', $wallets);
         $userRole = $organization->users->first()->pivot->role;
 
-        return view('dashboard.wallet.index', compact('organization', 'userRole'));
+        return view('dashboard.wallet.index', [
+            'organization' => $organization,
+            'userRole' => $userRole,
+            'currentOrganization' => $organization
+        ]);
     }
 
     public function create(Request $request)

@@ -102,9 +102,21 @@
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
         <div class="p-6 bg-[#F48857]">
             <a href="/dashboard" class="">
-                {{-- <img src="/images/Sharepadi_White.png" alt="SharePadi_logo"> --}}
                 <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
             </a>
+            @php
+                use Illuminate\Support\Facades\Auth;
+                use App\Models\Organization;
+                
+                $currentOrganizationId = Auth::user()->settings->current_organization_id ?? null;
+                $currentOrganization = $currentOrganizationId ? Organization::find($currentOrganizationId) : null;
+            @endphp
+            
+            @if($currentOrganization)
+                <p class="text-sm text-center mt-2">Current Organization: {{ $currentOrganization->name }}</p>
+            @else
+                <p class="text-sm text-center mt-2">No organization selected</p>
+            @endif
         </div>
         <nav class="text-black text-base font-semibold pt-3">
             <a href="/dashboard"
