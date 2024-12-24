@@ -8,7 +8,7 @@
             <!-- OAuth Buttons -->
             <div class="flex flex-col gap-4 mb-8">
                 <a href="/auth/google?user_type=agency"
-                    class="flex items-center justify-center gap-2 p-2 border rounded-xl bg-white hover:bg-gray-50">
+                    class="flex flex-row space-x-3 text-sm font-semibold text-center items-center justify-center text-white bg-[#181818] rounded-xl px-8 p-2">
                     <img src="/images/google.svg" alt="google logo">
                     <span>Continue with Google</span>
                 </a>
@@ -95,7 +95,7 @@
                 </button>
             </form>
             <p class="font-semibold mt-5">Already Collaborating With Us? <a href="/login"><span
-              class="text-[#000080]">Login</span> </a>
+                        class="text-[#000080]">Login</span> </a>
             </p>
         </div>
     </section>
