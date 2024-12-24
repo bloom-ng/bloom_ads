@@ -1,6 +1,6 @@
 <x-guest-layout>
     <section>
-        <section class="bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] w-full justify-center items-center px-10">
+        <section class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] w-full justify-center items-center px-10">
             <p class="text-xl font-medium md:text-2xl lg:text-3xl text-center pt-14 mb-10">Contact Us</p>
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center pb-10 md:pb-20 lg:pb-32">We’d love to hear
                 from you</h1>
@@ -8,7 +8,7 @@
 
         <section
             class="grid md:grid-cols-3 grid-cols-1 gap-6 md:gap-4 lg:gap-8 mx-8 md:mx-5 lg:mx-52 items-center justify-center text-white mt-10  md:-mt-10 lg:-mt-20 mb-10 md:mb-10 lg:mb-16">
-            <div class="bg-[#181818] p-3 px-6 rounded-xl">
+            <div class="bg-[#000031] p-3 px-6 rounded-xl">
                 <svg width="50" height="50" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink" class="mb-2 mt-3">
                     <rect width="70" height="70" fill="url(#pattern0_626_552)" />
@@ -27,7 +27,7 @@
                 <p class="text-sm font-semibold">+234 703 138 0418</p>
             </div>
 
-            <div class="bg-[#181818] p-8 px-6 rounded-xl">
+            <div class="bg-[#000031] p-8 px-6 rounded-xl">
                 <svg width="50" height="50" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="70" height="70" fill="url(#pattern0_626_553)" />
@@ -45,7 +45,7 @@
                 <p class="text-xs font-semibold">adssupport@bloomdigitmedia.com</p>
             </div>
 
-            <div class="bg-[#181818] p-5 px-6 rounded-xl">
+            <div class="bg-[#000031] p-5 px-6 rounded-xl">
                 <svg width="50" height="50" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="70" height="70" fill="url(#pattern0_626_554)" />
@@ -65,7 +65,7 @@
         </section>
 
         <section
-            class="flex flex-col bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] justify-center items-center lg:px-20 p-10 mx-8 md:mx-5 lg:mx-52 rounded-3xl mb-20">
+            class="flex flex-col bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] justify-center items-center lg:px-20 p-10 mx-8 md:mx-5 lg:mx-52 rounded-3xl mb-20">
             <form class="space-y-6 w-full lg:px-20">
                 <div class="mb-3">
                     <label for="name"></label>
@@ -96,7 +96,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full py-3 bg-[#FF8C00] font-semibold text-black rounded-xl">Submit</button>
+                    class="w-full py-3 bg-[#000080] font-semibold text-white rounded-xl">Submit</button>
             </form>
         </section>
     </section>

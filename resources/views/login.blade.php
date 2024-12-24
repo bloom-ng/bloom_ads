@@ -1,7 +1,7 @@
 <x-guest-layout isAuth="true">
     <section class="flex flex-col w-full items-center bg-[url('/images/lines.png')] bg-cover bg-center mb-10 lg:mb-16">
         <div
-            class="bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] p-14 md:p-16 lg:p-20 lg:w-[40%] rounded-3xl items-center text-center mt-24">
+            class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] p-14 md:p-16 lg:p-20 lg:w-[40%] rounded-3xl items-center text-center mt-24">
             <h1 class="text-5xl font-bold text-black mb-5">Login</h1>
             <p class="text-2xl font-light mb-10">Welcome Back!</p>
 
@@ -64,9 +64,9 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full py-3 bg-[#FF8C00] font-semibold text-black rounded-xl">Login</button>
+                    class="w-full py-3 bg-[#000080] font-semibold text-white rounded-xl">Login</button>
 
-                <p class="font-semibold">Not Registered? <a href="/signup"><span class="text-[#FF8C00]">Sign Up
+                <p class="font-semibold">Not Registered? <a href="/signup"><span class="text-[#000080]">Sign Up
                             Now</span></a></p>
             </form>
         </div>

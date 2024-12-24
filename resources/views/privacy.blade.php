@@ -1,6 +1,6 @@
 <x-guest-layout>
     <section class="flex flex-col bg-white pl-7 px-3 py-5 lg:py-10 lg:px-16">
-        <h1 class="text-[#FF8100] font-semibold text-4xl lg:text-5xl lg:mb-14 mb-8">Privacy Policy</h1>
+        <h1 class="text-[#000080] font-semibold text-4xl lg:text-5xl lg:mb-14 mb-8">Privacy Policy</h1>
 
         <h2 class="font-semibold text-2xl lg:text-3xl mb-8">BLOOM ADs CLARIFICATION STATEMENT REGARDING THE PRIVACY
             POLICY AND PROCESSING OF THE PERSONAL DATA</h2>
