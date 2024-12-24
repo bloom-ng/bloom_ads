@@ -1,7 +1,7 @@
 <x-guest-layout :isAuth="true">
     <section class="flex flex-col w-full items-center bg-[url('/images/lines.png')] bg-cover bg-center mb-10 lg:mb-16">
         <div
-            class="bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] p-10 md:p-16 lg:p-20 lg:w-[40%] rounded-3xl items-center text-center mt-10 mx-5 md:mx-0 md:mt-16 lg:mt-24">
+            class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] p-10 md:p-16 lg:p-20 lg:w-[40%] rounded-3xl items-center text-center mt-10 mx-5 md:mx-0 md:mt-16 lg:mt-24">
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-5">Bloom Ads for <br>Direct
                 Advertisers</h1>
 
@@ -21,7 +21,7 @@
 
             <div class="relative flex items-center justify-center mb-8">
                 <hr class="w-full border-gray-300">
-                <span class="absolute px-3 bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780]">or</span>
+                <span class="absolute px-3 bg-gradient-to-r from-[#E6E6F366] to-[#6666B366]">or</span>
             </div>
 
             <form action="{{ route('signup.register') }}" method="POST" class="space-y-6">
@@ -90,13 +90,13 @@
                         placeholder="Password" required>
                 </div>
 
-                <button type="submit" class="w-full bg-[#FF8C00] text-white px-5 py-3 rounded-xl hover:bg-[#e67e00]">
+                <button type="submit" class="w-full bg-[#000080] text-white px-5 py-3 rounded-xl hover:bg-[#000050]">
                     Sign Up
                 </button>
             </form>
 
             <p class="mt-4">Already have an account? <a href="/login"
-                    class="text-[#FF8C00] hover:underline">Login</a></p>
+                    class="text-[#000080] hover:underline">Login</a></p>
         </div>
     </section>
 </x-guest-layout>

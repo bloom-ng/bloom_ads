@@ -1,9 +1,11 @@
 <x-guest-layout>
     <section class="flex flex-col bg-white pl-7 px-3 py-5 lg:py-10 lg:px-16">
-        <h1 class="text-[#FF8100] font-semibold text-3xl md:text-4xl lg:text-5xl lg:mb-5 mb-3">Purchase Policy</h1>
+        <h1 class="text-[#000080] font-semibold text-3xl md:text-4xl lg:text-5xl lg:mb-5 mb-3">Purchase Policy</h1>
         <h2 class="text-black font-bold text-xl md:text-2xl lg:text-3xl mb-7">BLOOM DIGITAL MEDIA SERVICE AGREEMENT -
-            Marketing Platform</h2>
-        <p>
+            Marketing Platform
+        </h2>
+
+        <p class="text-black">
             1- PARTIES
             <br>
             <br>
