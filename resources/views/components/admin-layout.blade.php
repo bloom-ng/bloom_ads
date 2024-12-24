@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-bind:class="{ 'dark': darkMode }">
+<html lang="en" 
+    x-data 
+    :class="{ 'dark': $store.darkMode.on }">
 {{-- {{$page == "newsletters" ? "active-nav-link" : ""}} --}}
 
 <head>
@@ -24,7 +26,7 @@
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
 
-    <title>Billiing - Admin Dashboard</title>
+    <title>Billing - Admin Dashboard</title>
 
 
     <!-- Tailwind -->
@@ -48,18 +50,29 @@
     <!-- Add Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Add dark mode initialization -->
+    <!-- Initialize Alpine.js store -->
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('darkMode', () => ({
-                dark: localStorage.getItem('darkMode') === 'true',
-                toggle() {
-                    this.dark = !this.dark;
-                    localStorage.setItem('darkMode', this.dark);
+        // Initialize dark mode before Alpine loads
+        if (typeof window.Alpine === 'undefined') {
+            window.Alpine = {
+                store(name, value) {
+                    if (!window._alpine_stores) window._alpine_stores = {};
+                    window._alpine_stores[name] = value;
                 }
-            }))
-        })
+            };
+        }
+
+        // Set initial dark mode value
+        window.Alpine.store('darkMode', {
+            on: localStorage.getItem('darkMode') === 'true',
+            toggle() {
+                this.on = !this.on;
+                localStorage.setItem('darkMode', this.on);
+            }
+        });
     </script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
@@ -273,18 +286,22 @@
         <!-- Desktop Header -->
         <header class="w-full items-center bg-[#F0F0F0] dark:bg-gray-800 py-4 px-6 hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
-                <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" 
+                <button @click="$store.darkMode.toggle()" 
                         class="mr-4 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-                        </path>
-                    </svg>
-                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                        </path>
-                    </svg>
+                    <template x-if="!$store.darkMode.on">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </template>
+                    <template x-if="$store.darkMode.on">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                    </template>
                 </button>
 
                 <button @click="isOpen = !isOpen"

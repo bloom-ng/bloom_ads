@@ -74,6 +74,14 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
     Route::get('/meta/accounts', [AdminMetaAdAccountsController::class, 'index'])
         ->name('meta.accounts.index');
+
+    // Add these routes in your admin group
+    Route::get('/meta-accounts/list', [AdminMetaAdAccountsController::class, 'list'])
+        ->name('admin.meta-accounts.list');
+    Route::post('/adaccounts/link-meta', [AdminAdAccountsController::class, 'linkMeta'])
+        ->name('admin.adaccounts.link-meta');
+    Route::post('/adaccounts/unlink-meta', [AdminAdAccountsController::class, 'unlinkMeta'])
+        ->name('admin.adaccounts.unlink-meta');
 });
 
 Route::get('/', function () {

@@ -73,4 +73,30 @@ class AdminMetaAdAccountsController extends Controller
             'business_name' => $account['business']['name'] ?? null,
         ];
     }
+
+    public function list(Request $request)
+    {
+        try {
+            $tab = $request->get('tab', 'owned');
+            $limit = min($request->get('limit', 30), 100); // Cap at 100
+            $before = $request->get('before');
+            $after = $request->get('after');
+            
+            $result = $tab === 'owned' 
+                ? $this->metaAdAccount->getOwnedAdAccounts($before, $after, $limit)
+                : $this->metaAdAccount->getClientAdAccounts($before, $after, $limit);
+
+            return response()->json([
+                $tab => collect($result->items)->map(
+                    fn ($account) => $this->transformAdAccount($account)
+                ),
+                'nextCursor' => $result->nextCursor,
+                'previousCursor' => $result->previousCursor,
+                'hasNext' => $result->hasMore(),
+                'hasPrev' => !empty($result->previousCursor)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch Meta accounts'], 500);
+        }
+    }
 } 
