@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Wallet;
 
 class FlutterwaveService
 {
@@ -26,6 +27,12 @@ class FlutterwaveService
     public function initializePayment(array $data)
     {
         try {
+            // Get current rate if needed for conversion
+            if ($data['wallet_currency'] !== 'NGN') {
+                $rate = Wallet::getRate(strtolower($data['wallet_currency']));
+                $data['converted_amount'] = $data['amount'] * (1 / $rate);
+            }
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
                 'Content-Type' => 'application/json',
@@ -42,6 +49,8 @@ class FlutterwaveService
                 'meta' => [
                     'organization_id' => $data['organization_id'],
                     'wallet_id' => $data['wallet_id'] ?? null,
+                    'converted_amount' => $data['converted_amount'],
+                    'wallet_currency' => $data['wallet_currency'],
                 ],
             ]);
 

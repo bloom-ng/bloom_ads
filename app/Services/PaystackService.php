@@ -36,6 +36,8 @@ class PaystackService
                 'metadata' => [
                     'organization_id' => $data['metadata']['organization_id'],
                     'wallet_id' => $data['metadata']['wallet_id'] ?? null,
+                    'converted_amount' => $data['metadata']['converted_amount'],
+                    'wallet_currency' => $data['metadata']['wallet_currency'],
                     'custom_fields' => [
                         [
                             'display_name' => 'Customer Name',

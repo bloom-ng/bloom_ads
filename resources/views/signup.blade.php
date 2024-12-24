@@ -1,7 +1,7 @@
 <x-guest-layout :isAuth="true">
     <section class="flex flex-col w-full items-center bg-[url('/images/lines.png')] bg-cover bg-center lg:mb-16">
         <div
-            class="bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] mt-10 mb-10 mx-5 p-14 md:p-16 lg:p-20 rounded-3xl items-center text-center ">
+            class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] mt-10 mb-10 mx-5 p-14 md:p-16 lg:p-20 rounded-3xl items-center text-center ">
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-14">How do you plan <br>to collaborate
                 with us?</h1>
 
@@ -22,7 +22,7 @@
                 </a>
 
                 <p class="font-semibold mt-5">Already Collaborating With Us? <a href="/login"><span
-                            class="text-[#FF8C00]">Login</span> </a></p>
+                            class="text-[#000080]">Login</span> </a></p>
 
             </div>
         </div>

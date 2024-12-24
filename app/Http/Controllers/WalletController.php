@@ -28,7 +28,11 @@ class WalletController extends Controller
             $query->where('users.id', $user->id);
         }])->findOrFail($currentOrgId);
 
-        $wallets = $organization->wallets()->with('transactions')->get();
+        // Load wallets with calculated balances
+        $wallets = Wallet::withBalances()
+            ->where('organization_id', $organization->id)
+            ->get();
+
         $organization->setRelation('wallets', $wallets);
         $userRole = $organization->users->first()->pivot->role;
 
@@ -72,10 +76,15 @@ class WalletController extends Controller
         $validated = $request->validate([
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
-            'currency' => 'required|in:NGN'
+            'currency' => 'required|in:NGN',
+            'wallet_currency' => 'required|in:NGN,USD,GBP'
         ]);
 
         $wallet = Wallet::findOrFail($validated['wallet_id']);
+
+        // Calculate converted amount if wallet currency is different
+        $conversionRate = $wallet->getConversionRate($validated['currency']);
+        $convertedAmount = $validated['amount'] * $conversionRate;
 
         // Initialize Flutterwave payment
         $flutterwave = new FlutterwaveService();
@@ -90,6 +99,8 @@ class WalletController extends Controller
             'customer_name' => $user->name,
             'organization_id' => $wallet->organization_id,
             'wallet_id' => $wallet->id,
+            'converted_amount' => $convertedAmount,
+            'wallet_currency' => $validated['wallet_currency']
         ]);
 
         if (isset($response['data']['link'])) {
@@ -104,10 +115,15 @@ class WalletController extends Controller
         $validated = $request->validate([
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
-            'currency' => 'required|in:NGN'
+            'currency' => 'required|in:NGN',
+            'wallet_currency' => 'required|in:NGN,USD,GBP'
         ]);
 
         $wallet = Wallet::findOrFail($validated['wallet_id']);
+
+        // Calculate converted amount if wallet currency is different
+        $conversionRate = $wallet->getConversionRate($validated['currency']);
+        $convertedAmount = $validated['amount'] * $conversionRate;
 
         // Initialize Paystack payment
         $paystack = new PaystackService();
@@ -123,6 +139,8 @@ class WalletController extends Controller
             'metadata' => [
                 'organization_id' => $wallet->organization_id,
                 'wallet_id' => $wallet->id,
+                'converted_amount' => $convertedAmount,
+                'wallet_currency' => $validated['wallet_currency']
             ]
         ]);
 
@@ -187,20 +205,24 @@ class WalletController extends Controller
                 $walletId = $data['meta']['wallet_id'] ?? null;
                 $wallet = Wallet::findOrFail($walletId);
 
+                // Get the conversion rate and calculate converted amount
+                $rate = $wallet->getConversionRate('NGN');
+                $convertedAmount = $data['amount'] * $rate;
+
                 // Create transaction record with rate and source currency
                 $transaction = $wallet->transactions()->create([
-                    'amount' => $data['amount'],
-                    'currency' => $data['currency'],
+                    'amount' => $convertedAmount,
+                    'currency' => $wallet->currency,
                     'type' => 'credit',
                     'description' => 'Wallet funding via Flutterwave',
                     'reference' => $data['tx_ref'],
                     'status' => 'completed',
-                    'rate' => 1, // Direct funding has no conversion
-                    'source_currency' => $data['currency']
+                    'rate' => $rate,
+                    'source_currency' => 'NGN'
                 ]);
 
-                // Update wallet balance
-                $wallet->increment('balance', $data['amount']);
+                // Update wallet balance with converted amount
+                // $wallet->increment('balance', $convertedAmount);
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
@@ -222,7 +244,7 @@ class WalletController extends Controller
 
             if (!$reference) {
                 return redirect()->route('wallet.index')
-                    ->with('error', 'No reference provided.');
+                    ->with('error', 'Payment was not successful.');
             }
 
             $paystack = new PaystackService();
@@ -231,23 +253,31 @@ class WalletController extends Controller
             if ($response['status'] && $response['data']['status'] === 'success') {
                 $data = $response['data'];
 
-                // Find the wallet
-                $walletId = $data['metadata']['wallet_id'] ?? null;
-
+                // Get metadata from the transaction
+                $metadata = $data['metadata'];
+                $walletId = $metadata['wallet_id'] ?? null;
                 $wallet = Wallet::findOrFail($walletId);
+
+                // Calculate the converted amount
+                // Amount from Paystack is in kobo, so divide by 100
+                $ngnAmount = $data['amount'] / 100;
+                $rate = $wallet->getConversionRate('NGN');
+                $convertedAmount = $ngnAmount * $rate;
 
                 // Create transaction record
                 $transaction = $wallet->transactions()->create([
-                    'amount' => $data['amount'] / 100, // Convert from kobo to naira
-                    'currency' => $data['currency'],
+                    'amount' => $convertedAmount,
+                    'currency' => $wallet->currency,
                     'type' => 'credit',
                     'description' => 'Wallet funding via Paystack',
                     'reference' => $data['reference'],
-                    'status' => 'completed'
+                    'status' => 'completed',
+                    'rate' => $rate,
+                    'source_currency' => 'NGN'
                 ]);
 
                 // Update wallet balance
-                $wallet->increment('balance', $data['amount'] / 100);
+                // $wallet->increment('balance', $convertedAmount);
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
@@ -256,7 +286,7 @@ class WalletController extends Controller
             return redirect()->route('wallet.index')
                 ->with('error', 'Payment verification failed.');
         } catch (\Exception $e) {
-            \Log::error('Paystack callback error: ' . $e->getMessage());
+            Log::error('Paystack callback error: ' . $e->getMessage());
             return redirect()->route('wallet.index')
                 ->with('error', 'An error occurred while processing your payment.');
         }
@@ -292,8 +322,8 @@ class WalletController extends Controller
                 return back()->with('error', 'Unauthorized access to wallet.');
             }
 
-            // Check sufficient balance
-            if ($sourceWallet->balance < $validated['amount']) {
+            // Check sufficient balance using the new getBalance method
+            if ($sourceWallet->getBalance() < $validated['amount']) {
                 return back()->with('error', 'Insufficient balance.');
             }
 
@@ -304,11 +334,29 @@ class WalletController extends Controller
                     ['balance' => 0]
                 );
 
-            // Calculate conversion
-            $conversionRate = $sourceWallet->getConversionRate($validated['destination_currency']);
-            $convertedAmount = $validated['amount'] * $conversionRate;
+            // Calculate conversion rate and converted amount
+            $rate = 1;
+            if ($sourceWallet->currency === 'NGN') {
+                if ($destinationWallet->currency === 'USD') {
+                    $rate = 1 / Wallet::getRate('usd');
+                } elseif ($destinationWallet->currency === 'GBP') {
+                    $rate = 1 / Wallet::getRate('gbp');
+                }
+            } elseif ($destinationWallet->currency === 'NGN') {
+                if ($sourceWallet->currency === 'USD') {
+                    $rate = Wallet::getRate('usd');
+                } elseif ($sourceWallet->currency === 'GBP') {
+                    $rate = Wallet::getRate('gbp');
+                }
+            } elseif ($sourceWallet->currency === 'USD' && $destinationWallet->currency === 'GBP') {
+                $rate = Wallet::getRate('usd') / Wallet::getRate('gbp');
+            } elseif ($sourceWallet->currency === 'GBP' && $destinationWallet->currency === 'USD') {
+                $rate = Wallet::getRate('gbp') / Wallet::getRate('usd');
+            }
 
-            DB::transaction(function () use ($sourceWallet, $destinationWallet, $validated, $convertedAmount, $conversionRate) {
+            $convertedAmount = $validated['amount'] * $rate;
+
+            DB::transaction(function () use ($sourceWallet, $destinationWallet, $validated, $convertedAmount, $rate) {
                 // Deduct from source wallet
                 $sourceWallet->transactions()->create([
                     'amount' => $validated['amount'],
@@ -317,10 +365,10 @@ class WalletController extends Controller
                     'description' => "Transfer to {$destinationWallet->currency} wallet",
                     'reference' => 'TRF-' . uniqid(),
                     'status' => 'completed',
-                    'rate' => $conversionRate,
+                    'rate' => $rate,
                     'source_currency' => $sourceWallet->currency
                 ]);
-                $sourceWallet->decrement('balance', $validated['amount']);
+                // $sourceWallet->decrement('balance', $validated['amount']);
 
                 // Add to destination wallet
                 $destinationWallet->transactions()->create([
@@ -330,10 +378,10 @@ class WalletController extends Controller
                     'description' => "Transfer from {$sourceWallet->currency} wallet",
                     'reference' => 'TRF-' . uniqid(),
                     'status' => 'completed',
-                    'rate' => 1 / $conversionRate, // Store inverse rate for the receiving transaction
+                    'rate' => 1 / $rate, // Store inverse rate for the receiving transaction
                     'source_currency' => $sourceWallet->currency
                 ]);
-                $destinationWallet->increment('balance', $convertedAmount);
+                // $destinationWallet->increment('balance', $convertedAmount);
             });
 
             return back()->with('success', 'Transfer completed successfully.');

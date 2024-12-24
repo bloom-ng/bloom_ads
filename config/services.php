@@ -69,4 +69,9 @@ return [
         'secret_key' => env('PAYSTACK_SECRET_KEY'),
     ],
 
+    'meta' => [
+        'business_id' => env('META_BUSINESS_ID'),
+        'access_token' => env('META_ACCESS_TOKEN'),
+    ],
+
 ];

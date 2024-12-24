@@ -45,22 +45,21 @@
                                 <div class="bg-white border rounded-lg shadow-sm p-6">
                                     <div class="flex justify-between items-center">
                                         <h3 class="text-lg font-semibold">{{ $wallet->currency }} Wallet</h3>
-                                        <span class="text-2xl font-bold">{{ number_format($wallet->balance, 2) }}</span>
+                                        <span
+                                            class="text-2xl font-bold">{{ number_format($wallet->calculated_balance, 2) }}</span>
                                     </div>
 
                                     <div class="mt-4 space-y-2">
-                                        @if ($wallet->currency === 'NGN')
-                                            <!-- Fund Button - Only for NGN wallet -->
-                                            <button
-                                                onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
-                                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                                Fund Wallet
-                                            </button>
-                                        @endif
+                                        <!-- Fund Button - For all wallets -->
+                                        <button
+                                            onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
+                                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Fund Wallet
+                                        </button>
 
                                         <!-- Transfer Button -->
                                         <button
-                                            onclick="openTransferModal('{{ $wallet->id }}', '{{ $wallet->currency }}', {{ $wallet->balance }})"
+                                            onclick="openTransferModal('{{ $wallet->id }}', '{{ $wallet->currency }}', {{ $wallet->calculated_balance }})"
                                             class="w-full border border-[#F48857] text-[#F48857] hover:bg-[#F48857]/10 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Transfer
                                         </button>
@@ -82,13 +81,25 @@
             <h2 class="text-2xl font-bold mb-4">Fund Wallet</h2>
             <p class="mb-4">Select your preferred payment method:</p>
 
-            <div id="ngnPaymentOptions" class="space-y-4 mb-6">
+            <div class="space-y-4 mb-6">
                 <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" class="w-full">
                     @csrf
                     <input type="hidden" name="wallet_id" id="modalWalletId">
-                    <input type="hidden" name="currency" id="modalCurrency">
-                    <input type="number" name="amount" placeholder="Enter amount" required
-                        class="w-full mb-4 p-2 border rounded">
+                    <input type="hidden" name="currency" value="NGN">
+                    <input type="hidden" name="wallet_currency" id="modalWalletCurrency">
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
+                        <input type="number" name="amount" id="fundAmount" placeholder="Enter amount in NGN" required
+                            class="w-full p-2 border rounded" oninput="updateFundingPreview()">
+
+                        <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
+                            style="display: none;">
+                            <p id="fundingRateDisplay" class="mb-2"></p>
+                            <p id="fundingConvertedAmountDisplay"></p>
+                        </div>
+                    </div>
+
                     <button type="submit"
                         class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
                         Pay with Flutterwave
@@ -98,26 +109,16 @@
                 <form action="{{ route('wallet.fund.paystack') }}" method="POST" class="w-full">
                     @csrf
                     <input type="hidden" name="wallet_id" id="modalWalletIdPaystack">
-                    <input type="hidden" name="currency" id="modalCurrencyPaystack">
-                    <input type="number" name="amount" placeholder="Enter amount" required
-                        class="w-full mb-4 p-2 border rounded">
+                    <input type="hidden" name="currency" value="NGN">
+                    <input type="hidden" name="wallet_currency" id="modalWalletCurrencyPaystack">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
+                        <input type="number" name="amount" id="fundAmountPaystack" placeholder="Enter amount in NGN"
+                            required class="w-full p-2 border rounded" oninput="updateFundingPreview()">
+                    </div>
                     <button type="submit"
                         class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
                         Pay with Paystack
-                    </button>
-                </form>
-            </div>
-
-            <div id="otherPaymentOptions" class="space-y-4 mb-6">
-                <form action="{{ route('wallet.fund.paypal') }}" method="POST" class="w-full">
-                    @csrf
-                    <input type="hidden" name="wallet_id" id="modalWalletIdPaypal">
-                    <input type="hidden" name="currency" id="modalCurrencyPaypal">
-                    <input type="number" name="amount" placeholder="Enter amount" required
-                        class="w-full mb-4 p-2 border rounded">
-                    <button type="submit"
-                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                        Pay with PayPal
                     </button>
                 </form>
             </div>
@@ -175,22 +176,20 @@
 
     <script>
         function openFundModal(walletId, currency) {
+            // Set values for both payment methods
             document.getElementById('modalWalletId').value = walletId;
-            document.getElementById('modalWalletIdPaypal').value = walletId;
             document.getElementById('modalWalletIdPaystack').value = walletId;
-            document.getElementById('modalCurrency').value = currency;
-            document.getElementById('modalCurrencyPaypal').value = currency;
-            document.getElementById('modalCurrencyPaystack').value = currency;
+            document.getElementById('modalWalletCurrency').value = currency;
+            document.getElementById('modalWalletCurrencyPaystack').value = currency;
 
-            // Show/hide payment options based on currency
-            if (currency === 'NGN') {
-                document.getElementById('ngnPaymentOptions').style.display = 'block';
-                document.getElementById('otherPaymentOptions').style.display = 'none';
-            } else {
-                document.getElementById('ngnPaymentOptions').style.display = 'none';
-                document.getElementById('otherPaymentOptions').style.display = 'block';
+            // Reset amount inputs and preview
+            document.getElementById('fundAmount').value = '';
+            if (document.getElementById('fundAmountPaystack')) {
+                document.getElementById('fundAmountPaystack').value = '';
             }
+            document.getElementById('fundingConversionPreview').style.display = 'none';
 
+            // Show the modal
             document.getElementById('fundWalletModal').style.display = 'flex';
         }
 
@@ -199,17 +198,30 @@
         }
 
         function getConversionRate(fromCurrency, toCurrency) {
-            const NGN_TO_USD = {{ \App\Models\Wallet::NGN_TO_USD_RATE }};
-            const NGN_TO_GBP = {{ \App\Models\Wallet::NGN_TO_GBP_RATE }};
+            const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
+            const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
 
             if (fromCurrency === toCurrency) return 1;
 
-            if (fromCurrency === 'NGN' && toCurrency === 'USD') return 1 / NGN_TO_USD;
-            if (fromCurrency === 'NGN' && toCurrency === 'GBP') return 1 / NGN_TO_GBP;
-            if (fromCurrency === 'USD' && toCurrency === 'NGN') return NGN_TO_USD;
-            if (fromCurrency === 'GBP' && toCurrency === 'NGN') return NGN_TO_GBP;
-            if (fromCurrency === 'USD' && toCurrency === 'GBP') return NGN_TO_USD / NGN_TO_GBP;
-            if (fromCurrency === 'GBP' && toCurrency === 'USD') return NGN_TO_GBP / NGN_TO_USD;
+            // When converting FROM NGN TO other currencies
+            if (fromCurrency === 'NGN') {
+                if (toCurrency === 'USD') return 1 / USD_RATE;
+                if (toCurrency === 'GBP') return 1 / GBP_RATE;
+            }
+
+            // When converting TO NGN FROM other currencies
+            if (toCurrency === 'NGN') {
+                if (fromCurrency === 'USD') return USD_RATE;
+                if (fromCurrency === 'GBP') return GBP_RATE;
+            }
+
+            // For USD to GBP and vice versa
+            if (fromCurrency === 'USD' && toCurrency === 'GBP') {
+                return USD_RATE / GBP_RATE;
+            }
+            if (fromCurrency === 'GBP' && toCurrency === 'USD') {
+                return GBP_RATE / USD_RATE;
+            }
 
             return 0;
         }
@@ -233,15 +245,15 @@
             const rateDisplay = document.getElementById('rateDisplay');
             const convertedAmountDisplay = document.getElementById('convertedAmountDisplay');
 
-            if (sourceCurrency !== destCurrency) {
+            if (sourceCurrency !== destCurrency && amount > 0) {
                 rateDisplay.textContent = `Exchange Rate: 1 ${sourceCurrency} = ${rate.toFixed(4)} ${destCurrency}`;
                 convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, destCurrency)}`;
+                document.getElementById('conversionPreview').style.display = 'block';
             } else {
                 rateDisplay.textContent = '';
-                convertedAmountDisplay.textContent = `Amount: ${formatCurrency(amount, sourceCurrency)}`;
+                convertedAmountDisplay.textContent = amount > 0 ? `Amount: ${formatCurrency(amount, sourceCurrency)}` : '';
+                document.getElementById('conversionPreview').style.display = amount > 0 ? 'block' : 'none';
             }
-
-            document.getElementById('conversionPreview').style.display = amount > 0 ? 'block' : 'none';
         }
 
         function openTransferModal(walletId, currency, balance) {
@@ -264,6 +276,28 @@
 
         function closeTransferModal() {
             document.getElementById('transferModal').style.display = 'none';
+        }
+
+        function updateFundingPreview() {
+            const amount = parseFloat(document.getElementById('fundAmount').value) ||
+                parseFloat(document.getElementById('fundAmountPaystack')?.value) || 0;
+            const walletCurrency = document.getElementById('modalWalletCurrency').value;
+
+            if (walletCurrency === 'NGN') {
+                document.getElementById('fundingConversionPreview').style.display = 'none';
+                return;
+            }
+
+            const rate = getConversionRate('NGN', walletCurrency);
+            const convertedAmount = amount * rate;
+
+            const rateDisplay = document.getElementById('fundingRateDisplay');
+            const convertedAmountDisplay = document.getElementById('fundingConvertedAmountDisplay');
+
+            rateDisplay.textContent = `Exchange Rate: 1 NGN = ${rate.toFixed(4)} ${walletCurrency}`;
+            convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, walletCurrency)}`;
+
+            document.getElementById('fundingConversionPreview').style.display = amount > 0 ? 'block' : 'none';
         }
     </script>
 </x-user-layout>

@@ -1,4 +1,9 @@
+
+
 <x-admin-layout page="adaccounts">
+    
+
+
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             {{-- Flash Messages --}}
@@ -84,6 +89,17 @@
                                                class="text-blue-500 hover:text-blue-700">
                                                 Edit
                                             </a>
+                                            @if(!$adAccount->provider_id)
+                                                <button onclick="showLinkModal('{{ $adAccount->id }}')"
+                                                        class="text-green-500 hover:text-green-700">
+                                                    Link Meta
+                                                </button>
+                                            @else
+                                                <button onclick="unlinkAccount('{{ $adAccount->id }}')"
+                                                        class="text-yellow-500 hover:text-yellow-700">
+                                                    Unlink Meta
+                                                </button>
+                                            @endif
                                             <form action="{{ route('admin.adaccounts.destroy', $adAccount->id) }}" 
                                                   method="POST" 
                                                   class="inline"
@@ -108,4 +124,266 @@
             </div>
         </main>
     </div>
+    <!-- Meta Account Linking Modal -->
+    <div id="linkMetaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <input type="hidden" id="selectedAdAccountId">
+        <div class="relative top-20 mx-auto p-5 border w-[90%] max-w-6xl shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Link Meta Ad Account</h3>
+                <button onclick="hideModal()" class="text-gray-600 hover:text-gray-800">&times;</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mb-4 border-b border-gray-200">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg tab-button active" 
+                                id="owned-tab"
+                                data-tab="owned"
+                                role="tab">
+                            Owned Accounts
+                        </button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg tab-button"
+                                id="client-tab"
+                                data-tab="client"
+                                role="tab">
+                            Client Accounts
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="loader" class="hidden">
+                <div class="flex justify-center items-center p-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                </div>
+            </div>
+
+            <div id="metaAccountsList" class="max-h-[600px] overflow-y-auto">
+                <div class="text-center p-4">Loading...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-4 flex justify-between items-center border-t pt-4">
+                <button id="prevButton" 
+                        onclick="changePage('prev')"
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 hidden">
+                    Previous
+                </button>
+                <button id="nextButton" 
+                        onclick="changePage('next')"
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 hidden">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Global variables for pagination
+        let currentTab = 'owned';
+        let currentCursor = null;
+        let hasNextPage = false;
+        let hasPrevPage = false;
+        let cursors = {
+            owned: { next: null, prev: null },
+            client: { next: null, prev: null }
+        };
+
+        // Define functions in global scope
+        function showLinkModal(adAccountId) {
+            const modal = document.getElementById('linkMetaModal');
+            document.getElementById('selectedAdAccountId').value = adAccountId;
+            modal.classList.remove('hidden');
+            currentTab = 'owned';
+            currentCursor = null;
+            updateActiveTab('owned');
+            fetchMetaAccounts();
+        }
+        
+        function hideModal() {
+            const modal = document.getElementById('linkMetaModal');
+            const accountsList = document.getElementById('metaAccountsList');
+            modal.classList.add('hidden');
+            accountsList.innerHTML = '<div class="text-center p-4">Loading...</div>';
+            cursors = {
+                owned: { next: null, prev: null },
+                client: { next: null, prev: null }
+            };
+        }
+
+        function updateActiveTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(button => {
+                if (button.dataset.tab === tab) {
+                    button.classList.add('active', 'border-blue-600', 'text-blue-600');
+                    button.classList.remove('border-transparent', 'text-gray-500');
+                } else {
+                    button.classList.remove('active', 'border-blue-600', 'text-blue-600');
+                    button.classList.add('border-transparent', 'text-gray-500');
+                }
+            });
+        }
+
+        async function changePage(direction) {
+            if (direction === 'next') {
+                currentCursor = cursors[currentTab].next;
+            } else {
+                currentCursor = cursors[currentTab].prev;
+            }
+            await fetchMetaAccounts();
+        }
+
+        // Update the fetchMetaAccounts function
+        async function fetchMetaAccounts() {
+            const accountsList = document.getElementById('metaAccountsList');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            const loader = document.getElementById('loader');
+            
+            try {
+                // Show loader
+                accountsList.classList.add('hidden');
+                loader.classList.remove('hidden');
+                
+                const params = new URLSearchParams({
+                    tab: currentTab,
+                    limit: 30
+                });
+                
+                if (currentCursor) {
+                    if (cursors[currentTab].next === currentCursor) {
+                        params.append('after', currentCursor);
+                    } else {
+                        params.append('before', currentCursor);
+                    }
+                }
+
+                const response = await fetch(`/admin/meta-accounts/list?${params.toString()}`);
+                const data = await response.json();
+                
+                // Update cursors
+                cursors[currentTab].next = data.nextCursor;
+                cursors[currentTab].prev = data.previousCursor;
+                
+                // Update pagination buttons visibility
+                prevButton.classList.toggle('hidden', !data.hasPrev);
+                nextButton.classList.toggle('hidden', !data.hasNext);
+                
+                // Disable/enable buttons based on data availability
+                prevButton.disabled = !data.hasPrev;
+                nextButton.disabled = !data.hasNext;
+                
+                let html = '<div class="space-y-4">';
+                
+                if (data[currentTab] && data[currentTab].length > 0) {
+                    data[currentTab].forEach(account => {
+                        html += `
+                            <div class="p-3 border rounded mb-2 flex justify-between items-center">
+                                <div>
+                                    <div class="font-semibold">${account.name}</div>
+                                    <div class="text-sm text-gray-600">ID: ${account.id}</div>
+                                    <div class="text-xs text-gray-500">
+                                        Status: ${account.status} | Currency: ${account.currency}
+                                    </div>
+                                </div>
+                                <button onclick="linkAccount('${account.id}')" 
+                                        class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
+                                    Link
+                                </button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<div class="text-center text-gray-500 p-4">No accounts found</div>';
+                }
+                
+                html += '</div>';
+                
+                // Hide loader and show content
+                loader.classList.add('hidden');
+                accountsList.classList.remove('hidden');
+                accountsList.innerHTML = html;
+                
+                // Scroll to top of accounts list if this was a pagination change
+                if (currentCursor) {
+                    accountsList.scrollTop = 0;
+                }
+            } catch (error) {
+                // Hide loader and show error
+                loader.classList.add('hidden');
+                accountsList.classList.remove('hidden');
+                accountsList.innerHTML = '<div class="text-red-500 p-4">Error loading accounts</div>';
+            }
+        }
+
+        // Add event listeners when the document is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for tabs
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', async () => {
+                    // Update active tab immediately for better UX
+                    updateActiveTab(button.dataset.tab);
+                    currentTab = button.dataset.tab;
+                    currentCursor = null;
+                    await fetchMetaAccounts();
+                });
+            });
+        });
+
+        async function linkAccount(metaAccountId) {
+            const adAccountId = document.getElementById('selectedAdAccountId').value;
+            
+            try {
+                const response = await fetch('/admin/adaccounts/link-meta', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        ad_account_id: adAccountId,
+                        meta_account_id: metaAccountId
+                    })
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to link account');
+                }
+            } catch (error) {
+                alert('Error linking account. Please try again.');
+            }
+        }
+
+        async function unlinkAccount(adAccountId) {
+            if (!confirm('Are you sure you want to unlink this Meta account?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/admin/adaccounts/unlink-meta', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        ad_account_id: adAccountId
+                    })
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to unlink account');
+                }
+            } catch (error) {
+                alert('Error unlinking account. Please try again.');
+            }
+        }
+    </script>
 </x-admin-layout> 

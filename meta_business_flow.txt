@@ -8,3 +8,8 @@ Generated Token: Added to Google Keep
 
 
 
+RELEVANT DOCS: 
+
+https://developers.facebook.com/docs/marketing-api/business-asset-management/guides/ad-accounts
+
+https://developers.facebook.com/docs/marketing-api/reference/ad-account#overview

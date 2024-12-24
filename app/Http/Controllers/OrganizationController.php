@@ -57,12 +57,6 @@ class OrganizationController extends Controller
             'role' => 'required|in:admin,finance,advertiser',
         ]);
 
-        // Add logging
-        Log::info('Sending organization invitation', [
-            'email' => $validated['email'],
-            'organization' => $organization->name
-        ]);
-
         // Check if user is already in organization
         $existingUser = User::where('email', $validated['email'])->first();
         if ($existingUser) {
@@ -79,18 +73,9 @@ class OrganizationController extends Controller
             'expires_at' => now()->addDays(7),
         ]);
 
-        try {
-            // Send invitation email with error handling
-            Notification::route('mail', $validated['email'])
-                ->notify(new OrganizationInvitation($organization, $invite));
 
-            Log::info('Organization invitation sent successfully');
-        } catch (\Exception $e) {
-            Log::error('Failed to send organization invitation', [
-                'error' => $e->getMessage()
-            ]);
-            return back()->with('error', 'Failed to send invitation email. Please try again.');
-        }
+        // Send invitation email
+        Notification::route('mail', $validated['email'])->notify((new OrganizationInvitation($organization, $invite)));
 
         return back()->with('success', 'Invitation sent');
     }

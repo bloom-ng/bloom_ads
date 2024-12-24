@@ -115,4 +115,45 @@ class AdminAdAccountsController extends Controller
             'ad-accounts-' . now()->format('Y-m-d') . '.xlsx'
         );
     }
+
+    public function linkMeta(Request $request)
+    {
+        $validated = $request->validate([
+            'ad_account_id' => 'required|exists:ad_accounts,id',
+            'meta_account_id' => 'required|string'
+        ]);
+
+        try {
+            $adAccount = AdAccount::findOrFail($validated['ad_account_id']);
+            
+            $adAccount->update([
+                'provider' => 'meta',
+                'provider_id' => $validated['meta_account_id']
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to link account'], 500);
+        }
+    }
+
+    public function unlinkMeta(Request $request)
+    {
+        $validated = $request->validate([
+            'ad_account_id' => 'required|exists:ad_accounts,id'
+        ]);
+
+        try {
+            $adAccount = AdAccount::findOrFail($validated['ad_account_id']);
+            
+            $adAccount->update([
+                'provider' => null,
+                'provider_id' => null
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to unlink account'], 500);
+        }
+    }
 } 

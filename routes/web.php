@@ -14,7 +14,16 @@ use App\Http\Controllers\AdminAdAccountsController;
 use App\Http\Controllers\AdminOrganizationsController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
+use App\Http\Controllers\AdminMetaAdAccountsController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Foundation\Auth\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +76,21 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
     // Add this new route for RockAds accounts
     Route::get('/rockads-accounts', [AdminRockAdsAccountsController::class, 'index'])->name('rockads.accounts.index');
+
+    Route::get('/meta/accounts', [AdminMetaAdAccountsController::class, 'index'])
+        ->name('meta.accounts.index');
+
+    // Add these routes in your admin group
+    Route::get('/meta-accounts/list', [AdminMetaAdAccountsController::class, 'list'])
+        ->name('admin.meta-accounts.list');
+    Route::post('/adaccounts/link-meta', [AdminAdAccountsController::class, 'linkMeta'])
+        ->name('admin.adaccounts.link-meta');
+    Route::post('/adaccounts/unlink-meta', [AdminAdAccountsController::class, 'unlinkMeta'])
+        ->name('admin.adaccounts.unlink-meta');
+
+    Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
+    Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
+    Route::post('/ad-accounts/{adAccount}/transfer', [AdminWalletController::class, 'transferFromAdAccount'])->name('adaccounts.transfer');
 });
 
 Route::get('/', function () {
@@ -116,7 +140,7 @@ Route::get('/forgot', function () {
 
 // Route::post('/signup', [SignupController::class, 'store'])->name('signup');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
@@ -185,3 +209,64 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account', [UsersController::class, 'account'])->name('account');
     Route::put('/account/update', [UsersController::class, 'updateProfile'])->name('account.update');
 });
+
+// Add these routes for email verification
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/dashboard')->with('verified', true);
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Password Reset Routes
+Route::get('/forgot-password', function () {
+    return view('forgot');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+        ? back()->with(['status' => __($status)])
+        : back()->withErrors(['email' => __($status)]);
+})->middleware('guest')->name('password.email');
+
+Route::get('/reset-password/{token}', function (string $token, Request $request) {
+    return view('auth.reset-password', ['token' => $token, 'request' => $request]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+})->middleware('guest')->name('password.update');

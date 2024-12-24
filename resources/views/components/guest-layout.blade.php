@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-x-bind:class="{ 'dark': darkMode }">
+<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-bind:class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +10,9 @@ x-bind:class="{ 'dark': darkMode }">
     <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
 
-<body class="h-full transition-colors duration-200
-             bg-white dark:bg-gray-900 
-             text-gray-900 dark:text-white">
+<body class="h-full w-full">
     <!-- Add theme toggle to your navigation -->
-    <x-theme-toggle />
+    {{-- <x-theme-toggle /> --}}
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -69,24 +66,24 @@ x-bind:class="{ 'dark': darkMode }">
     @endif
 
     <!-- desktop header -->
-    <header class="md:flex flex-row w-full justify-between items-center bg-[#000000] py-8 px-16 hidden">
+    <header class="md:flex flex-row w-full justify-between items-center bg-[#000031] py-8 px-16 hidden">
         <a href="/" class="w-1/5">
-            <img src="/images/Bloomlogo.png" alt="" class="w-[107px] h-[35px]">
+            <img src="/images/billings2 1.png" alt="" class="w-[107px] h-[35px]">
         </a>
 
         @if (!$isAuth)
             <div class="flex-row items-center space-x-5">
                 <a href="/login"
-                    class="rounded-xl border-[#FF8C00] border-2 text-white font-semibold text-base p-2 px-10">Login</a>
-                <a href="/signup" class="rounded-xl bg-[#FF8C00] text-black font-semibold text-base p-2 px-7">Get
+                    class="rounded-xl border-[#FFFFFF] border-2 text-white font-semibold text-base p-2 px-10">Login</a>
+                <a href="/signup" class="rounded-xl bg-[#FFFFFF] text-[#000031] font-semibold text-base p-2 px-7">Get
                     Started</a>
             </div>
         @endif
     </header>
 
     <!-- mobile header -->
-    <header class="flex flex-row w-full bg-[#000000] justify-between items-center px-8 py-5 md:hidden">
-        <a href="/"><img src="/images/Bloomlogo.png" alt="" class="w-[107px] h-[35px]"></a>
+    <header class="flex flex-row w-full bg-[#000031] justify-between items-center px-8 py-5 md:hidden">
+        <a href="/"><img src="/images/billings2 1.png" alt="" class="w-[107px] h-[35px]"></a>
 
         <!-- <button id="menu-btn" class="text-gray-700 focus:outline-none">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -94,7 +91,7 @@ x-bind:class="{ 'dark': darkMode }">
             </svg>
         </button> -->
 
-        <a href="/signup" class="rounded-xl bg-[#FF8C00] text-black font-semibold text-base p-2 px-7">Get
+        <a href="/signup" class="rounded-xl bg-[#FFFFFF] text-[00031] font-semibold text-base p-2 px-7">Get
             Started</a>
 
     </header>
@@ -103,7 +100,7 @@ x-bind:class="{ 'dark': darkMode }">
     </main>
 
     <footer
-        class="bg-black flex flex-col w-full justify-start items-start md:justify-center md:items-center md:py-14 md:px-0 px-10">
+        class="bg-[#000031] flex flex-col w-full justify-start items-start md:justify-center md:items-center md:py-14 md:px-0 px-10">
         @if (!$isAuth)
             <p class="md:text-4xl text-2xl text-white mb-5 md:mb-10 mt-5">Bloom's Financial Solutions</p>
 

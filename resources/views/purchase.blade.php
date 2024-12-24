@@ -1,6 +1,6 @@
 <x-guest-layout>
     <section class="flex flex-col bg-white pl-7 px-3 py-5 lg:py-10 lg:px-16">
-        <h1 class="text-[#FF8100] font-semibold text-3xl md:text-4xl lg:text-5xl lg:mb-10 mb-8">Purchase Policy</h1>
+        <h1 class="text-[#000080] font-semibold text-3xl md:text-4xl lg:text-5xl lg:mb-10 mb-8">Purchase Policy</h1>
 
         <p class="mt-7 mb-7">
             Last date of update: November 11th, 2024.

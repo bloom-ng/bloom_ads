@@ -2,14 +2,8 @@
 
 namespace App\Services\RockAds\Data;
 
-abstract class DataTransferObject
+use App\Data\DTO;
+
+abstract class DataTransferObject extends DTO
 {
-    public function __construct(array $parameters = [])
-    {
-        foreach ($parameters as $property => $value) {
-            if (property_exists($this, $property)) {
-                $this->{$property} = $value;
-            }
-        }
-    }
 } 

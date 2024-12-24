@@ -2,14 +2,14 @@
     <section>
         <section class="flex flex-col">
             <div
-                class="flex flex-col md:flex-row bg-gradient-to-r from-[#FFBB6780] to-[#FFE5C680] w-full lg:pl-10 pl-8 lg:text-start">
+                class="flex flex-col md:flex-row bg-gradient-to-r from-[#E6E6F380] to-[#6666B380] w-full lg:pl-10 pl-8 lg:text-start">
                 <div class="lg:w-2/5 flex-col lg:ml-24 lg:mt-20 mt-10 items-center justify-center">
-                    <h1 class="text-4xl lg:text-6xl font-bold mb-5 lg:mb-10">Digital <span class="text-[#FF8C00]">Ads
+                    <h1 class="text-4xl lg:text-6xl font-bold mb-5 lg:mb-10">Digital <span class="text-[#000080]">Ads
                             Made Easy</span> With Bloom</h1>
-                    <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16">Get Access to TikTok, Google <br>and Meta Ads account
+                    <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and Meta Ads account
                     </h3>
                     <a href="#"
-                        class="rounded-xl bg-[#FF8C00] text-black font-semibold text-base lg:text-xl p-3 px-7 mb-20">Get
+                        class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-20">Get
                         Started Now</a>
                 </div>
 
@@ -41,8 +41,8 @@
                         </mask>
                         <path
                             d="M110 55C110 69.5869 104.205 83.5764 93.8909 93.8909C83.5764 104.205 69.5869 110 55 110C40.4131 110 26.4236 104.205 16.1091 93.8909C5.79463 83.5764 2.20256e-06 69.5869 0 55H1.6087C1.6087 69.1603 7.23384 82.7405 17.2467 92.7534C27.2595 102.766 40.8398 108.391 55 108.391C69.1603 108.391 82.7405 102.766 92.7534 92.7533C102.766 82.7405 108.391 69.1603 108.391 55H110Z"
-                            stroke="#FF8C00" stroke-width="2" mask="url(#path-1-inside-1_519_151)" />
-                        <circle cx="55" cy="55" r="48" fill="#FF8C00" />
+                            stroke="#000080" stroke-width="2" mask="url(#path-1-inside-1_519_151)" />
+                        <circle cx="55" cy="55" r="48" fill="#000080" />
                         <rect x="30" y="30" width="50" height="50" fill="url(#pattern0_519_151)" />
                         <defs>
                             <pattern id="pattern0_519_151" patternContentUnits="objectBoundingBox" width="1"
@@ -67,8 +67,8 @@
                         </mask>
                         <path
                             d="M110 55C110 69.5869 104.205 83.5764 93.8909 93.8909C83.5764 104.205 69.5869 110 55 110C40.4131 110 26.4236 104.205 16.1091 93.8909C5.79463 83.5764 2.20256e-06 69.5869 0 55H1.6087C1.6087 69.1603 7.23384 82.7405 17.2467 92.7534C27.2595 102.766 40.8398 108.391 55 108.391C69.1603 108.391 82.7405 102.766 92.7534 92.7533C102.766 82.7405 108.391 69.1603 108.391 55H110Z"
-                            stroke="#FF8C00" stroke-width="2" mask="url(#path-1-inside-1_519_152)" />
-                        <circle cx="55" cy="55" r="48" fill="#FF8C00" />
+                            stroke="#000080" stroke-width="2" mask="url(#path-1-inside-1_519_152)" />
+                        <circle cx="55" cy="55" r="48" fill="#000080" />
                         <rect x="30" y="30" width="50" height="50" fill="url(#pattern0_519_152)" />
                         <defs>
                             <pattern id="pattern0_519_152" patternContentUnits="objectBoundingBox" width="1"
@@ -93,8 +93,8 @@
                         </mask>
                         <path
                             d="M110 55C110 69.5869 104.205 83.5764 93.8909 93.8909C83.5764 104.205 69.5869 110 55 110C40.4131 110 26.4236 104.205 16.1091 93.8909C5.79463 83.5764 2.20256e-06 69.5869 0 55H1.6087C1.6087 69.1603 7.23384 82.7405 17.2467 92.7534C27.2595 102.766 40.8398 108.391 55 108.391C69.1603 108.391 82.7405 102.766 92.7534 92.7533C102.766 82.7405 108.391 69.1603 108.391 55H110Z"
-                            stroke="#FF8C00" stroke-width="2" mask="url(#path-1-inside-1_519_153)" />
-                        <circle cx="55" cy="55" r="48" fill="#FF8C00" />
+                            stroke="#000080" stroke-width="2" mask="url(#path-1-inside-1_519_153)" />
+                        <circle cx="55" cy="55" r="48" fill="#000080" />
                         <rect x="30" y="30" width="50" height="50" fill="url(#pattern0_519_153)" />
                         <defs>
                             <pattern id="pattern0_519_153" patternContentUnits="objectBoundingBox" width="1"
@@ -118,8 +118,8 @@
                         </mask>
                         <path
                             d="M110 55C110 69.5869 104.205 83.5764 93.8909 93.8909C83.5764 104.205 69.5869 110 55 110C40.4131 110 26.4236 104.205 16.1091 93.8909C5.79463 83.5764 2.20256e-06 69.5869 0 55H1.6087C1.6087 69.1603 7.23384 82.7405 17.2467 92.7534C27.2595 102.766 40.8398 108.391 55 108.391C69.1603 108.391 82.7405 102.766 92.7534 92.7533C102.766 82.7405 108.391 69.1603 108.391 55H110Z"
-                            stroke="#FF8C00" stroke-width="2" mask="url(#path-1-inside-1_519_154)" />
-                        <circle cx="55" cy="55" r="48" fill="#FF8C00" />
+                            stroke="#000080" stroke-width="2" mask="url(#path-1-inside-1_519_154)" />
+                        <circle cx="55" cy="55" r="48" fill="#000080" />
                         <rect x="30" y="30" width="50" height="50" fill="url(#pattern0_519_154)" />
                         <defs>
                             <pattern id="pattern0_519_154" patternContentUnits="objectBoundingBox" width="1"
@@ -144,8 +144,8 @@
                         </mask>
                         <path
                             d="M110 55C110 69.5869 104.205 83.5764 93.8909 93.8909C83.5764 104.205 69.5869 110 55 110C40.4131 110 26.4236 104.205 16.1091 93.8909C5.79463 83.5764 2.20256e-06 69.5869 0 55H1.6087C1.6087 69.1603 7.23384 82.7405 17.2467 92.7534C27.2595 102.766 40.8398 108.391 55 108.391C69.1603 108.391 82.7405 102.766 92.7534 92.7533C102.766 82.7405 108.391 69.1603 108.391 55H110Z"
-                            stroke="#FF8C00" stroke-width="2" mask="url(#path-1-inside-1_519_155)" />
-                        <circle cx="55" cy="55" r="48" fill="#FF8C00" />
+                            stroke="#000080" stroke-width="2" mask="url(#path-1-inside-1_519_155)" />
+                        <circle cx="55" cy="55" r="48" fill="#000080" />
                         <rect x="30" y="30" width="50" height="50" fill="url(#pattern0_519_155)" />
                         <defs>
                             <pattern id="pattern0_519_155" patternContentUnits="objectBoundingBox" width="1"
@@ -163,12 +163,12 @@
                 </div>
 
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-xl mb-20 font-bold">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started Now</a>
             </div>
         </section>
 
         <section
-            class="flex flex-col md:flex-row w-full bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] lg:px-14 px-10 pt-8">
+            class="flex flex-col md:flex-row w-full bg-gradient-to-r from-[#6666B380] to-[#E6E6F380] lg:px-14 px-10 pt-8">
             <div class="md:w-1/2 flex flex-col md:justify-center lg:pl-32">
                 <p class="text-4xl font-bold mb-5">Contact Us</p>
                 <p class="text-lg md:text-xl lg:text-2xl mb-8">For ease, Schedule a consultation with the Bloom team
@@ -192,21 +192,18 @@
                         <p class="text-white font-semibold">Connect via WhatsApp</p>
                     </a>
 
-                    <a href="" class="bg-[#FF8C00] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="40" height="40" fill="url(#pattern0_519_203)" />
+                    <a href="" class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="40" height="40" fill="url(#pattern0_999_143)"/>
                             <defs>
-                                <pattern id="pattern0_519_203" patternContentUnits="objectBoundingBox" width="1"
-                                    height="1">
-                                    <use xlink:href="#image0_519_203" transform="scale(0.0111111)" />
-                                </pattern>
-                                <image id="image0_519_203" width="90" height="90"
-                                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB2klEQVR4nO2cPW4CMRBGvyrkCGHDERPosjlhCBXJUSJotnKE5CIFKVx4ftbvSV+DRov8GM2KKSwBAAAAAAAAAMCNR0kHSSdJV0llpblK+pS0l7Sx/ul3kr4DSCjG+apnN+vkESWXP7JNOvsQ4LDFOa8Wok8BDlqcc7QQfQlw0OKcm4Pu/Pfla6V4nRfRQnQP6GgjEG0Eoo1AtBGINgLRRiDaCEQbgehRRY+W7ngfsAQJooVoeXchHS1/cYwO+UtlRgvR7h1X6Gi5SxpqdCyS3iRNNXP9LEt9GtHznWfPierTiN7eefZTovo0oqc7z35OVJ96dLwnqk8jeqmHa3lZRapPI7okD6KFaHl3IR0tf3GMDvlLZUZrQNHRdhHLWncd0XYRc+f67mTZRWw713cnyy5i6lzfnbXuLubG+u5k2UUs7Dq0irh19GjpjvcBS5AgWoiWdxfS0fIXl2Z0RNtFLI31aURH20XMjfVpREfbRWwb69OIjraLmBrr04iOtouYG+vTiI62i1ga69OIHi3d8T5gCRJEayWiuY5N+rEQzQWDsrlgcB9gPhbnvFiI3tSLUMugOUt6kBG7QWWf679LUzb11tnjyl+QF0kfdVyYdTIAAAAAAAAAgALzCyME6hDPk/p6AAAAAElFTkSuQmCC" />
+                            <pattern id="pattern0_999_143" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_999_143" transform="scale(0.0111111)"/>
+                            </pattern>
+                            <image id="image0_999_143" width="90" height="90" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAABvElEQVR4nO3cO07DQBSF4VsRlgAJSyTQ4ayQR0VYCkqaVAdZuIiQKUbyHM/j/ySa6MqRfyxHusVEAAAAAAAAICTdSnqW9CHprHadJb1LepK0sf7rJT1I+lJ/juO9O5/kHiNfx87/ZE+vi97tHaHHd3Lv3hyhT2vfZQFOjtCzolFa634J/YvQC9M/2v3ilRDahNAmhDYhtAmhTQhtQmgTQvcaujdBaA9CmxDahNAmhDYhtAmhTQhtUlPoi6QXSdvpb5g+q2K+ptDDzLWHWuYjNy3nfubad7XMR25aznbm2rta5iM3LWeYufahlvnITcu5TO/AlB+rYuZrCl01QpsQ2oTQJoQ2IXQHoYvaRajhXUdRuwg1vOsoahehhncdRe0i1PCuo6hdhBredRS1ixC7jjas+UR3JQjtQWgTQpsQuoPQRe0ilD5fTeiidhFKn08SudWyi1D6fJLIrZZdhNLnk0RutewilD6fJHKrZReh9PlqQnclCO1B6IZCcxyb9O0IzQGD8hwwOJ4627tHR+jNdBBqrz4l3WQPfXWs8bHTyDtL5D9P9n58XzX+A3mS9Dq+LmxPMgAAAAAAQJTtB1O+o5e1KxH7AAAAAElFTkSuQmCC"/>
                             </defs>
                         </svg>
 
-                        <p class="text-black font-semibold">Book an Appointment</p>
+                        <p class="text-white bg-[#000080] font-semibold">Book an Appointment</p>
                     </a>
                 </div>
             </div>
@@ -231,12 +228,12 @@
                     </defs>
                 </svg>
 
-                <p class="text-xl font-semibold">What <span class="text-[#FF8C00]">problem</span> are you <br>having
-                    <span class="text-[#FF8C00]">with your Ad accounts?</span>
+                <p class="text-xl font-semibold">What <span class="text-[#000080]">problem</span> are you <br>having
+                    <span class="text-[#00031]">with your Ad accounts?</span>
                 </p>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl md:mt-20">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl md:mt-20">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_519_220)" />
@@ -253,10 +250,10 @@
                 <p class="text-xl text-center mb-3">Struggling to <strong>secure an Ad account</strong> due to
                     restrictions or disapprovals?</p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl lg:mt-20">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl lg:mt-20">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_36)" />
@@ -274,10 +271,10 @@
                 <p class="text-xl text-center mb-3"><strong>Difficulty navigating the Ad account creation</strong> and
                     funding process?</p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_37)" />
@@ -294,10 +291,10 @@
                 <p class="text-xl text-center mb-3">Problems with a <strong>suspended or declined payment
                         method?</strong></p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_38)" />
@@ -314,10 +311,10 @@
                 <p class="text-xl text-center mb-3">Issues with a <strong>disabled or restricted Ad account?</strong>
                 </p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_40)" />
@@ -334,10 +331,10 @@
                 <p class="text-xl text-center mb-3"><strong>Ads not delivering</strong> or showing to the intended
                     audience?</p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_42)" />
@@ -353,10 +350,10 @@
 
                 <p class="text-xl text-center mb-3">Dealing with an <strong>Ad account under review?</strong></p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
-            <div class="flex flex-col justify-center items-center bg-[#FFF1E0] p-5 rounded-3xl">
+            <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <rect width="50" height="50" fill="url(#pattern0_557_43)" />
@@ -373,12 +370,12 @@
                 <p class="text-xl text-center mb-3"><strong>Ad costs being too high</strong> or exceeding the budget?
                 </p>
 
-                <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-2xl">Get Started Now</a>
+                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
         </section>
 
         <section
-            class="flex flex-col bg-gradient-to-r from-[#FFE5C680] to-[#FFBB6780] lg:px-32 lg:py-20 px-5 py-10 lg:text-start text-center">
+            class="flex flex-col bg-gradient-to-r from-[#E6E6F380] to-[#6666B380] lg:px-32 lg:py-20 px-5 py-10 lg:text-start text-center">
             <p class="text-4xl font-bold lg:mb-16 mb-10 ">What You Get With Our Service</p>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 md:gap-10">
@@ -401,7 +398,7 @@
                     <p class="mb-5 text-center">Enjoy a dedicated account with a credit line as your payment method,
                         making ad payment and management seamless.</p>
 
-                    <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-xl">Get Started Now</a>
+                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
 
                 <div class="flex flex-col justify-center items-center md:mb-0 mb-5">
@@ -423,7 +420,7 @@
                     <p class="mb-5 text-center">Prepay for your ads by opening a wallet on our website and fund your
                         account on the go.</p>
 
-                    <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-xl">Get Started Now</a>
+                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
 
                 <div class="flex flex-col justify-center items-center md:mb-0 mb-5">
@@ -445,7 +442,7 @@
                     <p class="mb-5 text-center">Manage your own ads with confidence, while our expert team provides
                         professional support to help your campaigns reach their full potential.</p>
 
-                    <a href="" class="bg-[#FF8C00] p-2 px-5 rounded-xl">Get Started Now</a>
+                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
             </div>
         </section>
@@ -460,17 +457,17 @@
 
                 <div class="grid md:grid-cols-3 grid-cols-1 gap-10 md:gap-20 text-center mb-10 md:mb-20">
                     <div class="flex flex-col items-center">
-                        <p class="text-5xl font-bold text-[#FF8C00]">50+</p>
+                        <p class="text-5xl font-bold text-[#000080]">50+</p>
                         <p class="text-xl">Countries</p>
                     </div>
 
                     <div class="flex flex-col items-center">
-                        <p class="text-5xl font-bold text-[#FF8C00]">200+</p>
+                        <p class="text-5xl font-bold text-[#000080]">200+</p>
                         <p class="text-xl">Partners</p>
                     </div>
 
                     <div class="flex flex-col items-center">
-                        <p class="text-5xl font-bold text-[#FF8C00]">$100M+</p>
+                        <p class="text-5xl font-bold text-[#000080]">$100M+</p>
                         <p class="text-xl">Advertising Spend</p>
                     </div>
                 </div>
