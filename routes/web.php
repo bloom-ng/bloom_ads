@@ -180,4 +180,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('adaccounts.deposit');
     Route::post('/dashboard/adaccounts/{adAccount}/withdraw', [AdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
+
+    // User account management
+    Route::get('/account', [UsersController::class, 'account'])->name('account');
+    Route::put('/account/update', [UsersController::class, 'updateProfile'])->name('account.update');
 });

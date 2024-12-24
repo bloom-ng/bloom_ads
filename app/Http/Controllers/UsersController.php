@@ -64,5 +64,27 @@ class UsersController extends Controller
         $request->session()->regenerateToken();
         
         return redirect('/login');
-    }   
+    }
+
+    public function account()
+    {
+        return view('dashboard.account', [
+            'user' => auth()->user(),
+            'title' => 'Account Settings',
+            'page' => 'account'
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        auth()->user()->update($validated);
+
+        return redirect()->route('account')
+            ->with('success', 'Profile updated successfully');
+    }
 } 

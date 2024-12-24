@@ -11,6 +11,7 @@ use App\Notifications\OrganizationInvitation;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrganizationController extends Controller
 {
@@ -57,7 +58,7 @@ class OrganizationController extends Controller
         ]);
 
         // Add logging
-        \Log::info('Sending organization invitation', [
+        Log::info('Sending organization invitation', [
             'email' => $validated['email'],
             'organization' => $organization->name
         ]);
@@ -83,9 +84,9 @@ class OrganizationController extends Controller
             Notification::route('mail', $validated['email'])
                 ->notify(new OrganizationInvitation($organization, $invite));
 
-            \Log::info('Organization invitation sent successfully');
+            Log::info('Organization invitation sent successfully');
         } catch (\Exception $e) {
-            \Log::error('Failed to send organization invitation', [
+            Log::error('Failed to send organization invitation', [
                 'error' => $e->getMessage()
             ]);
             return back()->with('error', 'Failed to send invitation email. Please try again.');

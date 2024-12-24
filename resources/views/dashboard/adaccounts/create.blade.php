@@ -65,7 +65,7 @@
                     <input type="text" name="business_manager_id" id="business_manager_id" 
                            value="{{ old('business_manager_id') }}"
                            class="form-input mt-1 block w-full rounded-md border-gray-300" 
-                           pattern="[A-Za-z0-9]{32}" title="Must be 32 characters long">
+                           pattern="[A-Za-z0-9]{1,35}" title="Must be between 1 and 35 characters long">
                     @error('business_manager_id')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

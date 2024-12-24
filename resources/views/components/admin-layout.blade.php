@@ -28,7 +28,7 @@
 
 
     <!-- Tailwind -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
 
@@ -37,12 +37,23 @@
         }
 
         .bg-sidebar {
-            background: #F0F0F0;
+            background: #E6E6F3;
         }
 
         .active-nav-link {
-            background: #FFEEE7;
+            background: #E6E6F3;
         }
+
+        /* Update sidebar colors to support dark mode */
+        .bg-sidebar { @apply bg-indigo-600 dark:bg-gray-800; }
+        
+        .active-nav-link { @apply bg-indigo-800 dark:bg-gray-700; }
+        
+        .nav-item:hover { @apply bg-indigo-800 dark:bg-gray-700; }
+        
+        .account-link:hover { @apply bg-indigo-800 dark:bg-gray-700; }
+
+        /* Your existing scrollbar styles... */
     </style>
 
     <!-- Add Alpine.js -->
@@ -115,10 +126,10 @@
         @endforeach
     @endif
 
-    <aside class="bg-sidebar relative h-screen w-64 hidden sm:block dark:bg-gray-800 transition-colors duration-200">
+    <aside class="bg-sidebar overflow-y-auto relative h-screen w-64 hidden sm:block dark:bg-gray-800 transition-colors duration-200">
         <div class="p-6 bg-[#F48857]">
-            <a href="index.html" class="">
-                <img src="/images/Sharepadi_White.png" alt="SharePadi_logo">
+            <a href="/admin/dashboard" class="">
+                <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
             </a>
         </div>
         <nav class="text-black text-base font-semibold pt-3">
@@ -127,7 +138,7 @@
                 <span class="mr-3">
                     <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <rect width="52" height="52" fill="url(#pattern0_563_556)" />
+                        <rect width="52" height="52" fill="url(#pattern0_563_556)"/>
                         <defs>
                             <pattern id="pattern0_563_556" patternContentUnits="objectBoundingBox" width="1"
                                 height="1">
@@ -253,30 +264,33 @@
 
     <div class="w-full flex flex-col h-screen overflow-y-hidden bg-white dark:bg-gray-900">
         <!-- Desktop Header -->
-        <header class="w-full items-center bg-[#F0F0F0] dark:bg-gray-800 py-4 px-6 hidden sm:flex">
+        <header class="w-full items-center bg-white py-4 px-6 hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
-                <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" 
-                        class="mr-4 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
+                    <!-- Sun Icon -->
+                    <svg class="w-6 h-6 sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
                     </svg>
-                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Moon Icon -->
+                    <svg class="w-6 h-6 moon-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                         </path>
                     </svg>
                 </button>
 
+                <!-- Profile Dropdown -->
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <img src="https://source.unsplash.com/uJ8LNVCBjFQ/400x400">
+                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name=AD" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
-                    <a href="/user/account" class="block px-4 py-2 account-link hover:text-white">Account</a>
+                    <a href="#" class="block px-4 py-2 account-link hover:text-white">Account</a>
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
@@ -321,6 +335,11 @@
                     <i class="fas fa-ad mr-3"></i>
                     Ad Accounts
                 </a>
+                <a href="{{ route('admin.rockads.accounts.index') }}"
+                    class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <i class="fas fa-ad mr-3"></i>
+                    RockAds Accounts
+                </a>
                 <form method="POST" action="{{ route('admin.logout') }}" class="block">
                     @csrf
                     <button type="submit" class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item w-full">
@@ -333,17 +352,17 @@
 
         {{ $slot }}
         <div class="flex-grow"></div>
-        <footer class="flex justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
-            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
+        <footer class="flex bg-gradient-to-r from-gray-200 to-blue-800 bg-opacity-30 justify-between items-center w-full max-w-screen bg-white dark:bg-gray-800 text-right p-4">
+            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black dark:text-white">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank"><img src="/images/Instagram2.svg" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.svg"
+                    target="_blank"><img src="/images/Instagram.png" alt="Instagram Link"/></a>
+                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.png"
                         alt="X Link" /></a><a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
-                        src="/images/Facebook2.png" alt="Facebook Link" /></a>
+                        src="/images/Facebook.png" alt="Facebook Link" /></a>
                 <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/LinkedIn2.png" alt="LinkedIn Link" /></a>
+                        src="/images/LinkedIn.png" alt="LinkedIn Link" /></a>
             </div>
         </footer>
     </div>
@@ -354,6 +373,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
         integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Add this script after your header -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const sunIcon = darkModeToggle.querySelector('.sun-icon');
+            const moonIcon = darkModeToggle.querySelector('.moon-icon');
+            
+            const checkTheme = () => {
+                const userTheme = localStorage.getItem('theme');
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (userTheme === 'dark' || (!userTheme && systemTheme)) {
+                    document.documentElement.classList.add('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            };
+
+            checkTheme();
+
+            darkModeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                
+                // Toggle icons
+                sunIcon.classList.toggle('hidden');
+                moonIcon.classList.toggle('hidden');
+            });
+        });
+    </script>
 
 </body>
 

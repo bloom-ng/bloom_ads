@@ -161,7 +161,7 @@ class AdAccountsController extends Controller
                 'type' => 'required|in:meta,google,tiktok',
                 'timezone' => 'required|string',
                 'currency' => 'required|in:USD,NGN',
-                'business_manager_id' => 'nullable|string|size:32',
+                'business_manager_id' => 'nullable|string|max:35',
                 'landing_page' => 'nullable|url',
             ]);
 
