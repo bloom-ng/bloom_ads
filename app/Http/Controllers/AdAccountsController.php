@@ -273,8 +273,8 @@ class AdAccountsController extends Controller
             $fees = $adAccount->calculateFees($validated['amount']);
             $totalAmount = $fees['total_amount'];
 
-            // Check if wallet has sufficient balance
-            if ($wallet->balance < $totalAmount) {
+            // Check if wallet has sufficient balance using getBalance()
+            if ($wallet->getBalance() < $totalAmount) {
                 return redirect()->back()
                     ->with('error', 'Insufficient wallet balance');
             }
@@ -292,21 +292,19 @@ class AdAccountsController extends Controller
                 'description' => 'Deposit to ad account'
             ]);
 
-            // Process with RockAds API
-            // $request = new AdAccountPaymentRequest([
-            //     'amount' => (string) $validated['amount'],
-            //     'wallet_id' => (string) $wallet->id
-            // ]);
-
-            DB::transaction(function () use ($adAccount, $wallet, $transaction, $request, $totalAmount) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
                 // Save transaction
                 $transaction->save();
 
-                // Deduct from wallet
-                $wallet->decrement('balance', $totalAmount);
-
-                // Call RockAds API
-                // $this->rockAds->depositToAdAccount($adAccount->provider_id, $request);
+                // Create a wallet transaction to deduct the amount
+                $wallet->transactions()->create([
+                    'amount' => $totalAmount, // Negative amount for debit
+                    'type' => 'debit',
+                    'currency' => $wallet->currency,
+                    'description' => 'Ad Account Deposit - ' . $transaction->reference,
+                    'reference' => $transaction->reference,
+                    'status' => 'completed'
+                ]);
 
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
@@ -345,11 +343,17 @@ class AdAccountsController extends Controller
             $fees = $adAccount->calculateFees($validated['amount']);
             $totalAmount = $fees['total_amount'];
 
+            // Check if ad account has sufficient balance
+            if ($adAccount->getBalance() < $totalAmount) {
+                return redirect()->back()
+                    ->with('error', 'Insufficient ad account balance. Total amount (including fees) exceeds available balance.');
+            }
+
             // Create transaction record
             $transaction = new AdAccountTransaction([
                 'ad_account_id' => $adAccount->id,
                 'wallet_id' => $wallet->id,
-                'amount' => $validated['amount'],
+                'amount' => $totalAmount,
                 'type' => 'withdrawal',
                 'vat' => $fees['vat'],
                 'service_fee' => $fees['service_fee'],
@@ -358,21 +362,19 @@ class AdAccountsController extends Controller
                 'description' => 'Withdrawal from ad account'
             ]);
 
-            // Process with RockAds API
-            // $request = new AdAccountPaymentRequest([
-            //     'amount' => (string) $validated['amount'],
-            //     'wallet_id' => (string) $wallet->id
-            // ]);
-
-            DB::transaction(function () use ($adAccount, $wallet, $transaction, $request, $totalAmount, $validated) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
                 // Save transaction
                 $transaction->save();
 
-                // Call RockAds API
-                // $this->rockAds->withdrawFromAdAccount($adAccount->provider_id, $request);
-
-                // Add to wallet
-                $wallet->increment('balance', $validated['amount']); // Only add the base amount, not fees
+                // Create a wallet transaction to add the amount (only base amount, not fees)
+                $wallet->transactions()->create([
+                    'amount' => $totalAmount, // Positive amount for credit
+                    'type' => 'credit',
+                    'currency' => $wallet->currency,
+                    'description' => 'Ad Account Withdrawal - ' . $transaction->reference,
+                    'reference' => $transaction->reference,
+                    'status' => 'completed'
+                ]);
 
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
@@ -401,8 +403,13 @@ class AdAccountsController extends Controller
             abort(403, 'You do not have access to this ad account.');
         }
 
-        // Get organization's wallets
-        $wallets = $adAccount->organization->wallets;
+        // Get organization's wallets with their balances
+        $wallets = $adAccount->organization->wallets()->with('transactions')->get();
+
+        // Calculate balance for each wallet if needed
+        $wallets->each(function ($wallet) {
+            $wallet->calculated_balance = $wallet->getBalance();
+        });
 
         return view('dashboard.adaccounts.show', compact('adAccount', 'wallets'));
     }

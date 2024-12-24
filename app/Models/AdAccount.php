@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\AdminSetting;
 
 class AdAccount extends Model
 {
@@ -50,10 +51,22 @@ class AdAccount extends Model
         return $this->hasMany(AdAccountTransaction::class);
     }
 
+    public function getVatRate()
+    {
+        $vatRate = AdminSetting::where('key', 'ad_account_vat')->first();
+        return $vatRate ? floatval($vatRate->value) : self::VAT_RATE; // fallback to constant if not found
+    }
+
+    public function getServiceFeeRate()
+    {
+        $serviceFeeRate = AdminSetting::where('key', 'ad_account_service_charge')->first();
+        return $serviceFeeRate ? floatval($serviceFeeRate->value) : self::SERVICE_FEE_RATE; // fallback to constant
+    }
+
     public function calculateFees($amount)
     {
-        $vat = ($amount * self::VAT_RATE) / 100;
-        $serviceFee = ($amount * self::SERVICE_FEE_RATE) / 100;
+        $vat = ($amount * $this->getVatRate()) / 100;
+        $serviceFee = ($amount * $this->getServiceFeeRate()) / 100;
         $totalAmount = $amount + $vat + $serviceFee;
 
         return [
@@ -61,5 +74,46 @@ class AdAccount extends Model
             'service_fee' => $serviceFee,
             'total_amount' => $totalAmount
         ];
+    }
+
+    public function getBalance()
+    {
+        $credits = $this->transactions()
+            ->where('type', 'deposit')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $debits = $this->transactions()
+            ->where('type', 'withdrawal')
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        return $credits - $debits;
+    }
+
+    // For better performance when loading multiple ad accounts
+    public static function withBalances()
+    {
+        return static::select('ad_accounts.*')
+            ->selectRaw('
+                (
+                    COALESCE(
+                        (SELECT SUM(amount) 
+                        FROM ad_account_transactions 
+                        WHERE ad_account_transactions.ad_account_id = ad_accounts.id 
+                        AND type = "deposit" 
+                        AND status = "completed"), 
+                        0
+                    ) - 
+                    COALESCE(
+                        (SELECT SUM(amount) 
+                        FROM ad_account_transactions 
+                        WHERE ad_account_transactions.ad_account_id = ad_accounts.id 
+                        AND type = "withdrawal" 
+                        AND status = "completed"), 
+                        0
+                    )
+                ) as calculated_balance
+            ');
     }
 }

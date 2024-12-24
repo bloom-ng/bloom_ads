@@ -1,63 +1,161 @@
 <x-user-layout page="adaccounts">
     <div class="mt-8 space-y-6">
-        <!-- Deposit Form -->
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-lg font-medium mb-4">Deposit Funds</h3>
-            <form action="{{ route('adaccounts.deposit', $adAccount->id) }}" method="POST">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Amount</label>
-                        <input type="number" name="amount" min="1" step="0.01" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
-                        <select name="wallet_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
-                                <option value="{{ $wallet->id }}">
-                                    {{ $wallet->currency }} Wallet (Balance: {{ number_format($wallet->balance, 2) }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
-                        Deposit
-                    </button>
-                </div>
-            </form>
+        <!-- Action Buttons -->
+        <div class="flex space-x-4">
+            <button onclick="openDepositModal()"
+                class="bg-[#F48857] text-black px-6 py-3 rounded-md hover:bg-[#F48857]/80 font-medium">
+                Deposit Funds
+            </button>
+            <button onclick="openWithdrawModal()"
+                class="bg-white text-black border border-[#F48857] px-6 py-3 rounded-md hover:bg-gray-50 font-medium">
+                Withdraw Funds
+            </button>
         </div>
 
-        <!-- Withdraw Form -->
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-lg font-medium mb-4">Withdraw Funds</h3>
-            <form action="{{ route('adaccounts.withdraw', $adAccount->id) }}" method="POST">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Amount</label>
-                        <input type="number" name="amount" min="1" step="0.01" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
-                        <select name="wallet_id" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
-                                <option value="{{ $wallet->id }}">
-                                    {{ $wallet->currency }} Wallet (Balance: {{ number_format($wallet->balance, 2) }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
-                        Withdraw
+        <!-- Deposit Modal -->
+        <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white p-8 rounded-lg w-full max-w-md">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-medium">Deposit Funds</h3>
+                    <button onclick="closeDepositModal()" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
                 </div>
-            </form>
+
+                <form action="{{ route('adaccounts.deposit', $adAccount->id) }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
+                            <select name="wallet_id" id="depositWalletId" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                onchange="updateDepositPreview()">
+                                @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
+                                    <option value="{{ $wallet->id }}">
+                                        {{ $wallet->currency }} Wallet (Balance:
+                                        {{ number_format($wallet->getBalance(), 2) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Amount</label>
+                            <input type="number" name="amount" id="depositAmount" min="1" step="0.01"
+                                required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                oninput="updateDepositPreview()">
+                        </div>
+
+                        <!-- Fee Preview -->
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction Preview</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Amount:</span>
+                                    <span id="previewDepositAmount">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>VAT ({{ $adAccount->getVatRate() }}%):</span>
+                                    <span id="previewDepositVat">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Service Fee ({{ $adAccount->getServiceFeeRate() }}%):</span>
+                                    <span id="previewDepositServiceFee">0.00</span>
+                                </div>
+                                <div class="flex justify-between font-medium border-t pt-2 mt-2">
+                                    <span>Total Amount:</span>
+                                    <span id="previewDepositTotal">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                            Confirm Deposit
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
+        <!-- Withdraw Modal -->
+        <div id="withdrawModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white p-8 rounded-lg w-full max-w-md">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-medium">Withdraw Funds</h3>
+                    <button onclick="closeWithdrawModal()" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <form action="{{ route('adaccounts.withdraw', $adAccount->id) }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
+                            <select name="wallet_id" id="withdrawWalletId" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                onchange="updateWithdrawPreview()">
+                                @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
+                                    <option value="{{ $wallet->id }}">
+                                        {{ $wallet->currency }} Wallet (Balance:
+                                        {{ number_format($wallet->getBalance(), 2) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Amount</label>
+                            <input type="number" name="amount" id="withdrawAmount" min="1" step="0.01"
+                                required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                oninput="updateWithdrawPreview()">
+                        </div>
+
+                        <!-- Fee Preview -->
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction Preview</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Amount:</span>
+                                    <span id="previewWithdrawAmount">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>VAT ({{ $adAccount->getVatRate() }}%):</span>
+                                    <span id="previewWithdrawVat">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Service Fee ({{ $adAccount->getServiceFeeRate() }}%):</span>
+                                    <span id="previewWithdrawServiceFee">0.00</span>
+                                </div>
+                                <div class="flex justify-between font-medium border-t pt-2 mt-2">
+                                    <span>Total Amount:</span>
+                                    <span id="previewWithdrawTotal">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                            Confirm Withdrawal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Balance -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-4">Account Balance</h3>
+            <p class="text-2xl font-bold">{{ number_format($adAccount->getBalance(), 2) }} {{ $adAccount->currency }}
+            </p>
+        </div>
         <!-- Transactions History -->
         <div class="bg-white p-6 rounded-lg shadow">
             <h3 class="text-lg font-medium mb-4">Transaction History</h3>
@@ -68,7 +166,8 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">VAT</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service Fee</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service Fee
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
@@ -91,4 +190,70 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Modal functions
+        function openDepositModal() {
+            document.getElementById('depositModal').style.display = 'flex';
+        }
+
+        function closeDepositModal() {
+            document.getElementById('depositModal').style.display = 'none';
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('depositModal')) {
+                closeDepositModal();
+            }
+            if (event.target == document.getElementById('withdrawModal')) {
+                closeWithdrawModal();
+            }
+        }
+
+        // Fee calculation functions
+        function calculateFees(amount) {
+            const vatRate = {{ $adAccount->getVatRate() }};
+            const serviceFeeRate = {{ $adAccount->getServiceFeeRate() }};
+
+            const vat = (amount * vatRate) / 100;
+            const serviceFee = (amount * serviceFeeRate) / 100;
+            const total = amount + vat + serviceFee;
+
+            return {
+                amount: amount,
+                vat: vat,
+                serviceFee: serviceFee,
+                total: total
+            };
+        }
+
+        function updateDepositPreview() {
+            const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+            const fees = calculateFees(amount);
+
+            document.getElementById('previewDepositAmount').textContent = fees.amount.toFixed(2);
+            document.getElementById('previewDepositVat').textContent = fees.vat.toFixed(2);
+            document.getElementById('previewDepositServiceFee').textContent = fees.serviceFee.toFixed(2);
+            document.getElementById('previewDepositTotal').textContent = fees.total.toFixed(2);
+        }
+
+        function updateWithdrawPreview() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+            const fees = calculateFees(amount);
+
+            document.getElementById('previewWithdrawAmount').textContent = fees.amount.toFixed(2);
+            document.getElementById('previewWithdrawVat').textContent = fees.vat.toFixed(2);
+            document.getElementById('previewWithdrawServiceFee').textContent = fees.serviceFee.toFixed(2);
+            document.getElementById('previewWithdrawTotal').textContent = fees.total.toFixed(2);
+        }
+    </script>
 </x-user-layout>
