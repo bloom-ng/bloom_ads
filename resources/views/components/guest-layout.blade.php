@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-x-bind:class="{ 'dark': darkMode }">
+<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-bind:class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +10,9 @@ x-bind:class="{ 'dark': darkMode }">
     <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
 
-<body class="h-full transition-colors duration-200
-             bg-white dark:bg-gray-900 
-             text-gray-900 dark:text-white">
+<body class="h-full w-full">
     <!-- Add theme toggle to your navigation -->
-    <x-theme-toggle />
+    {{-- <x-theme-toggle /> --}}
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
