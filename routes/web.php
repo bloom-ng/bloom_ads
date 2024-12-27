@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminOrganizationsController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
 use App\Http\Controllers\AdminMetaAdAccountsController;
+use App\Http\Controllers\BusinessManagerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -91,6 +92,11 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
     Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
     Route::post('/ad-accounts/{adAccount}/transfer', [AdminWalletController::class, 'transferFromAdAccount'])->name('adaccounts.transfer');
+
+    // Add these routes inside your admin group
+    Route::resource('business-managers', BusinessManagerController::class);
+    Route::get('business-managers/{businessManager}/accounts', [BusinessManagerController::class, 'showAccounts'])
+        ->name('business-managers.accounts');
 });
 
 Route::get('/', function () {

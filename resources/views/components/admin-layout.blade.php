@@ -255,8 +255,8 @@
                 </span>
                 Meta Accounts
             </a>
-            <a href="{{ route('admin.organizations.index') }}"
-                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+            <a href="{{ route('admin.business-managers.index') }}"
+                class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -268,7 +268,7 @@
                             stroke="currentColor" stroke-width="2" />
                     </svg>
                 </span>
-                Organizations
+                Business Managers
             </a>
             <a href="{{ route('admin.adminsettings.index') }}"
                 class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
@@ -375,6 +375,11 @@
                     class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                     <i class="fas fa-ad mr-3"></i>
                     Meta Accounts
+                </a>
+                <a href="{{ route('admin.business-managers.index') }}"
+                    class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <i class="fas fa-users mr-3"></i>
+                    Business Managers
                 </a>
                 <form method="POST" action="{{ route('admin.logout') }}" class="block">
                     @csrf

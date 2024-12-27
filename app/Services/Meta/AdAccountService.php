@@ -16,10 +16,10 @@ class AdAccountService
     private string $accessToken;
     private string $baseUrl = 'https://graph.facebook.com/v21.0';
     
-    public function __construct()
+    public function __construct($businessId = null, $accessToken = null)
     {
-        $this->businessId = config('services.meta.business_id');
-        $this->accessToken = config('services.meta.access_token');
+        $this->businessId = $businessId ?? config('services.meta.business_id');
+        $this->accessToken = $accessToken ?? config('services.meta.access_token');
     }
 
     public function createAdAccount(CreateAdAccountDTO $dto): array
