@@ -395,7 +395,8 @@
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     target="_blank"><img src="/images/Instagram.png" alt="Instagram Link"/></a>
                 <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.png"
-                        alt="X Link" /></a><a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                        alt="X Link" /></a>
+                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
                         src="/images/Facebook.png" alt="Facebook Link" /></a>
                 <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
                         src="/images/LinkedIn.png" alt="LinkedIn Link" /></a>

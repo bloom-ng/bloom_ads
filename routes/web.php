@@ -163,7 +163,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/organization', [SettingsController::class, 'setCurrentOrganization'])->name('settings.set-organization');
     Route::post('/settings/wallet', [SettingsController::class, 'createWallet'])->name('settings.create-wallet');
-
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.2fa-update');
+    
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet', [WalletController::class, 'create'])->name('wallet.create');
     Route::post('/wallet/fund/paypal', [WalletController::class, 'fundWithPaypal'])->name('wallet.fund.paypal');
@@ -208,6 +209,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User account management
     Route::get('/account', [UsersController::class, 'account'])->name('account');
     Route::put('/account/update', [UsersController::class, 'updateProfile'])->name('account.update');
+
 });
 
 // Add these routes for email verification

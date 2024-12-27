@@ -47,6 +47,28 @@
                     </div>
                 </div>
             </div>
+
+            @section('content')
+                <div class="container">
+                    <h1>User Settings</h1>
+                    <form action="{{ route('settings.2fa-update') }}" method="POST">
+                        @csrf
+            @method('PUT')
+
+            <!-- Other settings fields -->
+
+            <div class="mb-4">
+                <label for="two_factor_enabled" class="flex items-center">
+                    <input type="checkbox" name="two_factor_enabled" id="two_factor_enabled" 
+                       {{ auth()->user()->settings->two_factor_enabled ? 'checked' : '' }}>
+                    <span class="ml-2">Enable Two-Factor Authentication</span>
+            </label>
+        </div>
+
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </main>
         </main>
     </div>
 </x-user-layout>

@@ -11,6 +11,7 @@ class UserSettings extends Model
         'user_id',
         'current_organization_id',
         'preferences',
+        'two_factor_enabled',
     ];
 
     protected $casts = [

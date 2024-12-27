@@ -8,7 +8,7 @@
                             Made Easy</span> With Bloom</h1>
                     <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and Meta Ads account
                     </h3>
-                    <a href="#"
+                    <a href="/signup"
                         class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-20">Get
                         Started Now</a>
                 </div>
@@ -163,7 +163,7 @@
                 </div>
 
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started Now</a>
             </div>
         </section>
 
@@ -175,7 +175,7 @@
                     today.</p>
 
                 <div class="flex flex-col md:flex-row gap-7 lg:justify-start justify-center items-start">
-                    <a href="" class="bg-[#57BA63] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
+                    <a href="https://wa.me/+2347086278644" class="bg-[#57BA63] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="40" height="40" fill="url(#pattern0_519_198)" />
@@ -250,7 +250,7 @@
                 <p class="text-xl text-center mb-3">Struggling to <strong>secure an Ad account</strong> due to
                     restrictions or disapprovals?</p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl lg:mt-20">
@@ -271,7 +271,7 @@
                 <p class="text-xl text-center mb-3"><strong>Difficulty navigating the Ad account creation</strong> and
                     funding process?</p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
@@ -291,7 +291,7 @@
                 <p class="text-xl text-center mb-3">Problems with a <strong>suspended or declined payment
                         method?</strong></p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
@@ -311,7 +311,7 @@
                 <p class="text-xl text-center mb-3">Issues with a <strong>disabled or restricted Ad account?</strong>
                 </p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
@@ -331,7 +331,7 @@
                 <p class="text-xl text-center mb-3"><strong>Ads not delivering</strong> or showing to the intended
                     audience?</p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
@@ -350,7 +350,7 @@
 
                 <p class="text-xl text-center mb-3">Dealing with an <strong>Ad account under review?</strong></p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
 
             <div class="flex flex-col justify-center items-center bg-[#E6E6F3] p-5 rounded-3xl">
@@ -370,7 +370,7 @@
                 <p class="text-xl text-center mb-3"><strong>Ad costs being too high</strong> or exceeding the budget?
                 </p>
 
-                <a href="" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
         </section>
 
@@ -398,7 +398,7 @@
                     <p class="mb-5 text-center">Enjoy a dedicated account with a credit line as your payment method,
                         making ad payment and management seamless.</p>
 
-                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
+                    <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
 
                 <div class="flex flex-col justify-center items-center md:mb-0 mb-5">
@@ -420,7 +420,7 @@
                     <p class="mb-5 text-center">Prepay for your ads by opening a wallet on our website and fund your
                         account on the go.</p>
 
-                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
+                    <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
 
                 <div class="flex flex-col justify-center items-center md:mb-0 mb-5">
@@ -442,7 +442,7 @@
                     <p class="mb-5 text-center">Manage your own ads with confidence, while our expert team provides
                         professional support to help your campaigns reach their full potential.</p>
 
-                    <a href="" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
+                    <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl text-white">Get Started Now</a>
                 </div>
             </div>
         </section>

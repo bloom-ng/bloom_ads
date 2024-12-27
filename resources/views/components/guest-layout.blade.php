@@ -119,10 +119,10 @@
         </div>
 
         <div class="flex flex-row lg:space-x-3 mb-10">
-            <a href=""><img src="/images/Instagram.png" alt="instagram logo"></a>
-            <a href=""><img src="/images/Facebook.png" alt="facebook logo"></a>
-            <a href=""><img src="/images/LinkedIn.png" alt="linkedin logo"></a>
-            <a href=""><img src="/images/TwitterX.png" alt="twitter logo"></a>
+            <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><img src="/images/Instagram.png" alt="instagram logo"></a>
+            <a href="https://www.facebook.com/bloomdigitmedia/"><img src="/images/Facebook.png" alt="facebook logo"></a>
+            <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"><img src="/images/LinkedIn.png" alt="linkedin logo"></a>
+            <a href="https://x.com/bloomdigitmedia?s=20"><img src="/images/TwitterX.png" alt="twitter logo"></a>
         </div>
 
         <div class="flex flex-row mb-5 space-x-2">

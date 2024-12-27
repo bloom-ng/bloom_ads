@@ -51,4 +51,20 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Current organization updated successfully.');
     }
+
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            'two_factor_enabled' => 'boolean',
+            // Add other validation rules for other settings if necessary
+        ]);
+
+        // Get the user's settings
+        $userSettings = UserSettings::where('user_id', auth()->id())->first();
+
+        // Update the settings
+        $userSettings->update($validated);
+
+        return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
 }
