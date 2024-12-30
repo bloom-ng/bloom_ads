@@ -12,6 +12,8 @@ use App\Services\PaystackService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\WalletNotification;
+use App\Models\WalletTransaction;
+use PDF;
 
 class WalletController extends Controller
 {
@@ -34,13 +36,22 @@ class WalletController extends Controller
             ->where('organization_id', $organization->id)
             ->get();
 
+        // Get all wallet IDs for the organization
+        $walletIds = $wallets->pluck('id');
+
+        // Load transactions for all wallets, paginated
+        $transactions = WalletTransaction::whereIn('wallet_id', $walletIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
         $organization->setRelation('wallets', $wallets);
         $userRole = $organization->users->first()->pivot->role;
 
         return view('dashboard.wallet.index', [
             'organization' => $organization,
             'userRole' => $userRole,
-            'currentOrganization' => $organization
+            'currentOrganization' => $organization,
+            'transactions' => $transactions
         ]);
     }
 
@@ -419,5 +430,39 @@ class WalletController extends Controller
             Log::error('Wallet transfer error: ' . $e->getMessage());
             return back()->with('error', 'An error occurred during the transfer.');
         }
+    }
+
+    public function viewTransactionReceipt(WalletTransaction $transaction)
+    {
+        // Ensure user has access to this transaction
+        $user = Auth::user();
+        $currentOrgId = $user->settings->current_organization_id;
+
+        if ($transaction->wallet->organization_id !== $currentOrgId) {
+            abort(403);
+        }
+
+        return view('dashboard.wallet.receipt', [
+            'transaction' => $transaction,
+            'organization' => $transaction->wallet->organization
+        ]);
+    }
+
+    public function downloadTransactionReceipt(WalletTransaction $transaction)
+    {
+        // Ensure user has access to this transaction
+        $user = Auth::user();
+        $currentOrgId = $user->settings->current_organization_id;
+
+        if ($transaction->wallet->organization_id !== $currentOrgId) {
+            abort(403);
+        }
+
+        $pdf = PDF::loadView('dashboard.wallet.receipt-pdf', [
+            'transaction' => $transaction,
+            'organization' => $transaction->wallet->organization
+        ]);
+
+        return $pdf->download("receipt-{$transaction->reference}.pdf");
     }
 }

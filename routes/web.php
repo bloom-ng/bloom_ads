@@ -286,3 +286,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return back()->with('success', 'All notifications marked as read');
     })->name('notifications.mark-all-read');
 });
+
+Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])
+    ->name('wallet.transaction.receipt');
+Route::get('/wallet/transaction/{transaction}/receipt/download', [WalletController::class, 'downloadTransactionReceipt'])
+    ->name('wallet.transaction.receipt.download');
