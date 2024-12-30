@@ -67,4 +67,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserSettings::class);
     }
+
+    /**
+     * Route notifications for the mail channel.
+     */
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
 }

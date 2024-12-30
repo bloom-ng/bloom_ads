@@ -11,6 +11,7 @@ use App\Models\Wallet;
 use App\Models\AdAccountTransaction;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\AdAccountNotification;
 
 class AdminAdAccountsController extends Controller
 {
@@ -213,6 +214,38 @@ class AdminAdAccountsController extends Controller
                 ]);
             });
 
+            try {
+                // Notify the user who owns the ad account
+                $adAccount->user->notify(new AdAccountNotification([
+                    'subject' => 'Ad Account Funded',
+                    'message' => "Your ad account {$adAccount->name} has been funded with {$validated['amount']} by admin",
+                    'type' => 'ad_account_funded',
+                    'amount' => $validated['amount'],
+                    'ad_account_id' => $adAccount->id
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Ad account funding notification error: ' . $e->getMessage());
+            }
+
+            // Notify organization owner if different from ad account owner
+            $organizationOwner = $adAccount->organization->users()
+                ->wherePivot('role', 'owner')
+                ->first();
+
+            if ($organizationOwner && $organizationOwner->id !== $adAccount->user_id) {
+                try {
+                    $organizationOwner->notify(new AdAccountNotification([
+                        'subject' => 'Ad Account Funded',
+                        'message' => "Ad account {$adAccount->name} has been funded with {$validated['amount']} by admin",
+                        'type' => 'ad_account_funded',
+                        'amount' => $validated['amount'],
+                        'ad_account_id' => $adAccount->id
+                    ]));
+                } catch (\Exception $e) {
+                    Log::error('Ad account funding notification error: ' . $e->getMessage());
+                }
+            }
+
             return back()->with('success', 'Ad account funded successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to fund ad account: ' . $e->getMessage());
@@ -279,6 +312,38 @@ class AdminAdAccountsController extends Controller
                     'source_currency' => $wallet->currency
                 ]);
             });
+
+            try {
+                // Notify the user who owns the ad account
+                $adAccount->user->notify(new AdAccountNotification([
+                    'subject' => 'Ad Account Withdrawal',
+                    'message' => "Amount {$validated['amount']} has been withdrawn from your ad account {$adAccount->name} by admin",
+                    'type' => 'ad_account_withdrawal',
+                    'amount' => $validated['amount'],
+                    'ad_account_id' => $adAccount->id
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Ad account withdrawal notification error: ' . $e->getMessage());
+            }
+
+            // Notify organization owner if different from ad account owner
+            $organizationOwner = $adAccount->organization->users()
+                ->wherePivot('role', 'owner')
+                ->first();
+
+            if ($organizationOwner && $organizationOwner->id !== $adAccount->user_id) {
+                try {
+                    $organizationOwner->notify(new AdAccountNotification([
+                        'subject' => 'Ad Account Withdrawal',
+                        'message' => "Amount {$validated['amount']} has been withdrawn from ad account {$adAccount->name} by admin",
+                        'type' => 'ad_account_withdrawal',
+                        'amount' => $validated['amount'],
+                        'ad_account_id' => $adAccount->id
+                    ]));
+                } catch (\Exception $e) {
+                    Log::error('Ad account withdrawal notification error: ' . $e->getMessage());
+                }
+            }
 
             return back()->with('success', 'Funds withdrawn successfully');
         } catch (\Exception $e) {

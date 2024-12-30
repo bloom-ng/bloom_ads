@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\PaystackService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\WalletNotification;
 
 class WalletController extends Controller
 {
-     public function index()
+    public function index()
     {
         $user = Auth::user();
         $currentOrgId = $user->settings->current_organization_id ?? null;
@@ -224,6 +225,16 @@ class WalletController extends Controller
                 // Update wallet balance with converted amount
                 // $wallet->increment('balance', $convertedAmount);
 
+                if ($transaction->status === 'successful') {
+                    // After successful funding
+                    auth()->user()->notify(new WalletNotification([
+                        'subject' => 'Wallet Funded Successfully',
+                        'message' => "Your wallet has been credited with {$convertedAmount}",
+                        'type' => 'wallet_funded',
+                        'amount' => $convertedAmount
+                    ]));
+                }
+
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
             }
@@ -278,6 +289,14 @@ class WalletController extends Controller
 
                 // Update wallet balance
                 // $wallet->increment('balance', $convertedAmount);
+
+                // After successful funding
+                auth()->user()->notify(new WalletNotification([
+                    'subject' => 'Wallet Funded Successfully',
+                    'message' => "Your wallet has been credited with {$convertedAmount}",
+                    'type' => 'wallet_funded',
+                    'amount' => $convertedAmount
+                ]));
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
@@ -383,6 +402,17 @@ class WalletController extends Controller
                 ]);
                 // $destinationWallet->increment('balance', $convertedAmount);
             });
+
+            try {
+                auth()->user()->notify(new WalletNotification([
+                    'subject' => 'Wallet Transfer',
+                    'message' => "You have transferred {$validated['amount']} from your wallet",
+                    'type' => 'wallet_transfer',
+                    'amount' => $validated['amount']
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Wallet transfer notification error: ' . $e->getMessage());
+            }
 
             return back()->with('success', 'Transfer completed successfully.');
         } catch (\Exception $e) {

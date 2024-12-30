@@ -279,4 +279,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User account management
     Route::get('/account', [UsersController::class, 'account'])->name('account');
     Route::put('/account/update', [UsersController::class, 'updateProfile'])->name('account.update');
+
+    // Inside the auth middleware group
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'All notifications marked as read');
+    })->name('notifications.mark-all-read');
 });

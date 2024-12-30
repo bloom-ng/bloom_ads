@@ -9,9 +9,9 @@ use Illuminate\Notifications\Notification;
 use App\Models\Organization;
 use App\Models\OrganizationInvite;
 
-class OrganizationInvitation extends Notification implements ShouldQueue
+class OrganizationInvitation extends Notification
 {
-    use Queueable;
+    // use Queueable;
 
     protected $organization;
     protected $invite;
