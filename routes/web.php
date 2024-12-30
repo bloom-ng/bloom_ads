@@ -57,6 +57,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/wallets', [AdminWalletController::class, 'index'])->name('wallets.index');
 
     Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
+    Route::get('/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('adaccounts.show');
     Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('adaccounts.edit');
     Route::put('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'update'])->name('adaccounts.update');
     Route::delete('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'destroy'])->name('adaccounts.destroy');
@@ -97,6 +98,11 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::resource('business-managers', BusinessManagerController::class);
     Route::get('business-managers/{businessManager}/accounts', [BusinessManagerController::class, 'showAccounts'])
         ->name('business-managers.accounts');
+
+    Route::post('/adaccounts/{adAccount}/fund', [AdminAdAccountsController::class, 'fund'])
+        ->name('adaccounts.fund');
+    Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
+        ->name('adaccounts.withdraw');
 });
 
 Route::get('/', function () {
