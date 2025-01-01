@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\FacadesLog;
+use App\Notifications\AdAccountNotification;
 
 class AdAccountsController extends Controller
 {
@@ -309,6 +310,18 @@ class AdAccountsController extends Controller
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
             });
+            try {
+                // After successful deposit
+                auth()->user()->notify(new AdAccountNotification([
+                    'subject' => 'Ad Account Deposit',
+                    'message' => "You have deposited {$validated['amount']} to ad account {$adAccount->name}",
+                    'type' => 'ad_account_deposit',
+                    'amount' => $validated['amount'],
+                    'ad_account_id' => $adAccount->id
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Ad account deposit notification error: ' . $e->getMessage());
+            }
 
             return redirect()->back()
                 ->with('success', 'Funds deposited successfully');
@@ -379,6 +392,20 @@ class AdAccountsController extends Controller
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
             });
+
+            try {
+                // After successful withdrawal
+                auth()->user()->notify(new AdAccountNotification([
+                    'subject' => 'Ad Account Withdrawal',
+                    'message' => "You have withdrawn {$validated['amount']} from ad account {$adAccount->name}",
+                    'type' => 'ad_account_withdrawal',
+                    'amount' => $validated['amount'],
+                    'ad_account_id' => $adAccount->id
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Ad account withdrawal notification error: ' . $e->getMessage());
+            }
+
 
             return redirect()->back()
                 ->with('success', 'Funds withdrawn successfully');

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\BaseNotification;
 
 class OrganizationController extends Controller
 {
@@ -61,6 +62,11 @@ class OrganizationController extends Controller
         $existingUser = User::where('email', $validated['email'])->first();
         if ($existingUser) {
             $organization->users()->attach($existingUser->id, ['role' => $validated['role']]);
+            $existingUser->notify(new BaseNotification([
+                'message' => "You have been invited to join {$organization->name}",
+                'type' => 'organization_invite',
+                'organization_id' => $organization->id
+            ]));
             return back()->with('success', 'User added to organization');
         }
 
@@ -75,7 +81,7 @@ class OrganizationController extends Controller
 
 
         // Send invitation email
-        Notification::route('mail', $validated['email'])->notify((new OrganizationInvitation($organization, $invite)));
+        Notification::route('mail', $validated['email'])->notify(new OrganizationInvitation($organization, $invite));
 
         return back()->with('success', 'Invitation sent');
     }

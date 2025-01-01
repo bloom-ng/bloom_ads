@@ -69,6 +69,91 @@
                                 <p class="text-gray-500">No wallets found.</p>
                             @endforelse
                         </div>
+
+                        <!-- Transaction History Section -->
+                        <div class="mt-8">
+                            <h2 class="text-2xl font-semibold mb-4">Transaction History</h2>
+                            <div class="bg-white border rounded-lg shadow-sm overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Date</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Type</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Description</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Amount</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Currency</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Status</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Receipt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @forelse ($transactions as $transaction)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $transaction->created_at->format('M d, Y H:i') }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                        {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                        {{ ucfirst($transaction->type) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $transaction->description }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ number_format($transaction->amount, 2) }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $transaction->currency }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                        {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                        {{ ucfirst($transaction->status) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    @if ($transaction->status === 'completed')
+                                                        <a href="{{ route('wallet.transaction.receipt', $transaction) }}"
+                                                            class="text-gray-600 hover:text-gray-900">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7"
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                                    No transactions found
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+
+                                @if ($transactions->hasPages())
+                                    <div class="px-6 py-4 border-t border-gray-200">
+                                        {{ $transactions->links() }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -113,8 +198,9 @@
                     <input type="hidden" name="wallet_currency" id="modalWalletCurrencyPaystack">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
-                        <input type="number" name="amount" id="fundAmountPaystack" placeholder="Enter amount in NGN"
-                            required class="w-full p-2 border rounded" oninput="updateFundingPreview()">
+                        <input type="number" name="amount" id="fundAmountPaystack"
+                            placeholder="Enter amount in NGN" required class="w-full p-2 border rounded"
+                            oninput="updateFundingPreview()">
                     </div>
                     <button type="submit"
                         class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
@@ -171,6 +257,24 @@
                 class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
                 Cancel
             </button>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 rounded-lg max-w-2xl w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Transaction Receipt</h2>
+                <button onclick="closeReceiptModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="receiptContent" class="space-y-4">
+                <!-- Receipt content will be loaded here -->
+            </div>
         </div>
     </div>
 
@@ -298,6 +402,54 @@
             convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, walletCurrency)}`;
 
             document.getElementById('fundingConversionPreview').style.display = amount > 0 ? 'block' : 'none';
+        }
+
+        function viewReceipt(transactionId) {
+            // Show loading state
+            document.getElementById('receiptModal').style.display = 'flex';
+            document.getElementById('receiptContent').innerHTML = '<p class="text-center">Loading...</p>';
+
+            // Fetch receipt data
+            fetch(`/wallet/transaction/${transactionId}/receipt`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('receiptContent').innerHTML = `
+                        <div class="border-b pb-4">
+                            <p class="text-sm text-gray-600">Transaction ID</p>
+                            <p class="font-medium">${data.reference}</p>
+                        </div>
+                        <div class="border-b pb-4">
+                            <p class="text-sm text-gray-600">Date</p>
+                            <p class="font-medium">${data.date}</p>
+                        </div>
+                        <div class="border-b pb-4">
+                            <p class="text-sm text-gray-600">Description</p>
+                            <p class="font-medium">${data.description}</p>
+                        </div>
+                        <div class="border-b pb-4">
+                            <p class="text-sm text-gray-600">Amount</p>
+                            <p class="font-medium">${data.amount} ${data.currency}</p>
+                        </div>
+                        ${data.rate ? `
+                                    <div class="border-b pb-4">
+                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                    </div>
+                                ` : ''}
+                        <div class="border-b pb-4">
+                            <p class="text-sm text-gray-600">Status</p>
+                            <p class="font-medium">${data.status}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('receiptContent').innerHTML =
+                        '<p class="text-red-500 text-center">Failed to load receipt details</p>';
+                });
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').style.display = 'none';
         }
     </script>
 </x-user-layout>

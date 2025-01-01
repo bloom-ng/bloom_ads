@@ -107,12 +107,12 @@
             @php
                 use Illuminate\Support\Facades\Auth;
                 use App\Models\Organization;
-                
+
                 $currentOrganizationId = Auth::user()->settings->current_organization_id ?? null;
                 $currentOrganization = $currentOrganizationId ? Organization::find($currentOrganizationId) : null;
             @endphp
-            
-            @if($currentOrganization)
+
+            @if ($currentOrganization)
                 <p class="text-sm text-center mt-2">Current Organization: {{ $currentOrganization->name }}</p>
             @else
                 <p class="text-sm text-center mt-2">No organization selected</p>
@@ -215,16 +215,17 @@
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
         <!-- Desktop Header -->
         <header class="w-full items-center bg-[#F0F0F0] py-4 px-6 hidden sm:flex">
-            
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end">
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ Auth::user()->name }}" />
+                    <img
+                        src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ Auth::user()->name }}" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
-                    <a href="{{ route('account') }}" class="block px-4 py-2 account-link hover:text-white">Account</a>
+                    <a href="{{ route('account') }}"
+                        class="block px-4 py-2 account-link hover:text-white">Account</a>
                     <form method="POST" action="{{ route('user.logout') }}" class="block">
                         @csrf
                         <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
@@ -233,6 +234,12 @@
                     </form>
                 </div>
             </div>
+
+            <div class="flex items-center">
+                <x-notification-dropdown />
+                <!-- Other header items -->
+            </div>
+
         </header>
 
         <!-- Mobile Header & Nav -->
@@ -261,7 +268,8 @@
                 </a>
                 <form method="POST" action="{{ route('user.logout') }}" class="block">
                     @csrf
-                    <button type="submit" class="flex w-full items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <button type="submit"
+                        class="flex w-full items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Sign Out
                     </button>
@@ -271,12 +279,13 @@
 
         {{ $slot }}
         <div class="flex-grow"></div>
-        <footer class="flex bg-gradient-to-r from-gray-200 to-blue-800 bg-opacity-30 justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
+        <footer
+            class="flex bg-gradient-to-r from-gray-200 to-blue-800 bg-opacity-30 justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
             <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank"><img src="/images/Instagram.png" alt="Instagram Link"/></a>
+                    target="_blank"><img src="/images/Instagram.png" alt="Instagram Link" /></a>
                 <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.png"
                         alt="X Link" /></a><a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
                         src="/images/Facebook.png" alt="Facebook Link" /></a>

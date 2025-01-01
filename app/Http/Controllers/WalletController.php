@@ -11,10 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\PaystackService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\WalletNotification;
+use App\Models\WalletTransaction;
+use PDF;
 
 class WalletController extends Controller
 {
-     public function index()
+    public function index()
     {
         $user = Auth::user();
         $currentOrgId = $user->settings->current_organization_id ?? null;
@@ -33,13 +36,22 @@ class WalletController extends Controller
             ->where('organization_id', $organization->id)
             ->get();
 
+        // Get all wallet IDs for the organization
+        $walletIds = $wallets->pluck('id');
+
+        // Load transactions for all wallets, paginated
+        $transactions = WalletTransaction::whereIn('wallet_id', $walletIds)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
         $organization->setRelation('wallets', $wallets);
         $userRole = $organization->users->first()->pivot->role;
 
         return view('dashboard.wallet.index', [
             'organization' => $organization,
             'userRole' => $userRole,
-            'currentOrganization' => $organization
+            'currentOrganization' => $organization,
+            'transactions' => $transactions
         ]);
     }
 
@@ -224,6 +236,16 @@ class WalletController extends Controller
                 // Update wallet balance with converted amount
                 // $wallet->increment('balance', $convertedAmount);
 
+                if ($transaction->status === 'successful') {
+                    // After successful funding
+                    auth()->user()->notify(new WalletNotification([
+                        'subject' => 'Wallet Funded Successfully',
+                        'message' => "Your wallet has been credited with {$convertedAmount}",
+                        'type' => 'wallet_funded',
+                        'amount' => $convertedAmount
+                    ]));
+                }
+
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
             }
@@ -278,6 +300,14 @@ class WalletController extends Controller
 
                 // Update wallet balance
                 // $wallet->increment('balance', $convertedAmount);
+
+                // After successful funding
+                auth()->user()->notify(new WalletNotification([
+                    'subject' => 'Wallet Funded Successfully',
+                    'message' => "Your wallet has been credited with {$convertedAmount}",
+                    'type' => 'wallet_funded',
+                    'amount' => $convertedAmount
+                ]));
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
@@ -384,10 +414,55 @@ class WalletController extends Controller
                 // $destinationWallet->increment('balance', $convertedAmount);
             });
 
+            try {
+                auth()->user()->notify(new WalletNotification([
+                    'subject' => 'Wallet Transfer',
+                    'message' => "You have transferred {$validated['amount']} from your wallet",
+                    'type' => 'wallet_transfer',
+                    'amount' => $validated['amount']
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Wallet transfer notification error: ' . $e->getMessage());
+            }
+
             return back()->with('success', 'Transfer completed successfully.');
         } catch (\Exception $e) {
             Log::error('Wallet transfer error: ' . $e->getMessage());
             return back()->with('error', 'An error occurred during the transfer.');
         }
+    }
+
+    public function viewTransactionReceipt(WalletTransaction $transaction)
+    {
+        // Ensure user has access to this transaction
+        $user = Auth::user();
+        $currentOrgId = $user->settings->current_organization_id;
+
+        if ($transaction->wallet->organization_id !== $currentOrgId) {
+            abort(403);
+        }
+
+        return view('dashboard.wallet.receipt', [
+            'transaction' => $transaction,
+            'organization' => $transaction->wallet->organization
+        ]);
+    }
+
+    public function downloadTransactionReceipt(WalletTransaction $transaction)
+    {
+        // Ensure user has access to this transaction
+        $user = Auth::user();
+        $currentOrgId = $user->settings->current_organization_id;
+
+        if ($transaction->wallet->organization_id !== $currentOrgId) {
+            abort(403);
+        }
+
+        $pdf = PDF::loadView('dashboard.wallet.receipt-pdf', [
+            'transaction' => $transaction,
+            'organization' => $transaction->wallet->organization
+        ]);
+
+        return $pdf->download("receipt-{$transaction->reference}.pdf");
     }
 }
