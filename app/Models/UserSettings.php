@@ -16,9 +16,19 @@ class UserSettings extends Model
 
     protected $casts = [
         'preferences' => 'array',
+        'two_factor_enabled' => 'boolean',
     ];
 
-    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($settings) {
+            if (is_null($settings->two_factor_enabled)) {
+                $settings->two_factor_enabled = false;
+            }
+        });
+    }
 
     public static function getPreferences(): array
     {

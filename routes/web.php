@@ -16,14 +16,13 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
 use App\Http\Controllers\AdminMetaAdAccountsController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\User;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +102,7 @@ Route::get('/login', function () {
 
 Route::post('/login', [SignupController::class, 'login'])->name('login');
 
+
 Route::get('/contact', function () {
     return view('contact');
 });
@@ -140,7 +140,7 @@ Route::get('/forgot', function () {
 
 // Route::post('/signup', [SignupController::class, 'store'])->name('signup');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
@@ -163,8 +163,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/organization', [SettingsController::class, 'setCurrentOrganization'])->name('settings.set-organization');
     Route::post('/settings/wallet', [SettingsController::class, 'createWallet'])->name('settings.create-wallet');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.2fa-update');
-    
+    Route::put('/settings', [SettingsController::class, 'updateTwoFactor'])->name('settings.2fa-update');
+    Route::get('/settings/2fa', [SettingsController::class, 'showTwoFactorForm'])->name('settings.2fa-form');
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet', [WalletController::class, 'create'])->name('wallet.create');
     Route::post('/wallet/fund/paypal', [WalletController::class, 'fundWithPaypal'])->name('wallet.fund.paypal');
@@ -212,21 +212,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-// Add these routes for email verification
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/dashboard')->with('verified', true);
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('status', 'verification-link-sent');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
 // Password Reset Routes
 Route::get('/forgot-password', function () {
     return view('forgot');
@@ -272,3 +257,19 @@ Route::post('/reset-password', function (Request $request) {
         ? redirect()->route('login')->with('status', __($status))
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
+
+// Route::get('2fa/verify', function () {
+//     return view('2fa'); // This points to your 2fa.blade.php
+// })->name('2fa.show'); // Use this name for displaying the 2FA form
+
+// Route::post('2fa/verify', [SignupController::class, 'verify2fa'])
+//     ->middleware('web')
+//     ->name('2fa.verify');
+
+Route::middleware('web')->group(function () {
+    Route::get('2fa/verify', function () {
+        return view('2fa'); // Your 2FA view
+    })->name('2fa.verify');
+
+    Route::post('2fa/verify', [SignupController::class, 'verify2fa'])->name('2fa.verify.post');
+});

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloom Ads | The Premier Platform for Google and Meta Ads in Nigeria</title>
+    <link rel="icon" href="{{ asset('/images/fav-icon.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://unpkg.com/alpinejs" defer></script>

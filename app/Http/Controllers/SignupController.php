@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TwoFactorCodeMail;
 
 class SignupController extends Controller
 {
@@ -66,12 +68,9 @@ class SignupController extends Controller
 
             DB::commit();
 
-            // Send verification email
-            event(new Registered($user));
-
             Auth::login($user);
 
-            return redirect()->route('verification.notice');
+            return redirect('/dashboard');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Registration failed: ' . $e->getMessage());
@@ -98,9 +97,28 @@ class SignupController extends Controller
             return back()->with('error', 'Invalid Credentials');
         }
 
+        session(['user_id' => $user->id]);
 
+        // Check if 2FA is enabled
+        if ($user->settings->two_factor_enabled) {
+            // Generate a random 6-digit code
+            $code = rand(100000, 999999); // Secure random 6-digit code
+
+            // Store the code in the session for verification later
+            session(['2fa_code' => $code]);
+            Log::info('2FA Code Stored in Session: ' . session('2fa_code'));
+
+
+            // Send the code to the user's email
+            Mail::to($user->email)->send(new TwoFactorCodeMail($code));
+
+            // Redirect to the existing 2FA code entry page
+            return redirect()->route('2fa.verify');
+        }
+
+        
+        // Log the user in if 2FA is not enabled
         Auth::login($user);
-
         return redirect('/dashboard');
     }
 
@@ -227,5 +245,29 @@ class SignupController extends Controller
         $countryCodes = CountryHelper::getCountryCodes();
         $countries = CountryHelper::getCountries();
         return view('signup3', compact('countryCodes', 'countries'));
+    }
+
+    public function verify2fa(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        Log::info('Auth User:', ['user' => Auth::user()]);
+        Log::info('Session Data Before Verification:', session()->all());
+        // Check if the code matches the one stored in the session
+        Log::info('Full Session Data: ' . json_encode(session()->all()));
+
+        // Check if user is authenticated
+    if ((string) $request->code === (string) session('2fa_code')) {
+        // Clear the session code
+        session()->forget('2fa_code');
+    
+        // Re-authenticate the user
+        Auth::loginUsingId(session('user_id'));
+    
+            // Redirect to the dashboard
+            return redirect()->intended('dashboard');
+        }
     }
 }

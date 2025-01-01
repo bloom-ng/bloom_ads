@@ -24,7 +24,7 @@
         rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link rel="icon" href="{{ asset('/images/fav-icon.png') }}" type="image/png">
 
     <title>Billing - Admin Dashboard</title>
 

@@ -61,10 +61,23 @@ class SettingsController extends Controller
 
         // Get the user's settings
         $userSettings = UserSettings::where('user_id', auth()->id())->first();
-
+        
         // Update the settings
         $userSettings->update($validated);
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
+
+    public function updateTwoFactor(Request $request)
+    {
+        $request->validate([
+            'two_factor_enabled' => 'required|boolean',
+        ]);
+
+        $user = Auth::user();
+        $user->settings->two_factor_enabled = $request->two_factor_enabled;
+        $user->settings->save();
+
+        return redirect()->back()->with('success', 'Two-Factor Authentication setting updated.');
     }
 }

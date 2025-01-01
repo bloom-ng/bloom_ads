@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('current_organization_id')->nullable()->constrained('organizations')->onDelete('set null');
             $table->json('preferences')->nullable();
+            $table->boolean('two_factor_enabled')->default(false);
             $table->timestamps();
 
             // Index for better query performance
