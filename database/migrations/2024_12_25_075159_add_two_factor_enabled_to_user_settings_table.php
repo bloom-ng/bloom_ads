@@ -9,11 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('user_settings', function (Blueprint $table) {
-            $table->boolean('two_factor_enabled')->default(false);
-        });
+        if (!Schema::hasColumn('user_settings', 'two_factor_enabled')) {
+            Schema::table('user_settings', function (Blueprint $table) {
+                $table->boolean('two_factor_enabled')->default(false);
+            });
+        }
     }
 
     /**

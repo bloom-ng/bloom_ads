@@ -40,8 +40,17 @@
             background: #F0F0F0;
         }
 
+        .bg-sidebar-top {
+            background: #000031;
+        }
+
+        .billings-icon {
+            width: 130px;
+            height: 35px;
+        }
+
         .active-nav-link {
-            background: #FFEEE7;
+            background: #6E6EAD;
         }
     </style>
 </head>
@@ -100,9 +109,9 @@
     @endif
 
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
-        <div class="p-6 bg-[#F48857]">
-            <a href="/dashboard" class="">
-                <h1 class="text-md lg:text-2xl font-semibold text-center">Billing</h1>
+        <div class="p-6 bg-sidebar-top">
+            <a href="/dashboard" class="flex justify-center">
+                <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="">
             </a>
             @php
                 use Illuminate\Support\Facades\Auth;
@@ -113,96 +122,45 @@
             @endphp
 
             @if ($currentOrganization)
-                <p class="text-sm text-center mt-2">Current Organization: {{ $currentOrganization->name }}</p>
+                <p class="text-sm text-white text-center mt-2">Current Organization: {{ $currentOrganization->name }}</p>
             @else
-                <p class="text-sm text-center mt-2">No organization selected</p>
+                <p class="text-sm text-white text-center mt-2">No organization selected</p>
             @endif
         </div>
-        <nav class="text-black text-base font-semibold pt-3">
+        <nav class="text-black text-base font-semibold">
             <a href="/dashboard"
-                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <rect width="52" height="52" fill="url(#pattern0_563_556)" />
-                        <defs>
-                            <pattern id="pattern0_563_556" patternContentUnits="objectBoundingBox" width="1"
-                                height="1">
-                                <use xlink:href="#image0_563_556" transform="scale(0.0104167)" />
-                            </pattern>
-                            <image id="image0_563_556" width="96" height="96"
-                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAACoElEQVR4nO2cW24TQRBFvZWIwCogHxCW4O6woXSZLIDnVgJhERD2kIc8UyX506ixCD8GhFIzfTt1j9S/0a0+025bVZnFghBCCCGEEEIIIYSQ/0Dl5KVK/mAlf9eSzCRv77P0599Il1ryey3p+KHlcmM4zU9M8pf7Fmb/WiVfDKtXj3vP5cpY0pFJup28SLkr9mZc5We95nJl94TNWKT8LnZ9ujzsLZc7VvKn2YuUu2IvesvlSr3YmhUpu6Wr/KKXXP4CSvrYvFBJ73rJ5U79Ste6UJN02UsufwGStX2hWXvJNYWALcJadJKLAoQCeAI8aX3EjR9B7TffeAdQgDW8hAG+7qUhrgCEHzwlfQsroDYjWhepkt8EFpCOWxep5eR5WAG7YtN5uyLT5/2ZAgnYnC0PrKQrpMaHRRJQqW24uiEzFnc9yvLpn/KEE1CpT+M8Xah0vn6dH/0tS0gBv6idoNqMqF8PnX4nqEn+qiW/3Xfh7iO0AAQMYPMpQCiAJyAqFvoSBpjBtIgCkGYwLZoAtBlMiyQAcQbTIglAnMG0KAJQZzAtjADQGUyLIgB4NnRsnqvkcQ4BkIUaaK/aX0DrImW3eulVBxKQIHvVYQSg9qrdQRawAexVhxKA2Kt2B10AWq/anR4EIPWq3elJwIOk9cYbBbTffOMJoIBm9HQCFKBX7U4PAgagXrU76AJGsF51KAEDYK86lAAD7FWHEaCgveo4AgpmrzqMAAv0viBMAYLwD+R8X9C2tYTIJ2CLsChAKIAnYEpaP2HGj6D2m2/B7wDU9wUpYi5/AajvCyqYudxBncFU0FwTCMCcwVTQXJOAOoNpoLncQZ3B3IDmmgTUGcwRNNckoM5grkFzTQbqDKaC5iKEEEIIIYQQQgghi5D8AFw9eIA5hOpGAAAAAElFTkSuQmCC" />
-                        </defs>
-                    </svg>
+                    <img src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}" 
+                        alt="Dashboard" class="w-10 h-10">
                 </span>
                 Dashboard
             </a>
             <a href="/wallet"
-                class="flex items-center {{ $page == 'wallet' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'wallet' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <rect width="52" height="52" fill="url(#pattern0_563_457)" />
-                        <defs>
-                            <pattern id="pattern0_563_457" patternContentUnits="objectBoundingBox" width="1"
-                                height="1">
-                                <use xlink:href="#image0_563_457" transform="scale(0.0104167)" />
-                            </pattern>
-                            <image id="image0_563_457" width="96" height="96"
-                                xlink:href="data:image/png;base64,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" />
-                        </defs>
-                    </svg>
-
+                    <img src="{{ $page == 'wallet' ? asset('images/walletIcon.png') : asset('images/walletIconInactive.png') }}" 
+                        alt="Wallet" class="w-10 h-10">
                 </span>
                 Wallet
             </a>
             <a href="/dashboard/adaccounts"
-                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <rect width="52" height="52" fill="url(#pattern0_563_442)" />
-                        <defs>
-                            <pattern id="pattern0_563_442" patternContentUnits="objectBoundingBox" width="1"
-                                height="1">
-                                <use xlink:href="#image0_563_442" transform="scale(0.0104167)" />
-                            </pattern>
-                            <image id="image0_563_442" width="96" height="96"
-                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEeUlEQVR4nO2dS4gcZRDHP42PqBfRHIMi3nziCxQS9aIEDOilq1oTFA8GRTDiReLBQchO1WYT1qghRCI+8CBevYm5qAdPPg4KoqIRgyDRTKZqdkk0afkmGxlnN9ndmZ6ub6brB99tl63+/7vqe2x3dQiO4ziO4ziO4ziO4ziLKA5su1in4XZleDKOuWZ2T/FhtmbxTzqlEQXWJj4ojG8pw1/KWPQOIfxdGJ4vGvddVN5frTlFo3Fhm7MNSrA3Ctwv+lJDCD4q9mSXWcc+1gjnNwoDC8GRlYi+yASGt62vYezoTOd3CsGMMB4eRPT+0Sa41/qakkd25bcIw5QS/FiG6H2l6D3r60uS+ZnsOiV8UQm+K1v0vjL0k/W1JkNrF16vhC8pwTejFL0vA06GOtPhLeuFcLsyfi6Ep6sSvneEutHe/ei6DuE2S9FrZ0BrT3aVEjwe19/C+Le16LUw4Njsw1f+JzrBSWuha2OAULZ14U4/YS1uLQ3QBEQdawOKma1XzM08dm2Hsju0mW+SadginD8nDK8o4T5l+EAZDp3r960FTdqAeAAlnD8gjC/0ihnX3sL4mzDMDxu4JiBqcgZ019uM+5WxNerANQFRkzJAKH9WGaWqwDUBUZMwIJ6TK8OrVQeuCYiahAHK0LAIXBMQ1dwAIbxfGE65AWhkAMMXVneO1j0D4t1vGbjW3YBRTrzqBiyPMHzpBqBlBuAfbgAazgEjXv2ozwHLZoDp5KUJTKyrGfH5olIzwA3AVRoQKwa8UTSeWOsGsGE2EHxS7N10qWcAW5qA+9wAtpwP4JRwdrPPAWxail53A9jQAMZv3QA2LEOEc24AWxoA6gawl6Bl75QwITvhJcZrngFsuAydgpvcAB7TJaifBeEw4n9cNLJLhjbAj6Nx1WUn1v1SzoEWMsD/IcMrN6A9ld0QykQIv6qiXoZz3wA29bvk6xgYJZx1A9DOAH8sBW0zIBJfgPMShHYGtKdxoxD+43MA2hgQUcKX3QC0M6AowgWxsYWvgtDGgLN0mtnTStj2ZSjaGBCZ4+yaeM6hDMd9H4DVG3CWorH58jPvDnTfF/ONGBu9pqoEt7oBWH0G/K93g2dAYWZARBg7ozhDEW9VsDKU4ftRHmId82YdyxpwqKpTxJa3q1mMEL5TlQG9HG8+crU3bOoaADstDOil1i3LujvkhAJvxaZ9DDuE8etaNO1Tzh9KyQCLtpWxF2mwYtjNWKi6cSvjD6VnAOO7wYo4GY6DAUu2Lib4pQwDYtPvYMkwm7Ew7s27CQ5aX8NQm7GQCGPdvn6YzVhI9AMO3ZZsBAeV8M8lhD/SZnwmmQ84DLMZC4kTRVbKb+s2HSTM4udMYraElBh0MyaEp61jnwiUs6cGzICj1rFPBJ0m3DWQAQSfWsc+EcSaKAw/D1CCtlvHPjGc+c7WKsRnPJzEEm5SiM8PKeH7KxMf5jsMd1vHPJlfnSOcPd+RsDD86uJXcEAnhG/Gg6+FPtJHlfGzWPPjIy3BcRzHcRzHcRzHcZxQL/4FTO+Is5sl4I4AAAAASUVORK5CYII=" />
-                        </defs>
-                    </svg>
-                </span>
-                Ad Accounts
+                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <img src="{{ $page == 'adaccounts' ? asset('images/adaccountIcon.png') : asset('images/adaccountIconInactive.png') }}" 
+                    alt="Ad Accounts" class="w-10 h-10">
+                <p class="pl-2">Ad Accounts</p>
             </a>
             <a href="{{ route('organizations.index') }}"
-                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M26 23.8333C31.0627 23.8333 35.1667 19.7293 35.1667 14.6667C35.1667 9.604 31.0627 5.5 26 5.5C20.9373 5.5 16.8333 9.604 16.8333 14.6667C16.8333 19.7293 20.9373 23.8333 26 23.8333Z"
-                            stroke="currentColor" stroke-width="2" />
-                        <path
-                            d="M41.1667 46.5H10.8333C8.99238 46.5 7.5 45.0076 7.5 43.1667V41.8333C7.5 36.7707 11.604 32.6667 16.6667 32.6667H35.3333C40.396 32.6667 44.5 36.7707 44.5 41.8333V43.1667C44.5 45.0076 43.0076 46.5 41.1667 46.5Z"
-                            stroke="currentColor" stroke-width="2" />
-                    </svg>
-                </span>
-                Organizations
+                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <img src="{{ $page == 'organizations' ? asset('images/organizationIcon.png') : asset('images/organizationIconInactive.png') }}" 
+                    alt="Organizations" class="w-10 h-10">
+                <p class="pl-2">Organizations</p>
             </a>
             <a href="{{ route('settings.index') }}"
-                class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <span class="mr-3">
-                    <svg width="52" height="52" viewBox="0 0 52 52" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M20.8 26C20.8 23.1281 23.1281 20.8 26 20.8C28.8719 20.8 31.2 23.1281 31.2 26C31.2 28.8719 28.8719 31.2 26 31.2C23.1281 31.2 20.8 28.8719 20.8 26Z"
-                            stroke="currentColor" stroke-width="2" />
-                        <path
-                            d="M41.6 26C41.6 34.7279 34.7279 41.6 26 41.6C17.2721 41.6 10.4 34.7279 10.4 26C10.4 17.2721 17.2721 10.4 26 10.4C34.7279 10.4 41.6 17.2721 41.6 26Z"
-                            stroke="currentColor" stroke-width="2" />
-                    </svg>
-                </span>
-                Settings
+                class="flex items-center {{ $page == 'settings' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <img src="{{ $page == 'settings' ? asset('images/settingsIcon.png') : asset('images/settingsIconInactive.png') }}" 
+                    alt="Settings" class="w-10 h-10">
+                <p class="pl-2">Settings</p>
             </a>
         </nav>
         <!-- <a href="/user/logout"
@@ -280,17 +238,18 @@
         {{ $slot }}
         <div class="flex-grow"></div>
         <footer
-            class="flex bg-gradient-to-r from-gray-200 to-blue-800 bg-opacity-30 justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
+            class="flex bg-white justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
             <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank"><img src="/images/Instagram.png" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/TwitterX.png"
-                        alt="X Link" /></a><a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
-                        src="/images/Facebook.png" alt="Facebook Link" /></a>
+                    target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
+                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
+                        alt="X Link" /></a>
+                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                        src="/images/facebook.png" alt="Facebook Link" /></a>
                 <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/LinkedIn.png" alt="LinkedIn Link" /></a>
+                        src="/images/linkedin.png" alt="LinkedIn Link" /></a>
             </div>
         </footer>
     </div>
