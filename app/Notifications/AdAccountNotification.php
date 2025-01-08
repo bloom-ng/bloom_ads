@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AdAccountNotification extends Notification implements ShouldQueue
+class AdAccountNotification extends Notification
 {
-    use Queueable;
+    // use Queueable;
 
     protected $data;
 
