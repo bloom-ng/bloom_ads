@@ -28,6 +28,7 @@ class User extends Authenticatable
         'oauth_provider',
         'phone',
         'phone_country_code',
+        'dark_mode'
     ];
 
     protected $hidden = [

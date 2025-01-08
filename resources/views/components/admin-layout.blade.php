@@ -1,7 +1,9 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+@endphp
+
 <!DOCTYPE html>
-<html lang="en" 
-    x-data 
-    :class="{ 'dark': $store.darkMode.on }">
+<html lang="en" x-data="{ darkMode: {{ Auth::guard('admin')->user()->dark_mode ? 'true' : 'false' }} }" :class="{ 'dark': darkMode }">
 {{-- {{$page == "newsletters" ? "active-nav-link" : ""}} --}}
 
 <head>
@@ -42,6 +44,28 @@
             background: #F0F0F0;
         }
 
+        .dark .bg-sidebar {
+            background: #000019;
+        }       
+
+        .dark .active-nav-link {
+            background: #CECEFF;
+            opacity: 95%;
+            color: black;
+        }
+
+        .dark .dark-hidden {
+            display: none;            
+        }
+
+        .dark .dark-block {
+            display: block;
+        }
+
+        .dark .active-nav-link:hover {
+            opacity: 100%;
+        }
+
         .bg-sidebar-top {
             background: #000031;
         }
@@ -53,44 +77,41 @@
 
         .active-nav-link {
             background: #6E6EAD;
+            color: white;
+            opacity: 75%;
         }
-
-        /* Update sidebar colors to support dark mode */
-        .bg-sidebar { @apply bg-indigo-600 dark:bg-gray-800; }
         
-        .active-nav-link { @apply bg-indigo-800 dark:bg-gray-700; }
-        
-        .nav-item:hover { @apply bg-indigo-800 dark:bg-gray-700; }
-        
-        .account-link:hover { @apply bg-indigo-800 dark:bg-gray-700; }
-
-        /* Your existing scrollbar styles... */
     </style>
 
-    <!-- Add Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Initialize Alpine.js store -->
-    <script>
-        // Initialize dark mode before Alpine loads
-        if (typeof window.Alpine === 'undefined') {
-            window.Alpine = {
-                store(name, value) {
-                    if (!window._alpine_stores) window._alpine_stores = {};
-                    window._alpine_stores[name] = value;
-                }
-            };
-        }
+   <!-- Add Alpine.js -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        // Set initial dark mode value
-        window.Alpine.store('darkMode', {
-            on: localStorage.getItem('darkMode') === 'true',
+<!-- Initialize Alpine.js store -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<!-- Initialize Alpine.js store -->
+<script>
+    // Check localStorage and apply the appropriate theme on page load
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+
+    // Apply the correct mode on load
+    document.documentElement.classList.toggle('dark', darkModeEnabled);
+
+    // Initialize Alpine.js store for dark mode
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('darkMode', {
+            on: darkModeEnabled,
             toggle() {
                 this.on = !this.on;
                 localStorage.setItem('darkMode', this.on);
+                document.documentElement.classList.toggle('dark', this.on);
             }
         });
-    </script>
+    });
+</script>
+
+
+
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -154,13 +175,30 @@
                 <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="">
             </a>
         </div>
-        <nav class="text-black text-base font-semibold ">
+        <nav class="text-base font-semibold">
             <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} 
+                opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}" alt="">
+                    <!-- Image switching based on active class and dark mode -->
+                    @if($page == 'dashboard')
+                        <!-- Active State -->
+                        <img class="w-8 h-8 dark:hidden" 
+                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                            alt="Active Dashboard Light Mode">
+                        <img class="w-8 h-8 hidden dark:block" 
+                            src="{{ asset('/images/darkDashboardIcon.png') }}" 
+                            alt="Active Dashboard Dark Mode">
+                    @else
+                        <!-- Inactive State -->
+                        <img class="w-8 h-8" 
+                            src="{{ asset('/images/dashboardIconInactive.png') }}" 
+                            alt="Inactive Dashboard">
+                    @endif
                 </span>
-                Dashboard
+                <span>
+                    Dashboard
+                </span>
             </a>
             <a href="{{ route('admin.users.index') }}"
                 class="flex items-center {{ $page == 'users' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
@@ -224,7 +262,34 @@
         <header class="w-full items-center bg-white py-4 px-6 hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
                 <!-- Dark Mode Toggle -->
-                <button id="dark-mode-toggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
+                <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
+                <script>
+                    document.querySelector('.darkModeToggle').addEventListener('click', function() {
+                        let darkMode = document.documentElement.classList.contains('dark') ? 1 : 0;
+
+                        fetch('/admin/update-dark-mode', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                dark_mode: darkMode
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Apply the dark class based on the toggle state
+                                document.documentElement.classList.toggle('dark', darkMode === 1);
+                            }
+                        })
+                        .catch(error => console.log(error));
+                    });
+
+
+                </script>
+
                     <!-- Sun Icon -->
                     <svg class="w-6 h-6 sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -271,7 +336,7 @@
             </div>
 
             <!-- Dropdown Nav -->
-            <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4 text-[#F48857]">
+            <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4 text-[#F48857] dark:text-white">
                 <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                     <i></i>
@@ -342,40 +407,29 @@
         integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <!-- Add this script after your header -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const sunIcon = darkModeToggle.querySelector('.sun-icon');
-            const moonIcon = darkModeToggle.querySelector('.moon-icon');
-            
-            const checkTheme = () => {
-                const userTheme = localStorage.getItem('theme');
-                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                
-                if (userTheme === 'dark' || (!userTheme && systemTheme)) {
-                    document.documentElement.classList.add('dark');
-                    sunIcon.classList.add('hidden');
-                    moonIcon.classList.remove('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    sunIcon.classList.remove('hidden');
-                    moonIcon.classList.add('hidden');
-                }
-            };
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButton = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
 
-            checkTheme();
+        // Load user's preference from localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            htmlElement.classList.add('dark');
+        }
 
-            darkModeToggle.addEventListener('click', () => {
-                const isDark = document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                
-                // Toggle icons
-                sunIcon.classList.toggle('hidden');
-                moonIcon.classList.toggle('hidden');
-            });
+        // Toggle dark mode on button click
+        toggleButton.addEventListener('click', function () {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light'); // Save preference
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark'); // Save preference
+            }
         });
-    </script>
+    });
+</script>
+
 
 </body>
 

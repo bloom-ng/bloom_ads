@@ -21,6 +21,13 @@ use App\Mail\TwoFactorCodeMail;
 
 class SignupController extends Controller
 {
+    public function index()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.dashboard', ['dark_mode' => $admin->dark_mode]);
+    }
+    
+
     public function register(Request $request)
     {
         $request->validate([

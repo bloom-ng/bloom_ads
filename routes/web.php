@@ -102,6 +102,15 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         ->name('adaccounts.fund');
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
+
+    // API endpoint for updating dark mode preference
+    Route::post('/update-dark-mode', function (Request $request) {
+        $request->validate(['dark_mode' => 'required|boolean']);
+        $user = Auth::user(); // since there's only one admin
+        $user->update(['dark_mode' => $request->dark_mode]);
+
+        return response()->json(['success' => true]);
+    });
 });
 
 Route::get('/', function () {
@@ -292,3 +301,20 @@ Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::
     ->name('wallet.transaction.receipt');
 Route::get('/wallet/transaction/{transaction}/receipt/download', [WalletController::class, 'downloadTransactionReceipt'])
     ->name('wallet.transaction.receipt.download');
+
+Route::get('2fa', function () {
+    return view('2fa'); // Replace '2fa' with the name of your Blade view file
+})->name('2fa');
+
+// Route::get('2fa/verify', function () {
+//     return view('2fa'); // This points to your 2fa.blade.php
+// })->name('2fa.show'); // Use this name for displaying the 2FA form
+// Route::post('2fa/verify', [SignupController::class, 'verify2fa'])
+//     ->middleware('web')
+//     ->name('2fa.verify');
+Route::middleware('web')->group(function () {
+    Route::get('2fa/verify', function () {
+        return view('2fa'); // Your 2FA view
+    })->name('2fa.verify');
+    Route::post('2fa/verify', [SignupController::class, 'verify2fa'])->name('2fa.verify.post');
+});
