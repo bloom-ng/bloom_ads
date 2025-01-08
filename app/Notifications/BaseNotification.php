@@ -6,9 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class BaseNotification extends Notification implements ShouldQueue
+class BaseNotification extends Notification
 {
-    use Queueable;
+    // use Queueable;
 
     protected $data;
 
