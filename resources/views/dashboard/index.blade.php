@@ -2,7 +2,21 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <h1 class="text-3xl text-black pb-6">Dashboard</h1>
-
+            <div class="mb-6">
+                @php
+                    $hour = date('G');
+                    $greeting = '';
+                    if ($hour >= 5 && $hour < 12) {
+                        $greeting = 'Good morning';
+                    } elseif ($hour >= 12 && $hour < 18) {
+                        $greeting = 'Good afternoon';
+                    } else {
+                        $greeting = 'Good evening';
+                    }
+                @endphp
+                <h2 class="text-2xl font-semibold">{{ $greeting }} {{ auth()->user()->name }}! 👋</h2>
+                <p class="text-lg font-medium">Welcome to Billing</p>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Total Organizations -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
