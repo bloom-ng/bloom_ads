@@ -162,58 +162,62 @@
     </div>
 
     <!-- Fund Wallet Modal -->
-    <div id="fundWalletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div id="fundModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
         <div class="bg-white p-8 rounded-lg max-w-md w-full">
-            <h2 class="text-2xl font-bold mb-4">Fund Wallet</h2>
-            <p class="mb-4">Select your preferred payment method:</p>
-
-            <div class="space-y-4 mb-6">
-                <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" class="w-full">
-                    @csrf
-                    <input type="hidden" name="wallet_id" id="modalWalletId">
-                    <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="wallet_currency" id="modalWalletCurrency">
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
-                        <input type="number" name="amount" id="fundAmount" placeholder="Enter amount in NGN" required
-                            class="w-full p-2 border rounded" oninput="updateFundingPreview()">
-
-                        <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
-                            style="display: none;">
-                            <p id="fundingRateDisplay" class="mb-2"></p>
-                            <p id="fundingConvertedAmountDisplay"></p>
-                        </div>
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                        Pay with Flutterwave
-                    </button>
-                </form>
-
-                <form action="{{ route('wallet.fund.paystack') }}" method="POST" class="w-full">
-                    @csrf
-                    <input type="hidden" name="wallet_id" id="modalWalletIdPaystack">
-                    <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="wallet_currency" id="modalWalletCurrencyPaystack">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
-                        <input type="number" name="amount" id="fundAmountPaystack"
-                            placeholder="Enter amount in NGN" required class="w-full p-2 border rounded"
-                            oninput="updateFundingPreview()">
-                    </div>
-                    <button type="submit"
-                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                        Pay with Paystack
-                    </button>
-                </form>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-medium">Fund Wallet</h3>
+                <button onclick="closeFundModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
             </div>
 
-            <button onclick="closeFundModal()"
-                class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                Cancel
-            </button>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Amount</label>
+                    <input type="number" id="fundAmount" step="0.01" min="0.01"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-4 py-2"
+                        placeholder="Enter amount" oninput="updateFundingPreview()">
+
+                    <!-- Add the conversion preview div -->
+                    <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
+                        style="display: none;">
+                        <p id="fundingRateDisplay" class="mb-2"></p>
+                        <p id="fundingConvertedAmountDisplay"></p>
+                    </div>
+                </div>
+
+                <!-- Payment Method Buttons -->
+                <div class="flex flex-col gap-4">
+                    <!-- Flutterwave Button -->
+                    <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" id="flutterwaveForm">
+                        @csrf
+                        <input type="hidden" name="wallet_id" value="{{ $wallet->id }}">
+                        <input type="hidden" name="amount" id="flutterwaveAmount">
+                        <input type="hidden" name="currency" value="NGN">
+                        <input type="hidden" name="wallet_currency" value="{{ $wallet->currency }}">
+                        <button type="button" onclick="submitFlutterwavePayment()"
+                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                            Pay with Flutterwave
+                        </button>
+                    </form>
+
+                    <!-- Paystack Button -->
+                    <form action="{{ route('wallet.fund.paystack') }}" method="POST" id="paystackForm">
+                        @csrf
+                        <input type="hidden" name="wallet_id" value="{{ $wallet->id }}">
+                        <input type="hidden" name="amount" id="paystackAmount">
+                        <input type="hidden" name="currency" value="NGN">
+                        <input type="hidden" name="wallet_currency" value="{{ $wallet->currency }}">
+                        <button type="button" onclick="submitPaystackPayment()"
+                            class="w-full bg-[#0BA4DB] hover:bg-[#0BA4DB]/90 text-black font-bold py-2 px-4 rounded">
+                            Pay with Paystack
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -309,23 +313,42 @@
         const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
         const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
 
-        function openFundModal(walletId, currency) {
-            // Set values for both payment methods
-            document.getElementById('modalWalletId').value = walletId;
-            document.getElementById('modalWalletIdPaystack').value = walletId;
-            document.getElementById('modalWalletCurrency').value = currency;
-            document.getElementById('modalWalletCurrencyPaystack').value = currency;
-
-            // Reset amount inputs
-            document.getElementById('fundAmount').value = '';
-            if (document.getElementById('fundAmountPaystack')) {
-                document.getElementById('fundAmountPaystack').value = '';
+        function submitFlutterwavePayment() {
+            const amount = document.getElementById('fundAmount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
             }
+            document.getElementById('flutterwaveAmount').value = amount;
+            document.getElementById('flutterwaveForm').submit();
+        }
+
+        function submitPaystackPayment() {
+            const amount = document.getElementById('fundAmount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            document.getElementById('paystackAmount').value = amount;
+            document.getElementById('paystackForm').submit();
+        }
+
+        function openFundModal(walletId, currency) {
+            // Reset the amount input
+            document.getElementById('fundAmount').value = '';
+
+            // Update hidden fields
+            document.querySelectorAll('input[name="wallet_id"]').forEach(input => {
+                input.value = walletId;
+            });
+            document.querySelectorAll('input[name="wallet_currency"]').forEach(input => {
+                input.value = currency;
+            });
 
             // Show the modal
-            document.getElementById('fundWalletModal').style.display = 'flex';
+            document.getElementById('fundModal').style.display = 'flex';
 
-            // Show rate immediately for non-NGN wallets
+            // Show initial rate for non-NGN wallets
             if (currency !== 'NGN') {
                 const rateDisplay = document.getElementById('fundingRateDisplay');
                 if (currency === 'USD') {
@@ -338,13 +361,12 @@
         }
 
         function closeFundModal() {
-            document.getElementById('fundWalletModal').style.display = 'none';
+            document.getElementById('fundModal').style.display = 'none';
         }
 
         function updateFundingPreview() {
-            const amount = parseFloat(document.getElementById('fundAmount').value) ||
-                parseFloat(document.getElementById('fundAmountPaystack')?.value) || 0;
-            const walletCurrency = document.getElementById('modalWalletCurrency').value;
+            const amount = parseFloat(document.getElementById('fundAmount').value) || 0;
+            const walletCurrency = document.querySelector('input[name="wallet_currency"]').value;
 
             // Check for maximum amount
             if (amount > 500000) {
@@ -458,11 +480,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                    <div class="border-b pb-4">
-                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                    </div>
-                                ` : ''}
+                                                            <div class="border-b pb-4">
+                                                                <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                            </div>
+                                                        ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
