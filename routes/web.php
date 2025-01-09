@@ -321,3 +321,6 @@ Route::middleware('web')->group(function () {
     })->name('2fa.verify');
     Route::post('2fa/verify', [SignupController::class, 'verify2fa'])->name('2fa.verify.post');
 });
+
+Route::post('/wallet/generate-invoice', [WalletController::class, 'generateInvoice'])->name('wallet.generate.invoice');
+Route::get('/wallet/invoice/download', [WalletController::class, 'downloadInvoice'])->name('wallet.invoice.download');

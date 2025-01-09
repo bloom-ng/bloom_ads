@@ -191,31 +191,53 @@
 
                 <!-- Payment Method Buttons -->
                 <div class="flex flex-col gap-4">
-                    <!-- Flutterwave Button -->
-                    <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" id="flutterwaveForm">
-                        @csrf
-                        <input type="hidden" name="wallet_id" value="{{ $wallet->id }}">
-                        <input type="hidden" name="amount" id="flutterwaveAmount">
-                        <input type="hidden" name="currency" value="NGN">
-                        <input type="hidden" name="wallet_currency" value="{{ $wallet->currency }}">
-                        <button type="button" onclick="submitFlutterwavePayment()"
-                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                            Pay with Flutterwave
-                        </button>
-                    </form>
+                    <!-- Payment Buttons Container -->
+                    <div class="payment-buttons">
+                        <!-- Flutterwave Button -->
+                        <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" id="flutterwaveForm">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="flutterwaveWalletId">
+                            <input type="hidden" name="amount" id="flutterwaveAmount">
+                            <input type="hidden" name="currency" value="NGN">
+                            <input type="hidden" name="wallet_currency" id="flutterwaveWalletCurrency">
+                            <button type="button" onclick="submitFlutterwavePayment()"
+                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded mb-2">
+                                Pay with Flutterwave
+                            </button>
+                        </form>
 
-                    <!-- Paystack Button -->
-                    <form action="{{ route('wallet.fund.paystack') }}" method="POST" id="paystackForm">
-                        @csrf
-                        <input type="hidden" name="wallet_id" value="{{ $wallet->id }}">
-                        <input type="hidden" name="amount" id="paystackAmount">
-                        <input type="hidden" name="currency" value="NGN">
-                        <input type="hidden" name="wallet_currency" value="{{ $wallet->currency }}">
-                        <button type="button" onclick="submitPaystackPayment()"
-                            class="w-full bg-[#0BA4DB] hover:bg-[#0BA4DB]/90 text-black font-bold py-2 px-4 rounded">
-                            Pay with Paystack
-                        </button>
-                    </form>
+                        <!-- Paystack Button -->
+                        <form action="{{ route('wallet.fund.paystack') }}" method="POST" id="paystackForm">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="paystackWalletId">
+                            <input type="hidden" name="amount" id="paystackAmount">
+                            <input type="hidden" name="currency" value="NGN">
+                            <input type="hidden" name="wallet_currency" id="paystackWalletCurrency">
+                            <button type="button" onclick="submitPaystackPayment()"
+                                class="w-full bg-[#0BA4DB] hover:bg-[#0BA4DB]/90 text-black font-bold py-2 px-4 rounded">
+                                Pay with Paystack
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Message for foreign currency high amounts -->
+                    <div id="foreignCurrencyMessage" style="display: none;"
+                        class="text-center p-4 bg-gray-50 rounded-lg mt-4">
+                    </div>
+
+                    <!-- Generate Invoice Button -->
+                    <div class="generate-invoice-button" style="display: none;">
+                        <form action="{{ route('wallet.generate.invoice') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="invoiceWalletId">
+                            <input type="hidden" name="amount" id="invoiceAmount">
+                            <input type="hidden" name="currency" id="invoiceCurrency">
+                            <button type="submit"
+                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                                Generate Invoice
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -337,13 +359,17 @@
             // Reset the amount input
             document.getElementById('fundAmount').value = '';
 
-            // Update hidden fields
-            document.querySelectorAll('input[name="wallet_id"]').forEach(input => {
-                input.value = walletId;
-            });
-            document.querySelectorAll('input[name="wallet_currency"]').forEach(input => {
-                input.value = currency;
-            });
+            // Update Flutterwave form fields
+            document.getElementById('flutterwaveWalletId').value = walletId;
+            document.getElementById('flutterwaveWalletCurrency').value = currency;
+
+            // Update Paystack form fields
+            document.getElementById('paystackWalletId').value = walletId;
+            document.getElementById('paystackWalletCurrency').value = currency;
+
+            // Update Invoice form fields
+            document.getElementById('invoiceWalletId').value = walletId;
+            document.getElementById('invoiceCurrency').value = currency;
 
             // Show the modal
             document.getElementById('fundModal').style.display = 'flex';
@@ -366,35 +392,72 @@
 
         function updateFundingPreview() {
             const amount = parseFloat(document.getElementById('fundAmount').value) || 0;
-            const walletCurrency = document.querySelector('input[name="wallet_currency"]').value;
+            const currency = document.getElementById('flutterwaveWalletCurrency').value;
 
-            // Check for maximum amount
+            // Get payment buttons container
+            const paymentButtons = document.querySelector('.payment-buttons');
+            const generateInvoiceButton = document.querySelector('.generate-invoice-button');
+
             if (amount > 500000) {
-                showBankTransferMessage();
-                return;
+                if (currency === 'NGN') {
+                    // Hide payment buttons and show generate invoice button
+                    paymentButtons.style.display = 'none';
+                    generateInvoiceButton.style.display = 'block';
+                    // Update invoice amount
+                    document.getElementById('invoiceAmount').value = amount;
+                } else {
+                    // Hide payment buttons and show message for USD/GBP
+                    paymentButtons.style.display = 'none';
+                    generateInvoiceButton.style.display = 'none';
+
+                    // Create or update the message div
+                    let messageDiv = document.getElementById('foreignCurrencyMessage');
+                    if (!messageDiv) {
+                        messageDiv = document.createElement('div');
+                        messageDiv.id = 'foreignCurrencyMessage';
+                        messageDiv.className = 'text-center p-4 bg-gray-50 rounded-lg mt-4';
+                        document.querySelector('.payment-buttons').insertAdjacentElement('afterend', messageDiv);
+                    }
+                    messageDiv.innerHTML = `
+                        <p class="text-gray-600">For amounts above 500,000 NGN, please use the NGN wallet to generate an invoice.</p>
+                    `;
+                    messageDiv.style.display = 'block';
+                }
+            } else {
+                // Show payment buttons and hide generate invoice button
+                paymentButtons.style.display = 'block';
+                generateInvoiceButton.style.display = 'none';
+                // Hide the message if it exists
+                const messageDiv = document.getElementById('foreignCurrencyMessage');
+                if (messageDiv) {
+                    messageDiv.style.display = 'none';
+                }
+                // Update payment form amounts
+                document.getElementById('flutterwaveAmount').value = amount;
+                document.getElementById('paystackAmount').value = amount;
             }
 
-            if (walletCurrency === 'NGN') {
+            if (currency === 'NGN') {
                 document.getElementById('fundingConversionPreview').style.display = 'none';
                 return;
             }
 
-            const rate = getConversionRate('NGN', walletCurrency);
+            const rate = getConversionRate('NGN', currency);
             const convertedAmount = amount * rate;
 
             const rateDisplay = document.getElementById('fundingRateDisplay');
             const convertedAmountDisplay = document.getElementById('fundingConvertedAmountDisplay');
 
             // Display rate in USD/GBP -> NGN format
-            if (walletCurrency === 'USD') {
+            if (currency === 'USD') {
                 rateDisplay.textContent = `Exchange Rate: 1 USD = ${USD_RATE.toFixed(2)} NGN`;
-            } else if (walletCurrency === 'GBP') {
+            } else if (currency === 'GBP') {
                 rateDisplay.textContent = `Exchange Rate: 1 GBP = ${GBP_RATE.toFixed(2)} NGN`;
             }
 
             // Only update converted amount if there is an amount
             if (amount > 0) {
-                convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, walletCurrency)}`;
+                convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, currency)}`;
             } else {
                 convertedAmountDisplay.textContent = '';
             }
@@ -480,11 +543,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                            <div class="border-b pb-4">
-                                                                <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                            </div>
-                                                        ` : ''}
+                                                                                    <div class="border-b pb-4">
+                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                    </div>
+                                                                                ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
