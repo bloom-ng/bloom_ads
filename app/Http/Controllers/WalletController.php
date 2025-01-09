@@ -238,12 +238,17 @@ class WalletController extends Controller
 
                 if ($transaction->status === 'successful') {
                     // After successful funding
-                    auth()->user()->notify(new WalletNotification([
-                        'subject' => 'Wallet Funded Successfully',
-                        'message' => "Your wallet has been credited with {$convertedAmount}",
-                        'type' => 'wallet_funded',
-                        'amount' => $convertedAmount
-                    ]));
+                    try {
+                        $user = auth()->user();
+                        $user->notify(new WalletNotification([
+                            'subject' => 'Wallet Funded Successfully',
+                            'message' => "Your wallet has been credited with {$convertedAmount}",
+                            'type' => 'wallet_funded',
+                            'amount' => $convertedAmount
+                        ]));
+                    } catch (\Exception $e) {
+                        Log::error('Wallet funding notification error: ' . $e->getMessage());
+                    }
                 }
 
                 return redirect()->route('wallet.index')
@@ -302,12 +307,16 @@ class WalletController extends Controller
                 // $wallet->increment('balance', $convertedAmount);
 
                 // After successful funding
-                auth()->user()->notify(new WalletNotification([
-                    'subject' => 'Wallet Funded Successfully',
-                    'message' => "Your wallet has been credited with {$convertedAmount}",
-                    'type' => 'wallet_funded',
-                    'amount' => $convertedAmount
-                ]));
+                try {
+                    auth()->user()->notify(new WalletNotification([
+                        'subject' => 'Wallet Funded Successfully',
+                        'message' => "Your wallet has been credited with {$convertedAmount}",
+                        'type' => 'wallet_funded',
+                        'amount' => $convertedAmount
+                    ]));
+                } catch (\Exception $e) {
+                    Log::error('Wallet funding notification error: ' . $e->getMessage());
+                }
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');

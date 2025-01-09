@@ -312,7 +312,8 @@ class AdAccountsController extends Controller
             });
             try {
                 // After successful deposit
-                auth()->user()->notify(new AdAccountNotification([
+                $user = auth()->user();
+                $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Deposit',
                     'message' => "You have deposited {$validated['amount']} to ad account {$adAccount->name}",
                     'type' => 'ad_account_deposit',
@@ -395,7 +396,8 @@ class AdAccountsController extends Controller
 
             try {
                 // After successful withdrawal
-                auth()->user()->notify(new AdAccountNotification([
+                $user = auth()->user();
+                $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Withdrawal',
                     'message' => "You have withdrawn {$validated['amount']} from ad account {$adAccount->name}",
                     'type' => 'ad_account_withdrawal',
