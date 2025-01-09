@@ -61,13 +61,30 @@
         .dark .dark-block {
             display: block;
         }
+        
+        /* Ensures elements with dark-block are hidden in light mode */
+        .dark-block {
+            display: none; /* Default behavior in light mode */
+        }
 
         .dark .active-nav-link:hover {
             opacity: 100%;
         }
 
+        .header {
+            background: #F0F0F0;
+        }
+
+        .dark .header {
+            background: #000013;
+        }
+
         .bg-sidebar-top {
             background: #000031;
+        }
+
+        .dark .bg-sidebar-top {
+            background: #000013;
         }
 
         .billings-icon {
@@ -80,8 +97,16 @@
             color: white;
             opacity: 75%;
         }
-        
-    </style>
+
+        .inactive-nav-link {
+            color: black; /* Black text for light mode inactive links */
+        }
+
+        /* For inactive nav link in dark mode */
+        .dark .inactive-nav-link {
+            color: white; /* White text for dark mode inactive links */
+        }        
+        </style>
 
    <!-- Add Alpine.js -->
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -177,23 +202,26 @@
         </div>
         <nav class="text-base font-semibold">
             <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} 
+                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <!-- Image switching based on active class and dark mode -->
                     @if($page == 'dashboard')
                         <!-- Active State -->
-                        <img class="w-8 h-8 dark:hidden" 
+                        <img class="w-8 h-8 dark-hidden" 
                             src="{{ asset('/images/dashboardIcon.png') }}" 
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 hidden dark:block" 
+                        <img class="w-8 h-8 dark-block dark-hidden" 
                             src="{{ asset('/images/darkDashboardIcon.png') }}" 
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8" 
+                        <img class="w-8 h-8 dark-hidden" 
                             src="{{ asset('/images/dashboardIconInactive.png') }}" 
-                            alt="Inactive Dashboard">
+                            alt="Inactive Dashboard Light Mode">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                            alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
                 <span>
@@ -201,51 +229,146 @@
                 </span>
             </a>
             <a href="{{ route('admin.users.index') }}"
-                class="flex items-center {{ $page == 'users' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'users' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'users' ? asset('images/userIcon.png') : asset('images/userIconInactive.png') }}" alt="">
+                    @if($page == 'users')
+                        <img class="w-8 h-8 dark-hidden" 
+                                src="{{ asset('images/userIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkUserIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/userIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/userIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Users
             </a>
             <a href="{{ route('admin.wallets.index') }}"
-                class="flex items-center {{ $page == 'wallet' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'wallet' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'wallet' ? asset('images/walletIcon.png') : asset('images/walletIconInactive.png') }}" alt="">
+                    @if($page == 'wallet')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/walletIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkWalletIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/walletIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/walletIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Wallet
             </a>
-            <a href="{{ route('admin.adaccounts.index') }}"
-                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+            <a href="{{ route('admin.organizations.index') }}"
+                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'adaccounts' ? asset('images/adaccountIcon.png') : asset('images/adaccountIconInactive.png') }}" alt="">
+                    @if($page == 'organizations')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/organizationIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkOrganizationIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/organizationIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/organizationIcon.png') }}" alt="">
+                    @endif
+                </span>
+                Organizations
+            </a>
+            <a href="{{ route('admin.adaccounts.index') }}"
+                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <span class="mr-3">
+                    @if($page == 'adaccounts')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/adaccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkAdaccountIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/adaccountIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/adaccountIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Ad Accounts
             </a>
             <a href="{{ route('admin.rockads.accounts.index') }}"
-                class="flex items-center {{ $page == 'rockads' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'rockads' ? asset('/images/rockAdaccountIcon.png') : asset('/images/rockAdaccountIconInactive.png') }}" alt="">
+                    @if($page == 'rockads')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/rockAdaccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkRockAdaccountIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/rockAdaccountIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden"  
+                            src="{{ asset('images/rockAdaccountIcon.png') }}" alt="">
+                    @endif
                 </span>
                 RockAds Accounts
             </a>
             <a href="{{ route('admin.meta.accounts.index') }}"
-                class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'meta-accounts' ? asset('/images/metaAccountIcon.png') : asset('/images/metaAccountIconInactive.png') }}" alt="">
+                    @if($page == 'meta-accounts')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/metaAccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkMetaAccountIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/metaAccountIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/metaAccountIcon.png') }}" alt="">
+                    @endif  
                 </span>
                 Meta Accounts
             </a>
             <a href="{{ route('admin.business-managers.index') }}"
-                class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'business-managers' ? asset('/images/businessManagerIcon.png') : asset('/images/businessManagerIconInactive.png') }}" alt="">
+                    @if($page == 'business-managers')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('/images/businessManagerIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('/images/darkBusinessManagerIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('/images/businessManagerIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('/images/businessManagerIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Business Managers
             </a>
             <a href="{{ route('admin.adminsettings.index') }}"
-                class="flex items-center {{ $page == 'settings' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : 'inactive-nav-link' }} 
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img class="w-8 h-8" src="{{ $page == 'settings' ? asset('images/settingsIcon.png') : asset('images/settingsIconInactive.png') }}" alt="">
+                    @if($page == 'settings')
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/settingsIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/darkSettingsIcon.png') }}" alt="">
+                    @else
+                        <img class="w-8 h-8 dark-hidden" 
+                            src="{{ asset('images/settingsIconInactive.png') }}" alt="">    
+                        <img class="w-8 h-8 dark-block dark-hidden" 
+                            src="{{ asset('images/settingsIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Settings
             </a>
@@ -257,9 +380,9 @@
         </a> -->
     </aside>
 
-    <div class="w-full flex flex-col h-screen overflow-y-hidden bg-white dark:bg-gray-900">
+    <div class="w-full flex flex-col h-screen overflow-y-hidden  ">
         <!-- Desktop Header -->
-        <header class="w-full items-center bg-white py-4 px-6 hidden sm:flex">
+        <header class="w-full items-center bg-white py-4 px-6 header hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
                 <!-- Dark Mode Toggle -->
                 <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
@@ -287,21 +410,29 @@
                         .catch(error => console.log(error));
                     });
 
-
                 </script>
-
                     <!-- Sun Icon -->
-                    <svg class="w-6 h-6 sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="sunIcon" class="w-6 h-6 dark:hidden" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
                     </svg>
                     <!-- Moon Icon -->
-                    <svg class="w-6 h-6 moon-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="moonIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="#000000" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                         </path>
                     </svg>
+
+                    <script>
+                        document.querySelector('#sunIcon').addEventListener('click', toggleIcons);
+                        document.querySelector('#moonIcon').addEventListener('click', toggleIcons);
+
+                        function toggleIcons() {
+                            document.querySelector('#sunIcon').classList.toggle('hidden');
+                            document.querySelector('#moonIcon').classList.toggle('hidden');
+                        }
+                    </script>
                 </button>
 
                 <!-- Profile Dropdown -->

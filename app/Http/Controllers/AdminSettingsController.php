@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserSettings;
+use App\Models\AdminSetting;
 use Illuminate\Http\Request;
 
 class AdminSettingsController extends Controller
 {
     public function index()
     {
-        $userSettings = UserSettings::all();
+        $userSettings = AdminSetting::all();
 
         return view('admin-dashboard.settings.index', compact('userSettings'));
     }

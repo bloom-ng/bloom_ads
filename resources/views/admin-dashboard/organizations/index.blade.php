@@ -1,7 +1,24 @@
 <x-admin-layout page="organizations">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Organizations</h1>
+            <div class="flex items-center justify-between pb-6">
+                <div>
+                    <h1 class="text-3xl text-black">Organizations</h1>
+                    <div class="mt-4">
+                        <form action="" method="GET" class="flex items-center">
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Search organization by name..." 
+                                   value="{{ request('search') }}"
+                                   class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500">
+                            <button type="submit" 
+                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             
             <div class="w-full mt-6">
                 <div class="bg-white shadow-md rounded my-6">
@@ -42,6 +59,10 @@
                                             <a href="{{ route('admin.organizations.members', $organization->id) }}" 
                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                 View Members
+                                            </a>
+                                            <a href="{{ route('admin.organizations.wallets', $organization->id) }}" 
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                View Wallets
                                             </a>
                                         </div>
                                     </div>
