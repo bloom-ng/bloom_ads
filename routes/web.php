@@ -26,6 +26,8 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\User;
 use App\Http\Controllers\AuthController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/organizations/{organization}', [AdminOrganizationsController::class, 'show'])->name('organizations.show');
     Route::get('/organizations/{organization}/members', [AdminOrganizationsController::class, 'members'])
         ->name('organizations.members');
+    Route::get('/organizations/{organization}/wallets', [AdminOrganizationsController::class, 'wallets'])->name('organizations.wallets');
 
     Route::resource('adminsettings', AdminSettingsController::class);
     Route::post('adminsettings/{adminSetting}/update-value', [AdminSettingsController::class, 'updateValue'])->name('adminsettings.update-value');
@@ -105,9 +108,19 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
 
+    
     Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
     Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
     Route::post('/data/ad-accounts/link', [ApiAdAccountController::class, 'linkAccount']);
+    // API endpoint for updating dark mode preference
+   
+    Route::post('/update-dark-mode', function (Request $request) {
+        $request->validate(['dark_mode' => 'required|boolean']);
+        $user = Auth::user(); // since there's only one admin
+        $user->update(['dark_mode' => $request->dark_mode]);
+
+        return response()->json(['success' => true]);
+    });
 });
 
 Route::get('/', function () {
@@ -217,7 +230,7 @@ Route::post('/reset-password', function (Request $request) {
 })->middleware('guest')->name('password.update');
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
@@ -292,6 +305,9 @@ Route::middleware(['auth'])->group(function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back()->with('success', 'All notifications marked as read');
     })->name('notifications.mark-all-read');
+
+    Route::post('/wallet/generate-invoice', [WalletController::class, 'generateInvoice'])->name('wallet.generate.invoice');
+    Route::get('/wallet/invoice/download', [WalletController::class, 'downloadInvoice'])->name('wallet.invoice.download');
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])
@@ -299,3 +315,19 @@ Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::
 Route::get('/wallet/transaction/{transaction}/receipt/download', [WalletController::class, 'downloadTransactionReceipt'])
     ->name('wallet.transaction.receipt.download');
 
+Route::get('2fa', function () {
+    return view('2fa'); // Replace '2fa' with the name of your Blade view file
+})->name('2fa');
+
+// Route::get('2fa/verify', function () {
+//     return view('2fa'); // This points to your 2fa.blade.php
+// })->name('2fa.show'); // Use this name for displaying the 2FA form
+// Route::post('2fa/verify', [SignupController::class, 'verify2fa'])
+//     ->middleware('web')
+//     ->name('2fa.verify');
+Route::middleware('web')->group(function () {
+    Route::get('2fa/verify', function () {
+        return view('2fa'); // Your 2FA view
+    })->name('2fa.verify');
+    Route::post('2fa/verify', [SignupController::class, 'verify2fa'])->name('2fa.verify.post');
+});

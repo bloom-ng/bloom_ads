@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminSetting;
 use App\Models\Organization;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\WalletNotification;
 use App\Models\WalletTransaction;
 use PDF;
+use Illuminate\Support\Str;
 
 class WalletController extends Controller
 {
@@ -238,12 +240,17 @@ class WalletController extends Controller
 
                 if ($transaction->status === 'successful') {
                     // After successful funding
-                    auth()->user()->notify(new WalletNotification([
-                        'subject' => 'Wallet Funded Successfully',
-                        'message' => "Your wallet has been credited with {$convertedAmount}",
-                        'type' => 'wallet_funded',
-                        'amount' => $convertedAmount
-                    ]));
+                    try {
+                        $user = auth()->user();
+                        $user->notify(new WalletNotification([
+                            'subject' => 'Wallet Funded Successfully',
+                            'message' => "Your wallet has been credited with {$convertedAmount}",
+                            'type' => 'wallet_funded',
+                            'amount' => $convertedAmount
+                        ]));
+                    } catch (\Exception $e) {
+                        Log::error('Wallet funding notification error: ' . $e->getMessage());
+                    }
                 }
 
                 return redirect()->route('wallet.index')
@@ -302,12 +309,16 @@ class WalletController extends Controller
                 // $wallet->increment('balance', $convertedAmount);
 
                 // After successful funding
-                auth()->user()->notify(new WalletNotification([
-                    'subject' => 'Wallet Funded Successfully',
-                    'message' => "Your wallet has been credited with {$convertedAmount}",
-                    'type' => 'wallet_funded',
-                    'amount' => $convertedAmount
-                ]));
+                try {
+                    auth()->user()->notify(new WalletNotification([
+                        'subject' => 'Wallet Funded Successfully',
+                        'message' => "Your wallet has been credited with {$convertedAmount}",
+                        'type' => 'wallet_funded',
+                        'amount' => $convertedAmount
+                    ]));
+                } catch (\Exception $e) {
+                    Log::error('Wallet funding notification error: ' . $e->getMessage());
+                }
 
                 return redirect()->route('wallet.index')
                     ->with('success', 'Payment successful! Your wallet has been credited.');
@@ -464,5 +475,92 @@ class WalletController extends Controller
         ]);
 
         return $pdf->download("receipt-{$transaction->reference}.pdf");
+    }
+
+    public function generateInvoice(Request $request)
+    {
+        $validated = $request->validate([
+            'wallet_id' => 'required|exists:wallets,id',
+            'amount' => 'required|numeric|min:500001',
+            'currency' => 'required|in:NGN,USD,GBP'
+        ]);
+
+        $wallet = Wallet::findOrFail($validated['wallet_id']);
+        $organization = Organization::findOrFail($wallet->organization_id);
+
+        // Get rates from admin settings
+        $vatRate = AdminSetting::where('key', 'ad_account_vat')->first()->value ?? 7.5;
+        $serviceFeeRate = AdminSetting::where('key', 'ad_account_service_charge')->first()->value ?? 1.5;
+
+        // Get bank details from admin settings
+        $accountName = AdminSetting::where('key', 'invoice_account_name')->first()->value ?? 'Company Name';
+        $bankName = AdminSetting::where('key', 'invoice_bank_name')->first()->value ?? 'Bank Name';
+        $accountNumber = AdminSetting::where('key', 'invoice_account_number')->first()->value ?? 'Account Number';
+
+        // Calculate fees
+        $vat = ($validated['amount'] * $vatRate) / 100;
+        $serviceFee = ($validated['amount'] * $serviceFeeRate) / 100;
+        $total = $validated['amount'] + $vat + $serviceFee;
+
+        // Generate unique invoice number
+        $invoiceNumber = 'INV-' . strtoupper(Str::random(8));
+
+        return view('dashboard.wallet.invoice', [
+            'organization' => $organization,
+            'amount' => $validated['amount'],
+            'currency' => $validated['currency'],
+            'vatRate' => $vatRate,
+            'serviceFeeRate' => $serviceFeeRate,
+            'vat' => $vat,
+            'serviceFee' => $serviceFee,
+            'total' => $total,
+            'invoiceNumber' => $invoiceNumber,
+            'accountName' => $accountName,
+            'bankName' => $bankName,
+            'accountNumber' => $accountNumber
+        ]);
+    }
+
+    public function downloadInvoice(Request $request)
+    {
+        // Similar logic to generateInvoice but return PDF
+        $validated = $request->validate([
+            'amount' => 'required|numeric',
+            'currency' => 'required|in:NGN,USD,GBP'
+        ]);
+
+        // Get current organization
+        $organization = Organization::findOrFail(auth()->user()->settings->current_organization_id);
+
+        // Get rates from admin settings
+        $vatRate = AdminSetting::where('key', 'ad_account_vat')->first()->value ?? 7.5;
+        $serviceFeeRate = AdminSetting::where('key', 'ad_account_service_charge')->first()->value ?? 1.5;
+
+        // Get bank details from admin settings
+        $accountName = AdminSetting::where('key', 'invoice_account_name')->first()->value ?? 'Company Name';
+        $bankName = AdminSetting::where('key', 'invoice_bank_name')->first()->value ?? 'Bank Name';
+        $accountNumber = AdminSetting::where('key', 'invoice_account_number')->first()->value ?? 'Account Number';
+
+        // Calculate fees
+        $vat = ($validated['amount'] * $vatRate) / 100;
+        $serviceFee = ($validated['amount'] * $serviceFeeRate) / 100;
+        $total = $validated['amount'] + $vat + $serviceFee;
+
+        $pdf = PDF::loadView('dashboard.wallet.invoice-pdf', [
+            'organization' => $organization,
+            'amount' => $validated['amount'],
+            'currency' => $validated['currency'],
+            'vatRate' => $vatRate,
+            'serviceFeeRate' => $serviceFeeRate,
+            'vat' => $vat,
+            'serviceFee' => $serviceFee,
+            'total' => $total,
+            'invoiceNumber' => 'INV-' . strtoupper(Str::random(8)),
+            'accountName' => $accountName,
+            'bankName' => $bankName,
+            'accountNumber' => $accountNumber
+        ]);
+
+        return $pdf->download('invoice.pdf');
     }
 }

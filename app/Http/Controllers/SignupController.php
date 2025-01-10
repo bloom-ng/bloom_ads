@@ -21,6 +21,13 @@ use App\Mail\TwoFactorCodeMail;
 
 class SignupController extends Controller
 {
+    public function index()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.dashboard', ['dark_mode' => $admin->dark_mode]);
+    }
+
+
     public function register(Request $request)
     {
         $request->validate([
@@ -68,9 +75,12 @@ class SignupController extends Controller
 
             DB::commit();
 
+            // Send verification email
+            event(new Registered($user));
+
             Auth::login($user);
 
-            return redirect('/dashboard');
+            return redirect()->route('verification.notice');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Registration failed: ' . $e->getMessage());
@@ -116,7 +126,7 @@ class SignupController extends Controller
             return redirect()->route('2fa.verify');
         }
 
-        
+
         // Log the user in if 2FA is not enabled
         Auth::login($user);
         return redirect('/dashboard');
@@ -259,13 +269,13 @@ class SignupController extends Controller
         Log::info('Full Session Data: ' . json_encode(session()->all()));
 
         // Check if user is authenticated
-    if ((string) $request->code === (string) session('2fa_code')) {
-        // Clear the session code
-        session()->forget('2fa_code');
-    
-        // Re-authenticate the user
-        Auth::loginUsingId(session('user_id'));
-    
+        if ((string) $request->code === (string) session('2fa_code')) {
+            // Clear the session code
+            session()->forget('2fa_code');
+
+            // Re-authenticate the user
+            Auth::loginUsingId(session('user_id'));
+
             // Redirect to the dashboard
             return redirect()->intended('dashboard');
         }

@@ -9,7 +9,12 @@ class AdminOrganizationsController extends Controller
 {
     public function index()
     {
-        $organizations = Organization::with(['user', 'users'])->get();
+        $search = request('search');
+        $organizations = Organization::with(['user', 'users'])
+            ->when($search, function($query) use ($search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->get();
         return view('admin-dashboard.organizations.index', compact('organizations'));
     }
 
@@ -34,7 +39,20 @@ class AdminOrganizationsController extends Controller
 
     public function members(Organization $organization)
     {
-        $members = $organization->users()->withPivot('role')->get();
+        $search = request('search');
+        $members = $organization->users()
+            ->withPivot('role')
+            ->when($search, function($query) use ($search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->get();
+            
         return view('admin-dashboard.organizations.members', compact('organization', 'members'));
+    }
+
+    public function wallets(Organization $organization)
+    {
+        $wallets = $organization->wallets;
+        return view('admin-dashboard.organizations.wallets', compact('organization', 'wallets'));
     }
 } 

@@ -56,18 +56,19 @@
                                             class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                             Fund Wallet
                                         </button>
-
-                                        <!-- Transfer Button -->
-                                        <button
-                                            onclick="openTransferModal('{{ $wallet->id }}', '{{ $wallet->currency }}', {{ $wallet->calculated_balance }})"
-                                            class="w-full border border-[#F48857] text-[#F48857] hover:bg-[#F48857]/10 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Transfer
-                                        </button>
                                     </div>
                                 </div>
                             @empty
                                 <p class="text-gray-500">No wallets found.</p>
                             @endforelse
+                        </div>
+
+                        <!-- Add Global Convert Button -->
+                        <div class="mt-8">
+                            <button onclick="openTransferModal()"
+                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Convert Currency
+                            </button>
                         </div>
 
                         <!-- Transaction History Section -->
@@ -161,85 +162,137 @@
     </div>
 
     <!-- Fund Wallet Modal -->
-    <div id="fundWalletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div id="fundModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
         <div class="bg-white p-8 rounded-lg max-w-md w-full">
-            <h2 class="text-2xl font-bold mb-4">Fund Wallet</h2>
-            <p class="mb-4">Select your preferred payment method:</p>
-
-            <div class="space-y-4 mb-6">
-                <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" class="w-full">
-                    @csrf
-                    <input type="hidden" name="wallet_id" id="modalWalletId">
-                    <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="wallet_currency" id="modalWalletCurrency">
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
-                        <input type="number" name="amount" id="fundAmount" placeholder="Enter amount in NGN" required
-                            class="w-full p-2 border rounded" oninput="updateFundingPreview()">
-
-                        <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
-                            style="display: none;">
-                            <p id="fundingRateDisplay" class="mb-2"></p>
-                            <p id="fundingConvertedAmountDisplay"></p>
-                        </div>
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                        Pay with Flutterwave
-                    </button>
-                </form>
-
-                <form action="{{ route('wallet.fund.paystack') }}" method="POST" class="w-full">
-                    @csrf
-                    <input type="hidden" name="wallet_id" id="modalWalletIdPaystack">
-                    <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="wallet_currency" id="modalWalletCurrencyPaystack">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Amount (NGN)</label>
-                        <input type="number" name="amount" id="fundAmountPaystack"
-                            placeholder="Enter amount in NGN" required class="w-full p-2 border rounded"
-                            oninput="updateFundingPreview()">
-                    </div>
-                    <button type="submit"
-                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                        Pay with Paystack
-                    </button>
-                </form>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-medium">Fund Wallet</h3>
+                <button onclick="closeFundModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
             </div>
 
-            <button onclick="closeFundModal()"
-                class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                Cancel
-            </button>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Amount</label>
+                    <input type="number" id="fundAmount" step="0.01" min="0.01"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-4 py-2"
+                        placeholder="Enter amount" oninput="updateFundingPreview()">
+
+                    <!-- Add the conversion preview div -->
+                    <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
+                        style="display: none;">
+                        <p id="fundingRateDisplay" class="mb-2"></p>
+                        <p id="fundingConvertedAmountDisplay"></p>
+                    </div>
+                </div>
+
+                <!-- Payment Method Buttons -->
+                <div class="flex flex-col gap-4">
+                    <!-- Payment Buttons Container -->
+                    <div class="payment-buttons">
+                        <!-- Flutterwave Button -->
+                        <form action="{{ route('wallet.fund.flutterwave') }}" method="POST" id="flutterwaveForm">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="flutterwaveWalletId">
+                            <input type="hidden" name="amount" id="flutterwaveAmount">
+                            <input type="hidden" name="currency" value="NGN">
+                            <input type="hidden" name="wallet_currency" id="flutterwaveWalletCurrency">
+                            <button type="button" onclick="submitFlutterwavePayment()"
+                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded mb-2">
+                                Pay with Flutterwave
+                            </button>
+                        </form>
+
+                        <!-- Paystack Button -->
+                        <form action="{{ route('wallet.fund.paystack') }}" method="POST" id="paystackForm">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="paystackWalletId">
+                            <input type="hidden" name="amount" id="paystackAmount">
+                            <input type="hidden" name="currency" value="NGN">
+                            <input type="hidden" name="wallet_currency" id="paystackWalletCurrency">
+                            <button type="button" onclick="submitPaystackPayment()"
+                                class="w-full bg-[#0BA4DB] hover:bg-[#0BA4DB]/90 text-black font-bold py-2 px-4 rounded">
+                                Pay with Paystack
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Message for foreign currency high amounts -->
+                    <div id="foreignCurrencyMessage" style="display: none;"
+                        class="text-center p-4 bg-gray-50 rounded-lg mt-4">
+                    </div>
+
+                    <!-- Generate Invoice Button -->
+                    <div class="generate-invoice-button" style="display: none;">
+                        <form action="{{ route('wallet.generate.invoice') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="wallet_id" id="invoiceWalletId">
+                            <input type="hidden" name="amount" id="invoiceAmount">
+                            <input type="hidden" name="currency" id="invoiceCurrency">
+                            <button type="submit"
+                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                                Generate Invoice
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Add Transfer Modal -->
-    <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-8 rounded-lg max-w-md w-full">
-            <h2 class="text-2xl font-bold mb-4">Transfer Funds</h2>
+            <h2 class="text-2xl font-bold mb-4">Convert Funds</h2>
             <form action="{{ route('wallet.transfer') }}" method="POST" class="space-y-4">
                 @csrf
-                <input type="hidden" name="source_wallet_id" id="transferSourceWalletId">
-                <input type="hidden" name="source_currency" id="transferSourceCurrency">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">From Currency</label>
+                    <div class="relative">
+                        <select name="source_currency" id="transferSourceCurrency" required
+                            class="w-full pl-12 pr-20 py-2 border rounded appearance-none"
+                            onchange="updateConversionPreview()">
+                            @foreach ($organization->wallets as $wallet)
+                                <option value="{{ $wallet->currency }}" data-wallet-id="{{ $wallet->id }}"
+                                    data-balance="{{ $wallet->calculated_balance }}">
+                                    {{ $wallet->currency }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <img id="sourceFlag" src="" alt="" class="w-6 h-6 rounded-full">
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                            Balance: <span id="sourceBalance" class="ml-1"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">To Currency</label>
+                    <div class="relative">
+                        <select name="destination_currency" id="transferDestinationCurrency" required
+                            class="w-full pl-12 py-2 border rounded appearance-none"
+                            onchange="updateConversionPreview()">
+                            <option value="NGN">NGN</option>
+                            <option value="USD">USD</option>
+                            <option value="GBP">GBP</option>
+                        </select>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <img id="destFlag" src="" alt="" class="w-6 h-6 rounded-full">
+                        </div>
+                    </div>
+                </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                     <input type="number" name="amount" id="transferAmount" required
                         class="w-full p-2 border rounded" step="0.01" min="0"
                         oninput="updateConversionPreview()">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Destination Currency</label>
-                    <select name="destination_currency" id="transferDestinationCurrency" required
-                        class="w-full p-2 border rounded" onchange="updateConversionPreview()">
-                        <option value="NGN">NGN</option>
-                        <option value="USD">USD</option>
-                        <option value="GBP">GBP</option>
-                    </select>
                 </div>
 
                 <div id="conversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded">
@@ -249,7 +302,7 @@
 
                 <button type="submit"
                     class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
-                    Transfer
+                    Convert
                 </button>
             </form>
 
@@ -279,32 +332,160 @@
     </div>
 
     <script>
-        function openFundModal(walletId, currency) {
-            // Set values for both payment methods
-            document.getElementById('modalWalletId').value = walletId;
-            document.getElementById('modalWalletIdPaystack').value = walletId;
-            document.getElementById('modalWalletCurrency').value = currency;
-            document.getElementById('modalWalletCurrencyPaystack').value = currency;
+        const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
+        const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
 
-            // Reset amount inputs and preview
-            document.getElementById('fundAmount').value = '';
-            if (document.getElementById('fundAmountPaystack')) {
-                document.getElementById('fundAmountPaystack').value = '';
+        function submitFlutterwavePayment() {
+            const amount = document.getElementById('fundAmount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
             }
-            document.getElementById('fundingConversionPreview').style.display = 'none';
+            document.getElementById('flutterwaveAmount').value = amount;
+            document.getElementById('flutterwaveForm').submit();
+        }
+
+        function submitPaystackPayment() {
+            const amount = document.getElementById('fundAmount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            document.getElementById('paystackAmount').value = amount;
+            document.getElementById('paystackForm').submit();
+        }
+
+        function openFundModal(walletId, currency) {
+            // Reset the amount input
+            document.getElementById('fundAmount').value = '';
+
+            // Update Flutterwave form fields
+            document.getElementById('flutterwaveWalletId').value = walletId;
+            document.getElementById('flutterwaveWalletCurrency').value = currency;
+
+            // Update Paystack form fields
+            document.getElementById('paystackWalletId').value = walletId;
+            document.getElementById('paystackWalletCurrency').value = currency;
+
+            // Update Invoice form fields
+            document.getElementById('invoiceWalletId').value = walletId;
+            document.getElementById('invoiceCurrency').value = currency;
 
             // Show the modal
-            document.getElementById('fundWalletModal').style.display = 'flex';
+            document.getElementById('fundModal').style.display = 'flex';
+
+            // Show initial rate for non-NGN wallets
+            if (currency !== 'NGN') {
+                const rateDisplay = document.getElementById('fundingRateDisplay');
+                if (currency === 'USD') {
+                    rateDisplay.textContent = `Exchange Rate: 1 USD = ${USD_RATE.toFixed(2)} NGN`;
+                } else if (currency === 'GBP') {
+                    rateDisplay.textContent = `Exchange Rate: 1 GBP = ${GBP_RATE.toFixed(2)} NGN`;
+                }
+                document.getElementById('fundingConversionPreview').style.display = 'block';
+            }
         }
 
         function closeFundModal() {
-            document.getElementById('fundWalletModal').style.display = 'none';
+            document.getElementById('fundModal').style.display = 'none';
+        }
+
+        function updateFundingPreview() {
+            const amount = parseFloat(document.getElementById('fundAmount').value) || 0;
+            const currency = document.getElementById('flutterwaveWalletCurrency').value;
+
+            // Get payment buttons container
+            const paymentButtons = document.querySelector('.payment-buttons');
+            const generateInvoiceButton = document.querySelector('.generate-invoice-button');
+
+            if (amount > 500000) {
+                if (currency === 'NGN') {
+                    // Hide payment buttons and show generate invoice button
+                    paymentButtons.style.display = 'none';
+                    generateInvoiceButton.style.display = 'block';
+                    // Update invoice amount
+                    document.getElementById('invoiceAmount').value = amount;
+                } else {
+                    // Hide payment buttons and show message for USD/GBP
+                    paymentButtons.style.display = 'none';
+                    generateInvoiceButton.style.display = 'none';
+
+                    // Create or update the message div
+                    let messageDiv = document.getElementById('foreignCurrencyMessage');
+                    if (!messageDiv) {
+                        messageDiv = document.createElement('div');
+                        messageDiv.id = 'foreignCurrencyMessage';
+                        messageDiv.className = 'text-center p-4 bg-gray-50 rounded-lg mt-4';
+                        document.querySelector('.payment-buttons').insertAdjacentElement('afterend', messageDiv);
+                    }
+                    messageDiv.innerHTML = `
+                        <p class="text-gray-600">For amounts above 500,000 NGN, please use the NGN wallet to generate an invoice.</p>
+                    `;
+                    messageDiv.style.display = 'block';
+                }
+            } else {
+                // Show payment buttons and hide generate invoice button
+                paymentButtons.style.display = 'block';
+                generateInvoiceButton.style.display = 'none';
+                // Hide the message if it exists
+                const messageDiv = document.getElementById('foreignCurrencyMessage');
+                if (messageDiv) {
+                    messageDiv.style.display = 'none';
+                }
+                // Update payment form amounts
+                document.getElementById('flutterwaveAmount').value = amount;
+                document.getElementById('paystackAmount').value = amount;
+            }
+
+            if (currency === 'NGN') {
+                document.getElementById('fundingConversionPreview').style.display = 'none';
+                return;
+            }
+
+            const rate = getConversionRate('NGN', currency);
+            const convertedAmount = amount * rate;
+
+            const rateDisplay = document.getElementById('fundingRateDisplay');
+            const convertedAmountDisplay = document.getElementById('fundingConvertedAmountDisplay');
+
+            // Display rate in USD/GBP -> NGN format
+            if (currency === 'USD') {
+                rateDisplay.textContent = `Exchange Rate: 1 USD = ${USD_RATE.toFixed(2)} NGN`;
+            } else if (currency === 'GBP') {
+                rateDisplay.textContent = `Exchange Rate: 1 GBP = ${GBP_RATE.toFixed(2)} NGN`;
+            }
+
+            // Only update converted amount if there is an amount
+            if (amount > 0) {
+                convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, currency)}`;
+            } else {
+                convertedAmountDisplay.textContent = '';
+            }
+
+            document.getElementById('fundingConversionPreview').style.display = 'block';
+        }
+
+        function showBankTransferMessage() {
+            // Close the funding modal
+            closeFundModal();
+
+            // Create and show the bank transfer modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white p-8 rounded-lg max-w-md w-full">
+                    <h2 class="text-2xl font-bold mb-4">Bank Transfer Required</h2>
+                    <p class="mb-6 text-gray-600">For amounts above ₦500,000, please make a bank transfer and send evidence of payment to payments@billing.ad</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                        class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                        Close
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
 
         function getConversionRate(fromCurrency, toCurrency) {
-            const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
-            const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
-
             if (fromCurrency === toCurrency) return 1;
 
             // When converting FROM NGN TO other currencies
@@ -320,12 +501,8 @@
             }
 
             // For USD to GBP and vice versa
-            if (fromCurrency === 'USD' && toCurrency === 'GBP') {
-                return USD_RATE / GBP_RATE;
-            }
-            if (fromCurrency === 'GBP' && toCurrency === 'USD') {
-                return GBP_RATE / USD_RATE;
-            }
+            if (fromCurrency === 'USD' && toCurrency === 'GBP') return USD_RATE / GBP_RATE;
+            if (fromCurrency === 'GBP' && toCurrency === 'USD') return GBP_RATE / USD_RATE;
 
             return 0;
         }
@@ -337,71 +514,6 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(amount);
-        }
-
-        function updateConversionPreview() {
-            const amount = parseFloat(document.getElementById('transferAmount').value) || 0;
-            const sourceCurrency = document.getElementById('transferSourceCurrency').value;
-            const destCurrency = document.getElementById('transferDestinationCurrency').value;
-            const rate = getConversionRate(sourceCurrency, destCurrency);
-            const convertedAmount = amount * rate;
-
-            const rateDisplay = document.getElementById('rateDisplay');
-            const convertedAmountDisplay = document.getElementById('convertedAmountDisplay');
-
-            if (sourceCurrency !== destCurrency && amount > 0) {
-                rateDisplay.textContent = `Exchange Rate: 1 ${sourceCurrency} = ${rate.toFixed(4)} ${destCurrency}`;
-                convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, destCurrency)}`;
-                document.getElementById('conversionPreview').style.display = 'block';
-            } else {
-                rateDisplay.textContent = '';
-                convertedAmountDisplay.textContent = amount > 0 ? `Amount: ${formatCurrency(amount, sourceCurrency)}` : '';
-                document.getElementById('conversionPreview').style.display = amount > 0 ? 'block' : 'none';
-            }
-        }
-
-        function openTransferModal(walletId, currency, balance) {
-            document.getElementById('transferSourceWalletId').value = walletId;
-            document.getElementById('transferSourceCurrency').value = currency;
-            document.getElementById('transferAmount').max = balance;
-
-            // Remove current currency from destination options
-            const destinationSelect = document.getElementById('transferDestinationCurrency');
-            Array.from(destinationSelect.options).forEach(option => {
-                option.disabled = option.value === currency;
-            });
-
-            // Reset and hide conversion preview
-            document.getElementById('transferAmount').value = '';
-            document.getElementById('conversionPreview').style.display = 'none';
-
-            document.getElementById('transferModal').style.display = 'flex';
-        }
-
-        function closeTransferModal() {
-            document.getElementById('transferModal').style.display = 'none';
-        }
-
-        function updateFundingPreview() {
-            const amount = parseFloat(document.getElementById('fundAmount').value) ||
-                parseFloat(document.getElementById('fundAmountPaystack')?.value) || 0;
-            const walletCurrency = document.getElementById('modalWalletCurrency').value;
-
-            if (walletCurrency === 'NGN') {
-                document.getElementById('fundingConversionPreview').style.display = 'none';
-                return;
-            }
-
-            const rate = getConversionRate('NGN', walletCurrency);
-            const convertedAmount = amount * rate;
-
-            const rateDisplay = document.getElementById('fundingRateDisplay');
-            const convertedAmountDisplay = document.getElementById('fundingConvertedAmountDisplay');
-
-            rateDisplay.textContent = `Exchange Rate: 1 NGN = ${rate.toFixed(4)} ${walletCurrency}`;
-            convertedAmountDisplay.textContent = `You will receive: ${formatCurrency(convertedAmount, walletCurrency)}`;
-
-            document.getElementById('fundingConversionPreview').style.display = amount > 0 ? 'block' : 'none';
         }
 
         function viewReceipt(transactionId) {
@@ -431,11 +543,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                    <div class="border-b pb-4">
-                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                    </div>
-                                ` : ''}
+                                                                                    <div class="border-b pb-4">
+                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                    </div>
+                                                                                ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
@@ -450,6 +562,93 @@
 
         function closeReceiptModal() {
             document.getElementById('receiptModal').style.display = 'none';
+        }
+
+        function openTransferModal() {
+            // Show the modal
+            document.getElementById('transferModal').style.display = 'flex';
+
+            // Set initial currency flags and balance
+            updateCurrencyFlags();
+            updateSourceBalance();
+
+            // Update preview to show rate immediately
+            updateConversionPreview();
+        }
+
+        function updateCurrencyFlags() {
+            const sourceCurrency = document.getElementById('transferSourceCurrency').value;
+            const destCurrency = document.getElementById('transferDestinationCurrency').value;
+
+            // Update source currency flag
+            document.getElementById('sourceFlag').src = `/images/flags/${sourceCurrency.toLowerCase()}.png`;
+
+            // Update destination currency flag
+            document.getElementById('destFlag').src = `/images/flags/${destCurrency.toLowerCase()}.png`;
+        }
+
+        function updateSourceBalance() {
+            const sourceSelect = document.getElementById('transferSourceCurrency');
+            const selectedOption = sourceSelect.options[sourceSelect.selectedIndex];
+            const balance = selectedOption.dataset.balance;
+
+            document.getElementById('sourceBalance').textContent = formatCurrency(balance, sourceSelect.value);
+        }
+
+        function updateConversionPreview() {
+            updateCurrencyFlags();
+            updateSourceBalance();
+
+            const amount = parseFloat(document.getElementById('transferAmount').value) || 0;
+            const sourceCurrency = document.getElementById('transferSourceCurrency').value;
+            const destCurrency = document.getElementById('transferDestinationCurrency').value;
+            const rate = getConversionRate(sourceCurrency, destCurrency);
+            const convertedAmount = amount * rate;
+
+            const rateDisplay = document.getElementById('rateDisplay');
+            const convertedAmountDisplay = document.getElementById('convertedAmountDisplay');
+
+            if (sourceCurrency !== destCurrency) {
+                // Always display rate, even when amount is 0
+                if (sourceCurrency === 'USD' && destCurrency === 'NGN') {
+                    rateDisplay.textContent = `Exchange Rate: 1 USD = ${USD_RATE.toFixed(2)} NGN`;
+                } else if (sourceCurrency === 'GBP' && destCurrency === 'NGN') {
+                    rateDisplay.textContent = `Exchange Rate: 1 GBP = ${GBP_RATE.toFixed(2)} NGN`;
+                } else if (destCurrency === 'USD' && sourceCurrency === 'NGN') {
+                    rateDisplay.textContent = `Exchange Rate: 1 USD = ${USD_RATE.toFixed(2)} NGN`;
+                } else if (destCurrency === 'GBP' && sourceCurrency === 'NGN') {
+                    rateDisplay.textContent = `Exchange Rate: 1 GBP = ${GBP_RATE.toFixed(2)} NGN`;
+                } else {
+                    rateDisplay.textContent = `Exchange Rate: 1 ${sourceCurrency} = ${rate.toFixed(4)} ${destCurrency}`;
+                }
+
+                // Only show converted amount when there is an amount
+                convertedAmountDisplay.textContent = amount > 0 ?
+                    `You will receive: ${formatCurrency(convertedAmount, destCurrency)}` : '';
+
+                document.getElementById('conversionPreview').style.display = 'block';
+            } else {
+                document.getElementById('conversionPreview').style.display = 'none';
+            }
+
+            // Update the hidden wallet ID input
+            const sourceSelect = document.getElementById('transferSourceCurrency');
+            const selectedOption = sourceSelect.options[sourceSelect.selectedIndex];
+            const walletId = selectedOption.dataset.walletId;
+
+            // Create or update hidden input for wallet ID
+            let walletIdInput = document.querySelector('input[name="source_wallet_id"]');
+            if (!walletIdInput) {
+                walletIdInput = document.createElement('input');
+                walletIdInput.type = 'hidden';
+                walletIdInput.name = 'source_wallet_id';
+                document.querySelector('#transferModal form').appendChild(walletIdInput);
+            }
+            walletIdInput.value = walletId;
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').style.display = 'none';
         }
     </script>
 </x-user-layout>

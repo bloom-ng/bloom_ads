@@ -1,8 +1,23 @@
 <x-admin-layout page="organizations">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
-        <main class="w-full flex-grow p-6">
+        <main class="w-full flex-grow p-6 bg-body">
             <div class="flex items-center justify-between pb-6">
-                <h1 class="text-3xl text-black">Members of {{ $organization->name }}</h1>
+                <div>
+                    <h1 class="text-3xl text-black text pb-6">Members of {{ $organization->name }}</h1>
+                    <div class="mt-4">
+                        <form action="" method="GET" class="flex items-center">
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Search by name..." 
+                                   value="{{ request('search') }}"
+                                   class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                            <button type="submit" 
+                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <a href="{{ route('admin.organizations.index') }}" 
                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Back to Organizations
