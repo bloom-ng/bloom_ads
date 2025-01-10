@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\Api\AdAccountController as ApiAdAccountController;
+use App\Http\Controllers\Api\OrganizationController as ApiOrganizationController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WalletController;
@@ -102,6 +104,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         ->name('adaccounts.fund');
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
+
+    Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
+    Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
+    Route::post('/data/ad-accounts/link', [ApiAdAccountController::class, 'linkAccount']);
 });
 
 Route::get('/', function () {
@@ -292,3 +298,4 @@ Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::
     ->name('wallet.transaction.receipt');
 Route::get('/wallet/transaction/{transaction}/receipt/download', [WalletController::class, 'downloadTransactionReceipt'])
     ->name('wallet.transaction.receipt.download');
+

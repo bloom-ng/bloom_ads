@@ -104,4 +104,29 @@ class BusinessManagerController extends Controller
             return back()->with('error', 'Failed to fetch ad accounts: ' . $e->getMessage());
         }
     }
+
+    public function accounts(BusinessManager $businessManager, Request $request)
+    {
+        $activeTab = $request->get('tab', 'client');
+        $before = $request->get('before');
+        $after = $request->get('after');
+
+        $adAccountService = new AdAccountService($businessManager->provider_id);
+        
+        if ($activeTab === 'client') {
+            $result = $adAccountService->getClientAdAccounts($before, $after);
+        } else {
+            $result = $adAccountService->getOwnedAdAccounts($before, $after);
+        }
+
+        return view('admin-dashboard/business-managers/accounts', [
+            'businessManager' => $businessManager,
+            'adAccounts' => $result->data,
+            'activeTab' => $activeTab,
+            'hasNext' => $result->hasNext,
+            'hasPrev' => $result->hasPrev,
+            'nextCursor' => $result->after,
+            'prevCursor' => $result->before,
+        ]);
+    }
 }

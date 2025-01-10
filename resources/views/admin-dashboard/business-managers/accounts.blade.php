@@ -90,11 +90,20 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                            <a href="https://business.facebook.com/adsmanager/manage/accounts?act={{ $account['account_id'] }}" 
-                                               target="_blank"
-                                               class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
-                                                View in Ads Manager
-                                            </a>
+                                            <div class="flex justify-center space-x-3">
+                                                <a href="https://business.facebook.com/adsmanager/manage/accounts?act={{ $account['account_id'] }}" 
+                                                   target="_blank"
+                                                   class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
+                                                    View in Ads Manager
+                                                </a>
+                                                @if(empty($account['provider_bm_id']))
+                                                    <button 
+                                                        onclick="openLinkAccountModal('{{ $account['id'] }}')"
+                                                        class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
+                                                        Link Account
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -118,7 +127,7 @@
                                 @if($hasNext)
                                     <a href="{{ request()->fullUrlWithQuery(['after' => $nextCursor, 'before' => null, 'tab' => $activeTab]) }}" 
                                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center">
-                                        Next
+                                        Link
                                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
@@ -131,4 +140,265 @@
             </div>
         </main>
     </div>
-</x-admin-layout> 
+    
+    <x-modal name="link-ad-account" :show="false">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                Link Ad Account
+            </h2>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Select Organization
+                </label>
+                <select 
+                    id="organization-select"
+                    class="w-full mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    onchange="handleOrganizationChange(this.value)">
+                    <option value="">Select an organization...</option>
+                </select>
+            </div>
+    
+            <!-- Add Ad Account select -->
+            <div class="mb-4" id="ad-account-select-container" style="display: none;">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Select Ad Account
+                </label>
+                <select 
+                    id="ad-account-select"
+                    class="w-full mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">Select an ad account...</option>
+                </select>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button 
+                    type="button"
+                    onclick="closeModal()"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition">
+                    Cancel
+                </button>
+                <button 
+                    type="button"
+                    onclick="handleLink()"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                    Link
+                </button>
+            </div>
+        </div>
+    </x-modal>
+    
+    @push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.default.min.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        .ts-wrapper.single .ts-control {
+            @apply bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md;
+            @apply text-sm text-gray-900 dark:text-gray-100;
+            @apply min-h-[38px] px-3 py-2;
+            @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+        }
+
+        /* Input placeholder */
+        .ts-wrapper.single .ts-control input {
+            @apply text-sm text-gray-900 dark:text-gray-100;
+        }
+
+        /* Dropdown styles */
+        .ts-dropdown {
+            @apply mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md;
+            @apply shadow-lg;
+        }
+
+        /* Dropdown options */
+        .ts-dropdown .option {
+            @apply px-4 py-2 text-sm text-gray-900 dark:text-gray-100;
+            @apply hover:bg-gray-100 dark:hover:bg-gray-600;
+        }
+
+        /* Active/selected option */
+        .ts-dropdown .active {
+            @apply bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-100;
+        }
+
+        /* Selected item in input */
+        .ts-wrapper.single .item {
+            @apply text-sm text-gray-900 dark:text-gray-100;
+        }
+
+        /* Dropdown arrow */
+        .ts-wrapper.single .ts-control::after {
+            @apply border-gray-400 dark:border-gray-500;
+        }
+
+        /* Clear button */
+        .ts-wrapper .clear-button {
+            @apply text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300;
+        }
+    </style>
+    @endpush
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script>
+    let selectedAccountId = null;
+    let selectedOrganizationId = null;
+    let selectedAdAccountId = null;
+
+    function openLinkAccountModal(accountId) {
+        selectedAccountId = accountId;
+        fetchOrganizations();
+        const event = new CustomEvent('open-modal', { detail: 'link-ad-account' });
+        window.dispatchEvent(event);
+    }
+
+    function handleOrganizationChange(value) {
+        selectedOrganizationId = value;
+        if (value) {
+            fetchAdAccounts(value);
+            document.getElementById('ad-account-select-container').style.display = 'block';
+        } else {
+            document.getElementById('ad-account-select-container').style.display = 'none';
+            const adAccountSelect = document.getElementById('ad-account-select');
+            adAccountSelect.value = '';
+            selectedAdAccountId = null;
+        }
+    }
+
+    async function fetchAdAccounts(organizationId) {
+        try {
+            const response = await fetch(`/admin/data/organizations/${organizationId}/ad-accounts`, {
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to fetch ad accounts');
+            const adAccounts = await response.json();
+            
+            console.log('Ad Accounts:', adAccounts);
+
+            // Get the select element
+            const select = document.getElementById('ad-account-select');
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+
+            // Add new options
+            adAccounts.forEach(account => {
+                const option = new Option(account.name, account.id);
+                select.add(option);
+            });
+            
+        } catch (error) {
+            console.error('Error fetching ad accounts:', error);
+            alert('Failed to load ad accounts');
+        }
+    }
+
+    async function handleLink() {
+        if (!selectedOrganizationId) {
+            alert('Please select an organization');
+            return;
+        }
+
+        if (!selectedAdAccountId) {
+            alert('Please select an ad account');
+            return;
+        }
+
+        try {
+            const response = await fetch('/admin/data/ad-accounts/link', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    ad_account_id: selectedAdAccountId,
+                    business_manager_id: selectedAccountId
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to link account');
+
+            // Show success message and close modal
+            alert('Account linked successfully');
+            closeModal();
+            
+            // Refresh the page to show updated data
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Error linking account:', error);
+            alert('Failed to link account. Please try again.');
+        }
+    }
+
+    // Add event listener for ad account select
+    document.getElementById('ad-account-select').addEventListener('change', function(e) {
+        selectedAdAccountId = e.target.value;
+    });
+
+    // Update close modal to reset ad account select
+    function closeModal() {
+        const event = new CustomEvent('close-modal', { detail: 'link-ad-account' });
+        window.dispatchEvent(event);
+        selectedAccountId = null;
+        selectedOrganizationId = null;
+        selectedAdAccountId = null;
+        document.getElementById('organization-select').value = '';
+        document.getElementById('ad-account-select').value = '';
+        document.getElementById('ad-account-select-container').style.display = 'none';
+    }
+
+    // Update clean up event listener
+    window.addEventListener('close-modal', (event) => {
+        if (event.detail === 'link-ad-account') {
+            selectedAccountId = null;
+            selectedOrganizationId = null;
+            selectedAdAccountId = null;
+            document.getElementById('organization-select').value = '';
+            document.getElementById('ad-account-select').value = '';
+            document.getElementById('ad-account-select-container').style.display = 'none';
+        }
+    });
+
+    async function fetchOrganizations() {
+        try {
+            const response = await fetch('/admin/data/organizations', {
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to fetch organizations');
+            const organizations = await response.json();
+            
+            console.log('Organizations:', organizations);
+
+            // Get the select element
+            const select = document.getElementById('organization-select');
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+
+            // Add new options
+            organizations.forEach(org => {
+                const option = new Option(org.name, org.id);
+                select.add(option);
+            });
+            
+        } catch (error) {
+            console.error('Error fetching organizations:', error);
+            alert('Failed to load organizations');
+        }
+    }
+    </script>
+</x-admin-layout>
+

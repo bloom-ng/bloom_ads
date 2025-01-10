@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" 
-    x-data 
-    :class="{ 'dark': $store.darkMode.on }">
+    >
 {{-- {{$page == "newsletters" ? "active-nav-link" : ""}} --}}
 
 <head>
@@ -10,6 +9,7 @@
 
     <!-- Include Tailwind CSS -->
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+
 
     <!-- Include Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,7 +95,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body x-data="{ darkMode: $store.darkMode }"
+    :class="{ 'dark': $store.darkMode?.on }"
+class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -335,8 +337,7 @@
         </footer>
     </div>
 
-    <!-- AlpineJS -->
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+ 
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
         integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
