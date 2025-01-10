@@ -106,6 +106,19 @@
         .dark .inactive-nav-link {
             color: white; /* White text for dark mode inactive links */
         }        
+
+        .dark .text {
+            color: #F0F0F0;
+        }
+
+        .dark .bg-body {
+            background: #000013;
+        }
+
+        .dark #darklink {
+            color: #F0F0F0;
+        }
+
         </style>
 
    <!-- Add Alpine.js -->
@@ -228,7 +241,7 @@
                     Dashboard
                 </span>
             </a>
-            <a href="{{ route('admin.users.index') }}"
+            <!-- <a href="{{ route('admin.users.index') }}"
                 class="flex items-center {{ $page == 'users' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
@@ -263,7 +276,7 @@
                     @endif
                 </span>
                 Wallet
-            </a>
+            </a> -->
             <a href="{{ route('admin.organizations.index') }}"
                 class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
@@ -272,7 +285,7 @@
                         <img class="w-8 h-8 dark-hidden" 
                             src="{{ asset('images/organizationIcon.png') }}" alt="">
                         <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkOrganizationIcon.png') }}" alt="">
+                            src="{{ asset('images/darkUserIcon.png') }}" alt="">
                     @else
                         <img class="w-8 h-8 dark-hidden" 
                             src="{{ asset('images/organizationIconInactive.png') }}" alt="">
@@ -514,19 +527,35 @@
         </header>
 
         {{ $slot }}
-        <div class="flex-grow"></div>
-        <footer class="flex bg-white justify-between items-center w-full max-w-screen bg-white dark:bg-gray-800 text-right p-4">
-            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black dark:text-white">BLOOM
+        <div class="flex-grow bg-body"></div>
+        <footer class="flex bg-white bg-body text justify-between items-center w-full max-w-screen bg-white dark:bg-gray-800 text-right p-4">
+            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black" id="darklink">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
-                <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                <span>
+                    <a class="dark-hidden" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
+                    <a class="dark-block" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
+                </span>
+                <span>
+                    <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
                         alt="X Link" /></a>
-                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                    <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/darkModeX.png"
+                        alt="X Link" /></a>
+                </span>
+                    <span>
+                    <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
                         src="/images/facebook.png" alt="Facebook Link" /></a>
-                <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
+                    <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                        src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
+                </span>
+                <span>
+                    <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
                         src="/images/linkedin.png" alt="LinkedIn Link" /></a>
+                    <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
+                        src="/images/darkModeLinkedin.png" alt="LinkedIn Link" /></a>
+                </span>
             </div>
         </footer>
     </div>
