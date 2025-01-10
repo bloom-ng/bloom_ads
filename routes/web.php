@@ -298,6 +298,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back()->with('success', 'All notifications marked as read');
     })->name('notifications.mark-all-read');
+
+    Route::post('/wallet/generate-invoice', [WalletController::class, 'generateInvoice'])->name('wallet.generate.invoice');
+    Route::get('/wallet/invoice/download', [WalletController::class, 'downloadInvoice'])->name('wallet.invoice.download');
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])

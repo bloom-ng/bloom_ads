@@ -62,11 +62,16 @@ class OrganizationController extends Controller
         $existingUser = User::where('email', $validated['email'])->first();
         if ($existingUser) {
             $organization->users()->attach($existingUser->id, ['role' => $validated['role']]);
-            $existingUser->notify(new BaseNotification([
-                'message' => "You have been invited to join {$organization->name}",
-                'type' => 'organization_invite',
-                'organization_id' => $organization->id
-            ]));
+            try {
+                $existingUser->notify(new BaseNotification([
+                    'subject' => 'Organization Invitation',
+                    'message' => "You have been invited to join {$organization->name}",
+                    'type' => 'organization_invite',
+                    'organization_id' => $organization->id
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Organization invite notification error: ' . $e->getMessage());
+            }
             return back()->with('success', 'User added to organization');
         }
 
@@ -81,7 +86,12 @@ class OrganizationController extends Controller
 
 
         // Send invitation email
-        Notification::route('mail', $validated['email'])->notify(new OrganizationInvitation($organization, $invite));
+        try {
+            Notification::route('mail', $validated['email'])
+                ->notify(new OrganizationInvitation($organization, $invite));
+        } catch (\Exception $e) {
+            Log::error('Organization invitation email error: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Invitation sent');
     }
@@ -103,8 +113,12 @@ class OrganizationController extends Controller
         ]);
 
         // Resend notification
-        Notification::route('mail', $invite->email)
-            ->notify(new OrganizationInvitation($organization, $invite));
+        try {
+            Notification::route('mail', $invite->email)
+                ->notify(new OrganizationInvitation($organization, $invite));
+        } catch (\Exception $e) {
+            Log::error('Organization invite resend error: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Invitation resent');
     }
