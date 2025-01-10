@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('email');
             $table->enum('role', ['admin', 'finance', 'advertiser']);
             $table->string('token')->unique();
+            $table->boolean('used')->default(false);
             $table->timestamp('expires_at');
             $table->timestamps();
         });

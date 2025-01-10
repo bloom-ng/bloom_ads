@@ -58,7 +58,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
 
     Route::get('/wallets', [AdminWalletController::class, 'index'])->name('wallets.index');
-    Route::get('/wallets/{wallet}/transactions', function(App\Models\Wallet $wallet) {
+    Route::get('/wallets/{wallet}/transactions', function (App\Models\Wallet $wallet) {
         $wallet = App\Models\Wallet::withBalances()->findOrFail($wallet->id);
         return view('admin-dashboard.organizations.transactions', ['wallet' => $wallet]);
     })->name('wallets.transactions');
@@ -112,12 +112,12 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
 
-    
+
     Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
     Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
     Route::post('/meta/ad-accounts/link', [ApiAdAccountController::class, 'linkAccount']);
     // API endpoint for updating dark mode preference
-   
+
     Route::post('/update-dark-mode', function (Request $request) {
         $request->validate(['dark_mode' => 'required|boolean']);
         $user = Auth::user(); // since there's only one admin
@@ -161,7 +161,11 @@ Route::get('/signup3', [SignupController::class, 'showSignup3']);
 Route::post('/signup/register', [SignupController::class, 'register'])->name('signup.register');
 Route::get('/auth/{provider}', [SignupController::class, 'redirectToProvider']);
 Route::get('/auth/{provider}/callback', [SignupController::class, 'handleProviderCallback']);
-Route::post('/signup/invite', [SignupController::class, 'inviteSignup'])->name('signup.invite');
+Route::get('/signup/invite', [SignupController::class, 'showInviteSignup'])
+    ->name('signup.invite.show');
+
+Route::post('/signup/invite', [SignupController::class, 'inviteSignup'])
+    ->name('signup.invite.process');
 
 Route::get('/privacy', function () {
     return view('privacy');

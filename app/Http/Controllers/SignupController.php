@@ -30,20 +30,19 @@ class SignupController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'user_type' => 'required|in:direct_advertiser,agency,partner',
-            'business_name' => 'required|string|max:255',
-            'country_code' => 'required|string',
-            'phone_number' => 'required|string|max:20',
-            'weblink' => 'required|url|max:255',
-            'country' => 'required|string|max:255',
-        ]);
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8',
+                'user_type' => 'required|in:direct_advertiser,agency,partner',
+                'business_name' => session('invite_data') ? 'nullable|string|max:255' : 'required|string|max:255',
+                'country_code' => 'required',
+                'phone_number' => 'required',
+                'country' => 'required',
+                'weblink' => session('invite_data') ? 'nullable|url' : 'required|url', // Make weblink optional for invites
+            ]);
 
             // Create user
             $user = User::create([
@@ -58,20 +57,40 @@ class SignupController extends Controller
                 'country' => $request->country,
             ]);
 
-            // Create organization
-            $organization = Organization::create([
-                'name' => $request->business_name,
-                'user_id' => $user->id
-            ]);
+            // Check if user is being invited to an organization
+            if ($inviteData = session('invite_data')) {
+                $organization = Organization::findOrFail($inviteData['organization_id']);
 
-            // Create user settings
-            $user->settings()->create([
-                'current_organization_id' => $organization->id,
-                'preferences' => UserSettings::getPreferences()
-            ]);
+                // Attach user to organization with invited role
+                $user->organizations()->attach($organization->id, ['role' => $inviteData['role']]);
 
-            // Attach user to organization with 'owner' role
-            $user->organizations()->attach($organization->id, ['role' => 'owner']);
+                // Create user settings
+                $user->settings()->create([
+                    'current_organization_id' => $organization->id,
+                    'preferences' => UserSettings::getPreferences()
+                ]);
+
+                // Mark invite as used
+                OrganizationInvite::where('token', $inviteData['token'])->update(['used' => true]);
+
+                // Clear invite data from session
+                session()->forget('invite_data');
+            } else {
+                // Create new organization for non-invited users
+                $organization = Organization::create([
+                    'name' => $request->business_name,
+                    'user_id' => $user->id
+                ]);
+
+                // Create user settings
+                $user->settings()->create([
+                    'current_organization_id' => $organization->id,
+                    'preferences' => UserSettings::getPreferences()
+                ]);
+
+                // Attach user to organization with 'owner' role
+                $user->organizations()->attach($organization->id, ['role' => 'owner']);
+            }
 
             DB::commit();
 
@@ -214,25 +233,26 @@ class SignupController extends Controller
         // Verify invite token
         $invite = OrganizationInvite::where('token', $request->token)
             ->where('email', $request->email)
-            ->first();
+            ->where('expires_at', '>', now())
+            ->where('used', false)
+            ->firstOrFail();
 
-        if (!$invite) {
-            return back()->with('error', 'Invalid invite');
+        // Check if user already exists
+        $existingUser = User::where('email', $invite->email)->first();
+        if ($existingUser) {
+            // Add user to organization
+            $invite->organization->users()->attach($existingUser->id, ['role' => $invite->role]);
+
+            // Mark invite as used
+            $invite->update(['used' => true]);
+
+            // Log the user in
+            Auth::login($existingUser);
+
+            return redirect()->route('dashboard')->with('success', 'You have been added to the organization.');
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            $user = User::create([
-                'email' => $request->email,
-                'user_type' => 'direct_advertiser',
-                // Other fields will be filled during registration
-            ]);
-        }
-
-        // Mark invite as used
-        $invite->update(['used' => true]);
-
+        // If user doesn't exist, redirect to registration with invite data
         return redirect()->route('complete-registration', ['email' => $request->email]);
     }
 
@@ -279,5 +299,36 @@ class SignupController extends Controller
             // Redirect to the dashboard
             return redirect()->intended('dashboard');
         }
+    }
+
+    public function showInviteSignup(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required'
+        ]);
+
+        // Verify invite token
+        $invite = OrganizationInvite::where('token', $request->token)
+            ->where('email', $request->email)
+            ->where('expires_at', '>', now())
+            ->where('used', false)
+            ->firstOrFail();
+
+        // Store invite data in session
+        session([
+            'invite_data' => [
+                'organization_id' => $invite->organization_id,
+                'role' => $invite->role,
+                'email' => $invite->email,
+                'token' => $invite->token
+            ]
+        ]);
+
+        // Get country codes and countries for the form
+        $countryCodes = CountryHelper::getCountryCodes();
+        $countries = CountryHelper::getCountries();
+
+        return view('signup1', compact('countryCodes', 'countries'));
     }
 }

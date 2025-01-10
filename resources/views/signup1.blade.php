@@ -1,9 +1,15 @@
-<x-guest-layout :isAuth="true">
+<x-guest-layout isAuth="true">
     <section class="flex flex-col w-full items-center bg-[url('/images/lines.png')] bg-cover bg-center mb-10 lg:mb-16">
         <div
-            class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] p-10 md:p-16 lg:p-20 lg:w-[40%] rounded-3xl items-center text-center mt-10 mx-5 md:mx-0 md:mt-16 lg:mt-24">
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-5">Bloom Ads for <br>Direct
-                Advertisers</h1>
+            class="bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] p-20 lg:w-[40%] rounded-3xl items-center text-center mt-24">
+            <h1 class="text-5xl font-bold text-black mb-5">
+                @if (session('invite_data'))
+                    Complete Your Registration
+                @else
+                    Bloom Ads for Direct Advertisers
+                @endif
+            </h1>
+            <p class="text-2xl font-light mb-10">Please enter a valid & active email address</p>
 
             <!-- OAuth Buttons -->
             <div class="flex flex-col gap-4 mb-8">
@@ -34,16 +40,19 @@
                         placeholder="Name & Surname" required>
                 </div>
 
-                <div class="mb-3">
-                    <input type="text" name="business_name"
-                        class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
-                        placeholder="Your Business Name" required>
-                </div>
+                @if (!session('invite_data'))
+                    <div class="mb-3">
+                        <input type="text" name="business_name"
+                            class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
+                            placeholder="Your Business Name" required>
+                    </div>
+                @endif
 
                 <div class="mb-3">
                     <input type="email" name="email"
                         class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
-                        placeholder="Valid Email Address" required>
+                        placeholder="Valid Email Address" required value="{{ session('invite_data.email') ?? '' }}"
+                        {{ session('invite_data') ? 'readonly' : '' }}>
                 </div>
 
                 <div class="flex flex-row mb-3 gap-3">
@@ -66,11 +75,13 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <input type="url" name="weblink"
-                        class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
-                        placeholder="Website Link" required>
-                </div>
+                @if (!session('invite_data'))
+                    <div class="mb-3">
+                        <input type="url" name="weblink"
+                            class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
+                            placeholder="Website Link" required>
+                    </div>
+                @endif
 
                 <div class="mb-3">
                     <label for="country" class="sr-only">Country</label>
