@@ -443,6 +443,20 @@ class WalletController extends Controller
         }
     }
 
+    public function transactions($id)
+    {
+        $wallet = Wallet::findOrFail($id);
+        
+        $transactions = WalletTransaction::where('wallet_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        return view('admin-dashboard.organizations.transactions', [
+            'wallet' => $wallet,
+            'transactions' => $transactions
+        ]);
+    }
+
     public function viewTransactionReceipt(WalletTransaction $transaction)
     {
         // Ensure user has access to this transaction

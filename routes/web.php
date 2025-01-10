@@ -56,6 +56,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
 
     Route::get('/wallets', [AdminWalletController::class, 'index'])->name('wallets.index');
+    Route::get('/wallets/{wallet}/transactions', function(App\Models\Wallet $wallet) {
+        return view('admin-dashboard.organizations.transactions', ['wallet' => $wallet]);
+    })->name('wallets.transactions');
 
     Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('adaccounts.show');
