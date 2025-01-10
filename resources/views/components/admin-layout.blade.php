@@ -155,9 +155,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body x-data="{ darkMode: $store.darkMode }"
-    :class="{ 'dark': $store.darkMode?.on }"
-class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

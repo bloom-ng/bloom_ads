@@ -4,7 +4,7 @@
             <div class="flex items-center justify-between pb-6">
                 <div>
                     <h1 class="text-3xl text-black">Wallet Transactions</h1>
-                    <p class="text-gray-600 mt-2">Wallet ID: {{ $wallet->id }} ({{ $wallet->currency }})</p>
+                    <!-- <p class="text-gray-600 mt-2">Wallet ID: {{ $wallet->id }} ({{ $wallet->currency }})</p> -->
                 </div>
                 <a href="{{ route('admin.organizations.wallets', $wallet->organization_id) }}" 
                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -23,7 +23,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Currency</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Receipt</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -52,15 +51,6 @@
                                         {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                         {{ ucfirst($transaction->status) }}
                                     </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    @if($transaction->receipt_url)
-                                    <a href="{{ route('wallet.transaction.receipt.view', $transaction->id) }}" 
-                                       target="_blank"
-                                       class="text-blue-600 hover:text-blue-900">
-                                        View Receipt
-                                    </a>
-                                    @endif
                                 </td>
                             </tr>
                             @endforeach

@@ -59,6 +59,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
     Route::get('/wallets', [AdminWalletController::class, 'index'])->name('wallets.index');
     Route::get('/wallets/{wallet}/transactions', function(App\Models\Wallet $wallet) {
+        $wallet = App\Models\Wallet::withBalances()->findOrFail($wallet->id);
         return view('admin-dashboard.organizations.transactions', ['wallet' => $wallet]);
     })->name('wallets.transactions');
 
