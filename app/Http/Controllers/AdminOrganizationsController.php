@@ -52,7 +52,7 @@ class AdminOrganizationsController extends Controller
 
     public function wallets(Organization $organization)
     {
-        $wallets = $organization->wallets;
+        $wallets = $organization->wallets()->withBalances()->get();
         return view('admin-dashboard.organizations.wallets', compact('organization', 'wallets'));
     }
 } 

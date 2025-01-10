@@ -28,7 +28,7 @@
                             @foreach($wallets as $wallet)
                             <tr class="border-b border-gray-200 hover:bg-gray-100">
                                 <td class="py-3 px-6 text-left">{{ $wallet->id }}</td>
-                                <td class="py-3 px-6 text-left">{{ $wallet->balance }}</td>
+                                <td class="py-3 px-6 text-left">{{ number_format($wallet->calculated_balance, 2) }}</td>
                                 <td class="py-3 px-6 text-left">{{ $wallet->currency }}</td>
                                 <td class="py-3 px-6 text-center">{{ $wallet->created_at->format('Y-m-d') }}</td>
                                 <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
