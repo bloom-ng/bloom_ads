@@ -12,6 +12,8 @@ use App\Models\AdAccountTransaction;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\AdAccountNotification;
+use App\Models\BusinessManager;
+use App\Services\Meta\AdAccountService as MetaAdAccountService;
 
 class AdminAdAccountsController extends Controller
 {
@@ -256,8 +258,23 @@ class AdminAdAccountsController extends Controller
     {
         // Load the organization with its wallets
         $adAccount->load('organization.wallets');
+        $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
+        if ($adAccount->provider == "meta" 
+            && !empty($adAccount->provider_bm_id) 
+            && !empty($adAccount->provider_id) 
+            )
+        {
+            $providerInfo["_provider"] = "meta";
+            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
+            $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
+            $metaAdAccount = $adAccountService->getAdAccount($adAccount->provider_id);
+            $providerInfo["_meta_ad_account"] = $metaAdAccount;
+        }
 
-        return view('admin-dashboard.adaccounts.show', compact('adAccount'));
+
+
+
+        return view('admin-dashboard.adaccounts.show', compact('adAccount', 'providerInfo'));
     }
 
     public function withdraw(Request $request, AdAccount $adAccount)

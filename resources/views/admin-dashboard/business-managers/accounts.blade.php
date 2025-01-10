@@ -310,7 +310,7 @@
         }
 
         try {
-            const response = await fetch('/admin/data/ad-accounts/link', {
+            const response = await fetch('/admin/meta/ad-accounts/link', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -318,8 +318,9 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify({
+                    account_id: selectedAccountId, //meta account id
                     ad_account_id: selectedAdAccountId,
-                    business_manager_id: selectedAccountId
+                    business_manager_id:  "{{ $businessManager->id }}"
                 })
             });
 

@@ -39,6 +39,10 @@
                                 <td class="py-3 px-6 text-center">{{ $adAccount->created_at->format('Y-m-d') }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <div class="flex justify-center space-x-4">
+                                        <a href="{{ route('admin.adaccounts.show', $adAccount->id) }}"
+                                            class="text-blue-500 hover:text-blue-700">
+                                            View
+                                        </a>
                                         <a href="{{ route('admin.adaccounts.edit', $adAccount->id) }}" 
                                            class="text-blue-500 hover:text-blue-700">
                                             Edit

@@ -52,6 +52,18 @@ class AdAccountService
         return $this->handleResponse($response);
     }
 
+    public function getAdAccount(string $adaccountId)
+    {
+        $endpoint = "{$this->baseUrl}/act_{$adaccountId}";
+        
+        $response = Http::get($endpoint, [
+            'access_token' => $this->accessToken,
+            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
+        ]);
+
+        return $this->handleResponse($response);
+    }
+
     public function getOwnedAdAccounts(?string $before = null, ?string $after = null, int $limit = 10): PaginatedResult
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/owned_ad_accounts";

@@ -101,7 +101,7 @@
                                                 @if (!$adAccount->provider_id)
                                                     <button onclick="showLinkModal('{{ $adAccount->id }}')"
                                                         class="text-green-500 hover:text-green-700">
-                                                        Link Meta
+                                                        
                                                     </button>
                                                 @else
                                                     <button onclick="unlinkAccount('{{ $adAccount->id }}')"

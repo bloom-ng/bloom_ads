@@ -14,13 +14,18 @@ class AdAccountController extends Controller
     public function linkAccount(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'account_id' => 'required|string', //meta account id
             'ad_account_id' => 'required|string',
             'business_manager_id' => 'required|exists:business_managers,id'
         ]);
 
-        $businessManager = BusinessManager::findOrFail($validated['business_manager_id']);
+        $businessManager = BusinessManager::find($validated['business_manager_id']);
 
-        $adAccount = AdAccount::where('provider_id', $validated['ad_account_id'])->first();
+        if (!$businessManager) {
+            return response()->json(['message' => 'Business manager not found'], 404);
+        }
+
+        $adAccount = AdAccount::find($validated['ad_account_id']);
         
         if (!$adAccount) {
             return response()->json(['message' => 'Ad account not found'], 404);
@@ -28,7 +33,9 @@ class AdAccountController extends Controller
 
         $adAccount->update([
             'provider' => 'meta',
-            'provider_bm_id' => $businessManager->provider_id
+            'provider_bm_id' => $businessManager->id,
+            'provider_id' => $validated['account_id'],
+            'status' => AdAccount::STATUS_APPROVED
         ]);
 
         return response()->json(['message' => 'Ad account linked successfully']);

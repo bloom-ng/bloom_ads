@@ -156,6 +156,37 @@
             <p class="text-2xl font-bold">{{ number_format($adAccount->getBalance(), 2) }} {{ $adAccount->currency }}
             </p>
         </div>
+
+        <!-- Meta Account -->
+        @if($providerInfo["_provider"] == "meta")
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-lg font-medium mb-4">Meta Account</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Name</p>
+                        <p class="font-medium">{{ $providerInfo["_meta_ad_account"]["name"] }}</p>
+                    </div>
+                   
+                    <div>
+                        <p class="text-gray-600">Status</p>
+                            <p class="font-medium">
+                                <span
+                                    class="px-2 py-1 rounded-full text-sm">
+                                    {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo["_meta_ad_account"]["account_status"]] }}
+                                </span>
+                            </p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Amount Spent</p>
+                        <p class="font-medium"> {{ $providerInfo["_meta_ad_account"]["currency"] }} {{$providerInfo["_meta_ad_account"]["amount_spent"]}}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Balance</p>
+                        <p class="font-medium"> {{ $providerInfo["_meta_ad_account"]["currency"] }} {{$providerInfo["_meta_ad_account"]["balance"]}}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
         <!-- Transactions History -->
         <div class="bg-white p-6 rounded-lg shadow">
             <h3 class="text-lg font-medium mb-4">Transaction History</h3>

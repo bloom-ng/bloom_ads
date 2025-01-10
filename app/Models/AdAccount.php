@@ -20,6 +20,7 @@ class AdAccount extends Model
         'landing_page',
         'user_id',
         'organization_id',
+        'provider_bm_id'
     ];
 
     protected $casts = [

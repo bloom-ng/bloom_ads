@@ -35,6 +35,19 @@
                     </div>
                     <div>
                         <p class="text-gray-600">Status</p>
+                        @if($providerInfo["_provider"] == "meta")
+                        <p class="font-medium">
+                            <span
+                                class="px-2 py-1 rounded-full text-sm
+                                {{ $adAccount->status === 'approved'
+                                    ? 'bg-green-100 text-green-800'
+                                    : ($adAccount->status === 'processing'
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : 'bg-red-100 text-red-800') }}">
+                                {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo["_meta_ad_account"]["account_status"]] }}
+                            </span>
+                        </p>
+                        @else
                         <p class="font-medium">
                             <span
                                 class="px-2 py-1 rounded-full text-sm
@@ -46,6 +59,7 @@
                                 {{ ucfirst($adAccount->status) }}
                             </span>
                         </p>
+                        @endif
                     </div>
                     <div>
                         <p class="text-gray-600">Type</p>
@@ -59,6 +73,20 @@
                         <p class="text-gray-600">Organization</p>
                         <p class="font-medium">{{ $adAccount->organization->name }}</p>
                     </div>
+                    @if($providerInfo["_provider"] == "meta")
+                        <div>
+                            <p class="text-gray-600">Meta Account</p>
+                            <p class="font-medium">  {{ $providerInfo["_meta_ad_account"]["name"] }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Amount Spent</p>
+                            <p class="font-medium"> {{$providerInfo["_meta_ad_account"]["currency"]}} {{ $providerInfo["_meta_ad_account"]["amount_spent"] }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Balance</p>
+                            <p class="font-medium"> {{$providerInfo["_meta_ad_account"]["currency"]}} {{ $providerInfo["_meta_ad_account"]["balance"] }}</p>
+                        </div>
+                    @endif
                     <div>
                         <p class="text-gray-600">Created By</p>
                         <p class="font-medium">{{ $adAccount->user->name }}</p>

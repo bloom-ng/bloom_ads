@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\FacadesLog;
 use App\Notifications\AdAccountNotification;
+use App\Models\BusinessManager;
+use App\Services\Meta\AdAccountService as MetaAdAccountService;
 
 class AdAccountsController extends Controller
 {
@@ -440,6 +442,19 @@ class AdAccountsController extends Controller
             $wallet->calculated_balance = $wallet->getBalance();
         });
 
-        return view('dashboard.adaccounts.show', compact('adAccount', 'wallets'));
+        $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
+        if ($adAccount->provider == "meta" 
+            && !empty($adAccount->provider_bm_id) 
+            && !empty($adAccount->provider_id) 
+            )
+        {
+            $providerInfo["_provider"] = "meta";
+            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
+            $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
+            $metaAdAccount = $adAccountService->getAdAccount($adAccount->provider_id);
+            $providerInfo["_meta_ad_account"] = $metaAdAccount;
+        }
+
+        return view('dashboard.adaccounts.show', compact('adAccount', 'wallets', 'providerInfo'));
     }
 }
