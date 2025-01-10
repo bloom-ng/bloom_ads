@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\Api\AdAccountController as ApiAdAccountController;
+use App\Http\Controllers\Api\OrganizationController as ApiOrganizationController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WalletController;
@@ -109,7 +111,12 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
 
+    
+    Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
+    Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
+    Route::post('/data/ad-accounts/link', [ApiAdAccountController::class, 'linkAccount']);
     // API endpoint for updating dark mode preference
+   
     Route::post('/update-dark-mode', function (Request $request) {
         $request->validate(['dark_mode' => 'required|boolean']);
         $user = Auth::user(); // since there's only one admin
