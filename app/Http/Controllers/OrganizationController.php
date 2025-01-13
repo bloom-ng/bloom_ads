@@ -31,7 +31,7 @@ class OrganizationController extends Controller
     public function invites(Organization $organization)
     {
         $this->authorize('manage', $organization);
-        $pendingInvites = $organization->invites()->where('expires_at', '>', now())->get();
+        $pendingInvites = $organization->invites()->where('used', false)->where('expires_at', '>', now())->get();
         return view('dashboard.organization.invites', compact('organization', 'pendingInvites'));
     }
 
@@ -61,7 +61,15 @@ class OrganizationController extends Controller
         // Check if user is already in organization
         $existingUser = User::where('email', $validated['email'])->first();
         if ($existingUser) {
-            $organization->users()->attach($existingUser->id, ['role' => $validated['role']]);
+            // Check if user is already in this organization
+            // if ($organization->users()->where('user_id', $existingUser->id)->exists()) {
+            //     return back()->with('error', 'User already belongs to this organization');
+            // }
+
+            return back()->with('error', 'User already belongs to this organization');
+            // Add user to organization
+            // $organization->users()->attach($existingUser->id, ['role' => $validated['role']]);
+
             try {
                 $existingUser->notify(new BaseNotification([
                     'subject' => 'Organization Invitation',
@@ -75,7 +83,7 @@ class OrganizationController extends Controller
             return back()->with('success', 'User added to organization');
         }
 
-        // Create invitation
+        // Create invitation for new user
         $invite = OrganizationInvite::create([
             'organization_id' => $organization->id,
             'email' => $validated['email'],
@@ -83,7 +91,6 @@ class OrganizationController extends Controller
             'token' => Str::random(32),
             'expires_at' => now()->addDays(7),
         ]);
-
 
         // Send invitation email
         try {

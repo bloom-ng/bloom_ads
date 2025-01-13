@@ -122,7 +122,8 @@
             @endphp
 
             @if ($currentOrganization)
-                <p class="text-sm text-white text-center mt-2">Current Organization: {{ $currentOrganization->name }}</p>
+                <p class="text-sm text-white text-center mt-2">Current Organization: {{ $currentOrganization->name }}
+                </p>
             @else
                 <p class="text-sm text-white text-center mt-2">No organization selected</p>
             @endif
@@ -131,7 +132,7 @@
             <a href="/dashboard"
                 class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}" 
+                    <img src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}"
                         alt="Dashboard" class="w-10 h-10">
                 </span>
                 Dashboard
@@ -139,26 +140,26 @@
             <a href="/wallet"
                 class="flex items-center {{ $page == 'wallet' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
-                    <img src="{{ $page == 'wallet' ? asset('images/walletIcon.png') : asset('images/walletIconInactive.png') }}" 
+                    <img src="{{ $page == 'wallet' ? asset('images/walletIcon.png') : asset('images/walletIconInactive.png') }}"
                         alt="Wallet" class="w-10 h-10">
                 </span>
                 Wallet
             </a>
             <a href="/dashboard/adaccounts"
                 class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <img src="{{ $page == 'adaccounts' ? asset('images/adaccountIcon.png') : asset('images/adaccountIconInactive.png') }}" 
+                <img src="{{ $page == 'adaccounts' ? asset('images/adaccountIcon.png') : asset('images/adaccountIconInactive.png') }}"
                     alt="Ad Accounts" class="w-10 h-10">
                 <p class="pl-2">Ad Accounts</p>
             </a>
             <a href="{{ route('organizations.index') }}"
                 class="flex items-center {{ $page == 'organizations' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <img src="{{ $page == 'organizations' ? asset('images/organizationIcon.png') : asset('images/organizationIconInactive.png') }}" 
+                <img src="{{ $page == 'organizations' ? asset('images/organizationIcon.png') : asset('images/organizationIconInactive.png') }}"
                     alt="Organizations" class="w-10 h-10">
                 <p class="pl-2">Organizations</p>
             </a>
             <a href="{{ route('settings.index') }}"
                 class="flex items-center {{ $page == 'settings' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <img src="{{ $page == 'settings' ? asset('images/settingsIcon.png') : asset('images/settingsIconInactive.png') }}" 
+                <img src="{{ $page == 'settings' ? asset('images/settingsIcon.png') : asset('images/settingsIconInactive.png') }}"
                     alt="Settings" class="w-10 h-10">
                 <p class="pl-2">Settings</p>
             </a>
@@ -176,14 +177,12 @@
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end">
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <img
-                        src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ Auth::user()->name }}" />
+                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ Auth::user()->name }}" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
-                    <a href="{{ route('account') }}"
-                        class="block px-4 py-2 account-link hover:text-white">Account</a>
+                    <a href="{{ route('account') }}" class="block px-4 py-2 account-link hover:text-white">Account</a>
                     <form method="POST" action="{{ route('user.logout') }}" class="block">
                         @csrf
                         <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
@@ -237,17 +236,16 @@
 
         {{ $slot }}
         <div class="flex-grow"></div>
-        <footer
-            class="flex bg-white justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
-            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
+        <footer class="flex bg-white justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
+            <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
                 <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
                         alt="X Link" /></a>
-                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
-                        src="/images/facebook.png" alt="Facebook Link" /></a>
+                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img src="/images/facebook.png"
+                        alt="Facebook Link" /></a>
                 <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
                         src="/images/linkedin.png" alt="LinkedIn Link" /></a>
             </div>
