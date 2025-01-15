@@ -58,7 +58,7 @@ class AdAccountService
         
         $response = Http::get($endpoint, [
             'access_token' => $this->accessToken,
-            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
+            'fields' => 'account_status,amount_spent,spend_cap,balance,business,currency,name,owner,id',
         ]);
 
         return $this->handleResponse($response);
@@ -153,6 +153,26 @@ class AdAccountService
         ]);
 
         return $this->handleResponse($response)['success'] ?? false;
+    }
+
+    /**
+     * Update the spend cap for an ad account
+     * 
+     * @param string $adAccountId The ad account ID
+     * @param float $spendCap The new spend cap value
+     * @return array The updated ad account data
+     */
+    public function updateSpendCap(string $adAccountId, float $spendCap)
+    {
+        $endpoint = "{$this->baseUrl}/act_{$adAccountId}";
+        
+        $response = Http::post($endpoint, [
+            'spend_cap' => $spendCap,
+            'access_token' => $this->accessToken,
+            'fields' => 'account_status,balance,currency,name,business_name,amount_spent,spend_cap'
+        ]);
+
+        return $this->handleResponse($response);
     }
 
     private function handleResponse(Response $response): array
