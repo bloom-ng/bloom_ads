@@ -258,6 +258,7 @@ class AdminAdAccountsController extends Controller
     {
         // Load the organization with its wallets
         $adAccount->load('organization.wallets');
+        $wallets = $adAccount->organization->wallets;
         $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
         if ($adAccount->provider == "meta" 
             && !empty($adAccount->provider_bm_id) 
@@ -271,10 +272,13 @@ class AdminAdAccountsController extends Controller
             $providerInfo["_meta_ad_account"] = $metaAdAccount;
         }
 
-
-
-
-        return view('admin-dashboard.adaccounts.show', compact('adAccount', 'providerInfo'));
+        // Return view with adaccounts layout
+        return view('admin-dashboard.adaccounts.show', [
+            'adAccount' => $adAccount,
+            'providerInfo' => $providerInfo,
+            'wallets' => $wallets,
+            'page' => 'organizations'
+        ]);
     }
 
     public function withdraw(Request $request, AdAccount $adAccount)

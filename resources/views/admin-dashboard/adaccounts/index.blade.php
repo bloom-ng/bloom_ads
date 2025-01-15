@@ -90,7 +90,7 @@
                                         <td class="py-3 px-6 text-center">{{ $adAccount->user->name }}</td>
                                         <td class="py-3 px-6 text-center">
                                             <div class="flex justify-center space-x-4">
-                                                <a href="{{ route('admin.adaccounts.show', $adAccount->id) }}"
+                                                <a href="{{ route('admin.organizations.adaccounts.show', $adAccount->id) }}"
                                                     class="text-blue-500 hover:text-blue-700">
                                                     View
                                                 </a>

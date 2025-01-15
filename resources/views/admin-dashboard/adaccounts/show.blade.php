@@ -1,11 +1,11 @@
-<x-admin-layout page="adaccounts">
+<x-admin-layout page="organizations">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl text-black">Ad Account Details</h1>
-                <a href="{{ route('admin.adaccounts.index') }}"
+                <a href="{{ route('admin.organizations.show', $adAccount->organization_id) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Back to Ad Accounts
+                    ← Back to Organization Ad accounts
                 </a>
             </div>
 

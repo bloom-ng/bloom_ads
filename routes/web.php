@@ -80,6 +80,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/organizations/{organization}/members', [AdminOrganizationsController::class, 'members'])
         ->name('organizations.members');
     Route::get('/organizations/{organization}/wallets', [AdminOrganizationsController::class, 'wallets'])->name('organizations.wallets');
+    Route::get('/organizations/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('organizations.adaccounts.show');
 
     Route::resource('adminsettings', AdminSettingsController::class);
     Route::post('adminsettings/{adminSetting}/update-value', [AdminSettingsController::class, 'updateValue'])->name('adminsettings.update-value');

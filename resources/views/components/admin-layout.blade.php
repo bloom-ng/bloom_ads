@@ -296,7 +296,7 @@
                 </span>
                 Organizations
             </a>
-            <a href="{{ route('admin.adaccounts.index') }}"
+            <!-- <a href="{{ route('admin.adaccounts.index') }}"
                 class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
@@ -313,7 +313,7 @@
                     @endif
                 </span>
                 Ad Accounts
-            </a>
+            </a> -->
             <a href="{{ route('admin.rockads.accounts.index') }}"
                 class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
