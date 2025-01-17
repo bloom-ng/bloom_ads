@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BusinessManager;
+use App\Models\AdAccount;
 use App\Services\Meta\AdAccountService;
 use Illuminate\Http\Request;
 
@@ -80,6 +81,8 @@ class BusinessManagerController extends Controller
                 ? $adAccountService->getOwnedAdAccounts($before, $after, $limit)
                 : $adAccountService->getClientAdAccounts($before, $after, $limit);
 
+          
+
             $adAccounts = collect($result->items)->map(fn ($account) => [
                 'id' => str_replace('act_', '', $account['id']),
                 'account_id' => $account['id'],
@@ -90,6 +93,15 @@ class BusinessManagerController extends Controller
                 'balance' => $account['balance'],
                 'business_name' => $account['business']['name'] ?? null,
             ]);
+
+            $_adAccounts = AdAccount::whereIn('provider_id', $adAccounts->pluck('id'))->get();
+            $linkedAccountIds = $_adAccounts->pluck('provider_id');
+
+
+            $adAccounts = $adAccounts->map(function ($account) use ($linkedAccountIds) {
+                $account['is_linked'] = in_array($account['id'], $linkedAccountIds->toArray());
+                return $account;
+            });
 
             return view('admin-dashboard.business-managers.accounts', [
                 'businessManager' => $businessManager,

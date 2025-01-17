@@ -155,7 +155,9 @@ class AdminAdAccountsController extends Controller
 
             $adAccount->update([
                 'provider' => null,
-                'provider_id' => null
+                'provider_id' => null,
+                'provider_account_name' => null,
+                'provider_bm_id' => null
             ]);
 
             return response()->json(['success' => true]);

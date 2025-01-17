@@ -55,6 +55,9 @@
                                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                             Balance
                                         </th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                            Linked
+                                        </th>
                                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                             Status
                                         </th>
@@ -81,6 +84,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 text-right">
                                             {{ number_format($account['balance']) }}
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 text-right">
+                                            <span class="inline-flex items-center justify-center w-6 h-6 {{ $account['is_linked'] ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }} rounded-full">
+                                                {{ $account['is_linked'] ? '✓' : '✗' }}
+                                            </span>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                 {{ $account['status'] === 'ACTIVE' 
@@ -96,9 +104,9 @@
                                                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                                                     View in Ads Manager
                                                 </a>
-                                                @if(empty($account['provider_bm_id']))
+                                                @if($account['is_linked'] === false)
                                                     <button 
-                                                        onclick="openLinkAccountModal('{{ $account['id'] }}')"
+                                                        onclick="openLinkAccountModal('{{ $account['id'] }}', '{{ $account['name'] }}')"
                                                         class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
                                                         Link Account
                                                     </button>
@@ -242,11 +250,14 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
     let selectedAccountId = null;
+    let selectedAccountName = null;
     let selectedOrganizationId = null;
     let selectedAdAccountId = null;
 
-    function openLinkAccountModal(accountId) {
+    function openLinkAccountModal(accountId, accountName) {
+        console.log('Opening modal for account ID:', accountId, 'and name:', accountName);
         selectedAccountId = accountId;
+        selectedAccountName = accountName;
         fetchOrganizations();
         const event = new CustomEvent('open-modal', { detail: 'link-ad-account' });
         window.dispatchEvent(event);
@@ -320,6 +331,7 @@
                 body: JSON.stringify({
                     account_id: selectedAccountId, //meta account id
                     ad_account_id: selectedAdAccountId,
+                    ad_account_name: selectedAccountName,
                     business_manager_id:  "{{ $businessManager->id }}"
                 })
             });
