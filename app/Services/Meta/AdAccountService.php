@@ -175,6 +175,54 @@ class AdAccountService
         return $this->handleResponse($response);
     }
 
+    /**
+     * Fund an ad account by updating its spend cap
+     * 
+     * @param string $adAccountId The ad account ID
+     * @param float $amount The amount to fund
+     * @return array The updated ad account data
+     * @throws \Exception If account is not approved or has no provider ID
+     */
+    public function fundAccount(string $adAccountId, float $amount)
+    {
+        $account = $this->getAdAccount($adAccountId);
+        
+        if ($account['account_status'] !== 1) { // 1 is ACTIVE status in Meta
+            throw new \Exception('Ad account must be approved to fund');
+        }
+
+        $currentSpendCap = $account['spend_cap'] ?? 0;
+        $newSpendCap = $currentSpendCap + $amount;
+        
+        return $this->updateSpendCap($adAccountId, $newSpendCap);
+    }
+
+    /**
+     * Withdraw funds from an ad account by updating its spend cap
+     * 
+     * @param string $adAccountId The ad account ID
+     * @param float $amount The amount to withdraw
+     * @return array The updated ad account data
+     * @throws \Exception If withdrawal amount exceeds available funds
+     */
+    public function withdrawFunds(string $adAccountId, float $amount)
+    {
+        $account = $this->getAdAccount($adAccountId);
+        
+        $currentSpendCap = $account['spend_cap'] ?? 0;
+        $amountSpent = $account['amount_spent'] ?? 0;
+        
+        $availableToWithdraw = $currentSpendCap - $amountSpent;
+        
+        if ($amount > $availableToWithdraw) {
+            throw new \Exception('Withdrawal amount exceeds available funds');
+        }
+        
+        $newSpendCap = $currentSpendCap - $amount;
+        
+        return $this->updateSpendCap($adAccountId, $newSpendCap);
+    }
+
     private function handleResponse(Response $response): array
     {
         if (!$response->successful()) {

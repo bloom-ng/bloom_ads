@@ -264,12 +264,26 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            // Check if account is approved
+            if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
+                return redirect()->back()
+                    ->with('error', 'Ad account must be approved to deposit funds');
+            }
+
             $wallet = Wallet::findOrFail($validated['wallet_id']);
 
             // Check if currencies match
             if ($wallet->currency !== $adAccount->currency) {
                 return redirect()->back()
                     ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // For Meta ad accounts, check if account has provider_id
+            if ($adAccount->type === 'meta') {
+                if (!$adAccount->provider_id) {
+                    return redirect()->back()
+                        ->with('error', 'Meta ad account must be linked to deposit funds');
+                }
             }
 
             // Calculate fees
@@ -295,7 +309,7 @@ class AdAccountsController extends Controller
                 'description' => 'Deposit to ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated) {
                 // Save transaction
                 $transaction->save();
 
@@ -309,9 +323,24 @@ class AdAccountsController extends Controller
                     'status' => 'completed'
                 ]);
 
+                // For Meta ad accounts, update spend cap
+                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                    try {
+                        $metaService = new MetaAdAccountService();
+                        $metaService->fundAccount($adAccount->provider_id, $validated['amount']);
+                    } catch (\Exception $e) {
+                        Log::error('Meta API Error during deposit:', [
+                            'message' => $e->getMessage(),
+                            'ad_account_id' => $adAccount->id
+                        ]);
+                        throw $e; // Re-throw to rollback transaction
+                    }
+                }
+
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
             });
+
             try {
                 // After successful deposit
                 $user = auth()->user();
@@ -347,12 +376,47 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            // Check if account is approved
+            if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
+                return redirect()->back()
+                    ->with('error', 'Ad account must be approved to withdraw funds');
+            }
+
             $wallet = Wallet::findOrFail($validated['wallet_id']);
 
             // Check if currencies match
             if ($wallet->currency !== $adAccount->currency) {
                 return redirect()->back()
                     ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // For Meta ad accounts, check if account has provider_id
+            if ($adAccount->type === 'meta') {
+                if (!$adAccount->provider_id) {
+                    return redirect()->back()
+                        ->with('error', 'Meta ad account must be linked to withdraw funds');
+                }
+
+                // Check available funds in Meta account
+                try {
+                    $metaService = new MetaAdAccountService();
+                    $account = $metaService->getAdAccount($adAccount->provider_id);
+                    $spendCap = $account['spend_cap'] ?? 0;
+                    $amountSpent = $account['amount_spent'] ?? 0;
+                    $availableToWithdraw = $spendCap - $amountSpent;
+
+                    if ($validated['amount'] > $availableToWithdraw) {
+                        return redirect()->back()
+                            ->with('error', 'Insufficient funds available in Meta ad account');
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Meta API Error checking withdrawal availability:', [
+                        'message' => $e->getMessage(),
+                        'ad_account_id' => $adAccount->id
+                    ]);
+                    return redirect()->back()
+                        ->with('error', 'Error checking Meta ad account balance: ' . $e->getMessage());
+                }
             }
 
             // Calculate fees
@@ -378,7 +442,7 @@ class AdAccountsController extends Controller
                 'description' => 'Withdrawal from ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated) {
                 // Save transaction
                 $transaction->save();
 
@@ -391,6 +455,20 @@ class AdAccountsController extends Controller
                     'reference' => $transaction->reference,
                     'status' => 'completed'
                 ]);
+
+                // For Meta ad accounts, update spend cap
+                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                    try {
+                        $metaService = new MetaAdAccountService();
+                        $metaService->withdrawFunds($adAccount->provider_id, $validated['amount']);
+                    } catch (\Exception $e) {
+                        Log::error('Meta API Error during withdrawal:', [
+                            'message' => $e->getMessage(),
+                            'ad_account_id' => $adAccount->id
+                        ]);
+                        throw $e; // Re-throw to rollback transaction
+                    }
+                }
 
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
@@ -409,7 +487,6 @@ class AdAccountsController extends Controller
             } catch (\Exception $e) {
                 Log::error('Ad account withdrawal notification error: ' . $e->getMessage());
             }
-
 
             return redirect()->back()
                 ->with('success', 'Funds withdrawn successfully');
