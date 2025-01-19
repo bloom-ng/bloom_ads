@@ -346,9 +346,10 @@ class AdAccountsController extends Controller
                 $user = auth()->user();
                 $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Deposit',
-                    'message' => "You have deposited {$validated['amount']} to ad account {$adAccount->name}",
+                    'message' => "You have deposited {$validated['amount']} {$adAccount->currency} to ad account {$adAccount->name}",
                     'type' => 'ad_account_deposit',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
@@ -479,9 +480,10 @@ class AdAccountsController extends Controller
                 $user = auth()->user();
                 $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Withdrawal',
-                    'message' => "You have withdrawn {$validated['amount']} from ad account {$adAccount->name}",
+                    'message' => "You have withdrawn {$validated['amount']} {$adAccount->currency} from ad account {$adAccount->name}",
                     'type' => 'ad_account_withdrawal',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
@@ -520,11 +522,11 @@ class AdAccountsController extends Controller
         });
 
         $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
-        if ($adAccount->provider == "meta" 
-            && !empty($adAccount->provider_bm_id) 
-            && !empty($adAccount->provider_id) 
-            )
-        {
+        if (
+            $adAccount->provider == "meta"
+            && !empty($adAccount->provider_bm_id)
+            && !empty($adAccount->provider_id)
+        ) {
             $providerInfo["_provider"] = "meta";
             $businessManager = BusinessManager::find($adAccount->provider_bm_id);
             $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);

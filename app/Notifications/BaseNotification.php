@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class BaseNotification extends Notification
 {
@@ -21,10 +21,15 @@ class BaseNotification extends Notification
 
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
             ->subject($this->data['subject'])
-            ->line($this->data['message'])
-            ->line('Thank you for using our application!');
+            ->line($this->data['message']);
+
+        if (isset($this->data['action_url'])) {
+            $mailMessage->action($this->data['action_text'] ?? 'View Details', $this->data['action_url']);
+        }
+
+        return $mailMessage;
     }
 
     public function toArray($notifiable)
