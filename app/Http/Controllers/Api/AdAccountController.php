@@ -17,6 +17,7 @@ class AdAccountController extends Controller
             'account_id' => 'required|string', //meta account id
             'ad_account_id' => 'required|string',
             'ad_account_name' => 'required|string',
+            'currency' => 'required|string',
             'business_manager_id' => 'required|exists:business_managers,id'
         ]);
 
@@ -37,6 +38,7 @@ class AdAccountController extends Controller
             'provider_bm_id' => $businessManager->id,
             'provider_id' => $validated['account_id'],
             'provider_account_name' => $validated['ad_account_name'], 
+            'currency' => $validated['currency'],
             'status' => AdAccount::STATUS_APPROVED
         ]);
 
