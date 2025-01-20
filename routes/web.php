@@ -62,7 +62,9 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         $wallet = App\Models\Wallet::withBalances()->findOrFail($wallet->id);
         return view('admin-dashboard.organizations.transactions', ['wallet' => $wallet]);
     })->name('wallets.transactions');
-
+    Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
+    Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
+   
     Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('adaccounts.show');
     Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('adaccounts.edit');
@@ -99,20 +101,14 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/adaccounts/unlink-meta', [AdminAdAccountsController::class, 'unlinkMeta'])
         ->name('admin.adaccounts.unlink-meta');
 
-    Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
-    Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
-    Route::post('/ad-accounts/{adAccount}/transfer', [AdminWalletController::class, 'transferFromAdAccount'])->name('adaccounts.transfer');
-
-    // Add these routes inside your admin group
-    Route::resource('business-managers', BusinessManagerController::class);
-    Route::get('business-managers/{businessManager}/accounts', [BusinessManagerController::class, 'showAccounts'])
-        ->name('business-managers.accounts');
-
     Route::post('/adaccounts/{adAccount}/fund', [AdminAdAccountsController::class, 'fund'])
         ->name('adaccounts.fund');
     Route::post('/adaccounts/{adAccount}/withdraw', [AdminAdAccountsController::class, 'withdraw'])
         ->name('adaccounts.withdraw');
 
+    Route::resource('business-managers', BusinessManagerController::class);
+    Route::get('business-managers/{businessManager}/accounts', [BusinessManagerController::class, 'showAccounts'])
+        ->name('business-managers.accounts');
 
     Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
     Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
@@ -317,6 +313,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/wallet/generate-invoice', [WalletController::class, 'generateInvoice'])->name('wallet.generate.invoice');
     Route::get('/wallet/invoice/download', [WalletController::class, 'downloadInvoice'])->name('wallet.invoice.download');
+
+    Route::get('/wallet/banks', [WalletController::class, 'getBanks'])->name('wallet.banks');
+    Route::post('/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
+    Route::post('/wallet/withdrawal/callback', [WalletController::class, 'withdrawalCallback'])->name('wallet.withdrawal.callback');
+    Route::post('/wallet/verify-account', [WalletController::class, 'verifyBankAccount'])->name('wallet.verify.account');
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])

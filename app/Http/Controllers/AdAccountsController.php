@@ -264,6 +264,8 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+
             // Check if account is approved
             if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
                 return redirect()->back()
@@ -309,7 +311,7 @@ class AdAccountsController extends Controller
                 'description' => 'Deposit to ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager) {
                 // Save transaction
                 $transaction->save();
 
@@ -326,7 +328,7 @@ class AdAccountsController extends Controller
                 // For Meta ad accounts, update spend cap
                 if ($adAccount->type === 'meta' && $adAccount->provider_id) {
                     try {
-                        $metaService = new MetaAdAccountService();
+                        $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
                         $metaService->fundAccount($adAccount->provider_id, $validated['amount']);
                     } catch (\Exception $e) {
                         Log::error('Meta API Error during deposit:', [
@@ -377,6 +379,8 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+
             // Check if account is approved
             if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
                 return redirect()->back()
@@ -400,7 +404,7 @@ class AdAccountsController extends Controller
 
                 // Check available funds in Meta account
                 try {
-                    $metaService = new MetaAdAccountService();
+                    $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
                     $account = $metaService->getAdAccount($adAccount->provider_id);
                     $spendCap = $account['spend_cap'] ?? 0;
                     $amountSpent = $account['amount_spent'] ?? 0;
@@ -443,7 +447,7 @@ class AdAccountsController extends Controller
                 'description' => 'Withdrawal from ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager) {
                 // Save transaction
                 $transaction->save();
 
@@ -460,7 +464,7 @@ class AdAccountsController extends Controller
                 // For Meta ad accounts, update spend cap
                 if ($adAccount->type === 'meta' && $adAccount->provider_id) {
                     try {
-                        $metaService = new MetaAdAccountService();
+                        $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
                         $metaService->withdrawFunds($adAccount->provider_id, $validated['amount']);
                     } catch (\Exception $e) {
                         Log::error('Meta API Error during withdrawal:', [
@@ -528,7 +532,7 @@ class AdAccountsController extends Controller
             && !empty($adAccount->provider_id)
         ) {
             $providerInfo["_provider"] = "meta";
-            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
             $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
             $metaAdAccount = $adAccountService->getAdAccount($adAccount->provider_id);
             $providerInfo["_meta_ad_account"] = $metaAdAccount;

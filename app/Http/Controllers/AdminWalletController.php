@@ -36,9 +36,7 @@ class AdminWalletController extends Controller
                 'type' => 'credit',
                 'description' => $validated['description'],
                 'reference' => 'ADMIN-' . Str::random(20),
-                'status' => 'completed',
-                'rate' => 1,
-                'source_currency' => $wallet->currency
+                'status' => 'completed'
             ]);
         });
 
