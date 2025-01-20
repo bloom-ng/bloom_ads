@@ -33,7 +33,7 @@
                                             </select>
                                             <button type="submit"
                                                 class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                                Create Wallet
+                                                Select Currency
                                             </button>
                                         </div>
                                     </div>
