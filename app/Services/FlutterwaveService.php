@@ -87,4 +87,70 @@ class FlutterwaveService
         $expectedSignature = hash_hmac('sha256', json_encode($payload), $this->secretKey);
         return hash_equals($signature, $expectedSignature);
     }
+
+    /**
+     * Initiate a transfer to a bank account
+     */
+    public function initiateTransfer(array $data)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl . '/transfers', [
+                'account_bank' => $data['bank_code'],
+                'account_number' => $data['account_number'],
+                'amount' => $data['amount'],
+                'currency' => $data['currency'],
+                'narration' => $data['narration'] ?? 'Withdrawal from wallet',
+                'reference' => $data['reference'],
+                'callback_url' => $data['callback_url'],
+                'debit_currency' => $data['currency']
+            ]);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Flutterwave transfer initiation failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Get list of supported banks
+     */
+    public function getBanks($country = 'NG')
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->get($this->baseUrl . '/banks/' . $country);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Flutterwave get banks failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Verify bank account details
+     */
+    public function verifyBankAccount($accountNumber, $bankCode)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl . '/accounts/resolve', [
+                'account_number' => $accountNumber,
+                'account_bank' => $bankCode
+            ]);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Flutterwave account verification failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

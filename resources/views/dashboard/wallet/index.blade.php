@@ -16,29 +16,45 @@
                     @else
                         <!-- Create Wallet Form -->
                         @if (in_array($userRole, ['owner', 'admin', 'finance']))
-                            <form method="POST" action="{{ route('wallet.create') }}" class="mb-8">
-                                @csrf
-                                <input type="hidden" name="organization_id" value="{{ $organization->id }}">
-                                <div>
-                                    <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Create New Wallet
-                                    </label>
-                                    <div class="flex gap-4">
-                                        <select name="currency" id="currency" required
-                                            class="rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm">
-                                            <option value="NGN">NGN</option>
-                                            <option value="USD">USD</option>
-                                            <option value="GBP">GBP</option>
-                                        </select>
-                                        <button type="submit"
-                                            class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Create Wallet
-                                        </button>
+                            <div class="flex gap-3">
+                                <form method="POST" action="{{ route('wallet.create') }}" class="mb-8">
+                                    @csrf
+                                    <input type="hidden" name="organization_id" value="{{ $organization->id }}">
+                                    <div>
+                                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Create New Wallet
+                                        </label>
+                                        <div class="flex gap-4">
+                                            <select name="currency" id="currency" required
+                                                class="rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm">
+                                                <option value="NGN">NGN</option>
+                                                <option value="USD">USD</option>
+                                                <option value="GBP">GBP</option>
+                                            </select>
+                                            <button type="submit"
+                                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                Create Wallet
+                                            </button>
+                                        </div>
                                     </div>
+                                </form>
+                                <!-- Add Global Convert Button -->
+                                <div class="mt-7">
+                                    <button onclick="openTransferModal()"
+                                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Convert Currency
+                                    </button>
                                 </div>
-                            </form>
+                                <div class="mt-7">
+                                    <button onclick="openWithdrawModal()"
+                                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Withdraw Funds
+                                    </button>
+                                </div>
+                            </div>
                         @endif
 
+                        
                         <!-- Existing Wallets -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @forelse ($organization->wallets as $wallet)
@@ -63,13 +79,7 @@
                             @endforelse
                         </div>
 
-                        <!-- Add Global Convert Button -->
-                        <div class="mt-8">
-                            <button onclick="openTransferModal()"
-                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Convert Currency
-                            </button>
-                        </div>
+                        
 
                         <!-- Transaction History Section -->
                         <div class="mt-8">
@@ -310,6 +320,54 @@
                 class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
                 Cancel
             </button>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Withdraw Funds</h2>
+            <form action="{{ route('wallet.withdraw') }}" method="POST" class="space-y-4" id="withdrawForm">
+                @csrf
+                <input type="hidden" name="wallet_id" id="withdrawWalletId">
+                
+                <div>
+                    <label for="bank_code" class="block text-sm font-medium text-gray-700 mb-2">Select Bank</label>
+                    <select name="bank_code" id="bank_code" required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm">
+                        <option value="">Loading banks...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="account_number" class="block text-sm font-medium text-gray-700 mb-2">Account Number</label>
+                    <input type="text" name="account_number" id="account_number" required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                        placeholder="Enter account number">
+                    <p class="mt-1 text-sm text-gray-500" id="account_name_display"></p>
+                </div>
+
+                <div>
+                    <label for="withdrawAmount" class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <div class="relative rounded-md shadow-sm">
+                        <input type="number" name="amount" id="withdrawAmount" required min="100" step="0.01"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                            placeholder="Enter amount">
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Available balance: <span id="withdrawAvailableBalance">0.00</span></p>
+                </div>
+
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="closeWithdrawModal()"
+                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#F48857]">
+                        Withdraw
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -650,5 +708,108 @@
         function closeTransferModal() {
             document.getElementById('transferModal').style.display = 'none';
         }
+
+        async function loadBanks() {
+            try {
+                const response = await fetch('{{ route('wallet.banks') }}');
+                const data = await response.json();
+                
+                if (data.data) {
+                    const bankSelect = document.getElementById('bank_code');
+                    bankSelect.innerHTML = '<option value="">Select Bank</option>';
+                    
+                    data.data.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank.code;
+                        option.textContent = bank.name;
+                        bankSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load banks:', error);
+            }
+        }
+
+        function openWithdrawModal() {
+            const modal = document.getElementById('withdrawModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            loadBanks();
+        }
+
+        function closeWithdrawModal() {
+            const modal = document.getElementById('withdrawModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.getElementById('withdrawForm').reset();
+        }
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g, ''));
+            
+            if (amount > balance) {
+                e.preventDefault();
+                alert('Withdrawal amount cannot exceed available balance');
+            }
+        });
+
+        let verifyAccountTimeout;
+
+        async function verifyBankAccount() {
+            const accountNumber = document.getElementById('account_number').value;
+            const bankCode = document.getElementById('bank_code').value;
+            const accountNameDisplay = document.getElementById('account_name_display');
+            
+            if (!accountNumber || !bankCode || accountNumber.length < 10) {
+                accountNameDisplay.textContent = '';
+                return;
+            }
+
+            try {
+                accountNameDisplay.textContent = 'Verifying account...';
+                
+                const response = await fetch('{{ route('wallet.verify.account') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        account_number: accountNumber,
+                        bank_code: bankCode
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data) {
+                    accountNameDisplay.textContent = data.data.account_name;
+                    accountNameDisplay.classList.remove('text-red-500');
+                    accountNameDisplay.classList.add('text-green-500');
+                } else {
+                    accountNameDisplay.textContent = 'Could not verify account';
+                    accountNameDisplay.classList.remove('text-green-500');
+                    accountNameDisplay.classList.add('text-red-500');
+                }
+            } catch (error) {
+                accountNameDisplay.textContent = 'Error verifying account';
+                accountNameDisplay.classList.remove('text-green-500');
+                accountNameDisplay.classList.add('text-red-500');
+            }
+        }
+
+        // Add event listeners for account verification
+        document.getElementById('account_number').addEventListener('input', function() {
+            clearTimeout(verifyAccountTimeout);
+            verifyAccountTimeout = setTimeout(verifyBankAccount, 500);
+        });
+
+        document.getElementById('bank_code').addEventListener('change', function() {
+            const accountNumber = document.getElementById('account_number').value;
+            if (accountNumber) {
+                verifyBankAccount();
+            }
+        });
     </script>
 </x-user-layout>

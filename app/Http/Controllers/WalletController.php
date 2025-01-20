@@ -563,4 +563,157 @@ class WalletController extends Controller
 
         return $pdf->download('invoice.pdf');
     }
+
+    public function getBanks(FlutterwaveService $flutterwaveService)
+    {
+        try {
+            $response = $flutterwaveService->getBanks();
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch banks'], 500);
+        }
+    }
+
+    public function withdraw(Request $request, FlutterwaveService $flutterwaveService)
+    {
+        $validated = $request->validate([
+            'wallet_id' => 'required|exists:wallets,id',
+            'bank_code' => 'required|string',
+            'account_number' => 'required|string',
+            'amount' => 'required|numeric|min:100',
+        ]);
+
+        $wallet = Wallet::findOrFail($validated['wallet_id']);
+        
+        // Check if user has permission
+        $organization = $wallet->organization;
+        $userRole = $organization->users()->where('user_id', auth()->id())->first()->pivot->role;
+        if (!in_array($userRole, ['owner', 'admin', 'finance'])) {
+            return back()->with('error', 'You do not have permission to withdraw funds.');
+        }
+
+        // Check if wallet has sufficient balance
+        if ($wallet->calculated_balance < $validated['amount']) {
+            return back()->with('error', 'Insufficient wallet balance.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Create a pending withdrawal transaction
+            $reference = 'WD_' . Str::random(16);
+            $transaction = $wallet->transactions()->create([
+                'type' => 'withdrawal',
+                'amount' => -$validated['amount'], // Negative amount for withdrawal
+                'status' => 'pending',
+                'reference' => $reference,
+                'meta' => [
+                    'bank_code' => $validated['bank_code'],
+                    'account_number' => $validated['account_number'],
+                ]
+            ]);
+
+            // Initiate transfer via Flutterwave
+            $response = $flutterwaveService->initiateTransfer([
+                'bank_code' => $validated['bank_code'],
+                'account_number' => $validated['account_number'],
+                'amount' => $validated['amount'],
+                'currency' => $wallet->currency,
+                'reference' => $reference,
+                'callback_url' => route('wallet.withdrawal.callback'),
+            ]);
+
+            if (!isset($response['status']) || $response['status'] !== 'success') {
+                throw new \Exception('Failed to initiate transfer: ' . ($response['message'] ?? 'Unknown error'));
+            }
+
+            // Update transaction with transfer details
+            $transaction->update([
+                'provider_reference' => $response['data']['id'] ?? null,
+                'meta' => array_merge($transaction->meta, [
+                    'transfer_id' => $response['data']['id'] ?? null,
+                    'transfer_status' => $response['data']['status'] ?? 'pending'
+                ])
+            ]);
+
+            DB::commit();
+
+            // Notify user
+            $user = auth()->user();
+            $user->notify(new WalletNotification(
+                'Withdrawal Initiated',
+                "Your withdrawal of {$wallet->currency} {$validated['amount']} has been initiated.",
+                'success'
+            ));
+
+            return back()->with('success', 'Withdrawal initiated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Withdrawal failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to process withdrawal. Please try again.');
+        }
+    }
+
+    public function withdrawalCallback(Request $request)
+    {
+        // Verify webhook signature
+        $flutterwaveService = app(FlutterwaveService::class);
+        $signature = $request->header('verif-hash');
+        if (!$signature || !$flutterwaveService->verifyWebhookSignature($signature, $request->all())) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
+        }
+
+        $event = $request->input('event');
+        if ($event === 'transfer.completed') {
+            $data = $request->input('data');
+            $reference = $data['reference'];
+            
+            $transaction = WalletTransaction::where('reference', $reference)->first();
+            if (!$transaction) {
+                return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+            }
+
+            $status = strtolower($data['status']);
+            $transaction->update([
+                'status' => $status === 'successful' ? 'completed' : ($status === 'failed' ? 'failed' : 'pending'),
+                'meta' => array_merge($transaction->meta ?? [], [
+                    'transfer_status' => $status,
+                    'complete_message' => $data['complete_message'] ?? null
+                ])
+            ]);
+
+            // Notify user
+            $user = $transaction->wallet->organization->users()->first();
+            $message = $status === 'successful' 
+                ? "Your withdrawal of {$transaction->wallet->currency} " . abs($transaction->amount) . " has been completed."
+                : "Your withdrawal of {$transaction->wallet->currency} " . abs($transaction->amount) . " has failed.";
+            
+            $user->notify(new WalletNotification(
+                'Withdrawal ' . ucfirst($status),
+                $message,
+                $status === 'successful' ? 'success' : 'error'
+            ));
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function verifyBankAccount(Request $request, FlutterwaveService $flutterwaveService)
+    {
+        $validated = $request->validate([
+            'account_number' => 'required|string',
+            'bank_code' => 'required|string'
+        ]);
+
+        try {
+            $response = $flutterwaveService->verifyBankAccount(
+                $validated['account_number'],
+                $validated['bank_code']
+            );
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to verify account'], 500);
+        }
+    }
 }
