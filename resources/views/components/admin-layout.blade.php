@@ -316,7 +316,7 @@
             </a> -->
             <a href="{{ route('admin.rockads.accounts.index') }}"
                 class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : 'inactive-nav-link' }} 
-                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item hidden">
                 <span class="mr-3">
                     @if($page == 'rockads')
                         <img class="w-8 h-8 dark-hidden" 
@@ -334,7 +334,7 @@
             </a>
             <a href="{{ route('admin.meta.accounts.index') }}"
                 class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
-                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                    opacity-75 hover:opacity-100 py-4 pl-6 nav-item hidden">
                 <span class="mr-3">
                     @if($page == 'meta-accounts')
                         <img class="w-8 h-8 dark-hidden" 
