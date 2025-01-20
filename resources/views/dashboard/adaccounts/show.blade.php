@@ -1,5 +1,5 @@
 <x-user-layout page="adaccounts">
-    <div class="mt-8 space-y-6">
+    <div class="mt-2 space-y-6 overflow-y-scroll">
         <!-- Action Buttons -->
         <div class="flex space-x-4">
             <button onclick="openDepositModal()"
@@ -69,6 +69,18 @@
                                     <span>Total Amount:</span>
                                     <span id="previewDepositTotal">0.00</span>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Spend Cap Progress Bar -->
+                        <div class="bg-gray-50 p-4 rounded-md mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                <div id="depositSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span id="depositCurrentBalance">Current: 0.00</span>
+                                <span id="depositSpendCap">Spend Cap: 0.00</span>
                             </div>
                         </div>
 
@@ -229,14 +241,16 @@
         // Modal functions
         function openDepositModal() {
             document.getElementById('depositModal').style.display = 'flex';
+            updateSpendCapInfo('deposit');
         }
 
         function closeDepositModal() {
             document.getElementById('depositModal').style.display = 'none';
         }
-
+        
         function openWithdrawModal() {
             document.getElementById('withdrawModal').style.display = 'flex';
+            updateSpendCapInfo('withdraw');
         }
 
         function closeWithdrawModal() {
@@ -288,6 +302,24 @@
             document.getElementById('previewWithdrawVat').textContent = fees.vat.toFixed(2);
             document.getElementById('previewWithdrawServiceFee').textContent = fees.serviceFee.toFixed(2);
             document.getElementById('previewWithdrawTotal').textContent = fees.total.toFixed(2);
+        }
+
+        async function updateSpendCapInfo(modalType) {
+            try {
+
+                const response = await fetch(`/api/ad-accounts/{{ $adAccount->id }}/spend-cap`);
+                const data = await response.json();
+                
+                const spendCap = parseFloat(data.spend_cap) || 0;
+                const balance = parseFloat(data.balance) || 0;
+                const percentage = spendCap > 0 ? (balance / spendCap * 100) : 0;
+        
+                document.getElementById(`${modalType}SpendCapProgress`).style.width = `${Math.min(percentage, 100)}%`;
+                document.getElementById(`${modalType}CurrentBalance`).textContent = `Current: ${balance.toFixed(2)} {{ $adAccount->currency }}`;
+                document.getElementById(`${modalType}SpendCap`).textContent = `Spend Cap: ${spendCap.toFixed(2)/ 100} {{ $adAccount->currency }}`;
+            } catch (error) {
+                console.error('Error fetching spend cap:', error);
+            }
         }
     </script>
 </x-user-layout>
