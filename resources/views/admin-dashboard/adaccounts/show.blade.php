@@ -83,8 +83,10 @@
                             <p class="font-medium"> {{$providerInfo["_meta_ad_account"]["currency"]}} {{ $providerInfo["_meta_ad_account"]["amount_spent"] }}</p>
                         </div>
                         <div>
-                            <p class="text-gray-600">Balance</p>
-                            <p class="font-medium"> {{$providerInfo["_meta_ad_account"]["currency"]}} {{ $providerInfo["_meta_ad_account"]["balance"] }}</p>
+                            <p class="text-gray-600">Remaining Balance</p>
+                            <p class="font-medium"> {{
+                            $providerInfo["_meta_ad_account"]["currency"]}} 
+                            {{ abs( round( ( $providerInfo["_meta_ad_account"]["spend_cap"] - $providerInfo["_meta_ad_account"]["amount_spent"] ) / 100, 2 ) ) }}</p>
                         </div>
                     @endif
                     <div>
