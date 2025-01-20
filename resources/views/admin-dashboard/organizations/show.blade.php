@@ -27,7 +27,7 @@
                             @foreach($adAccounts as $adAccount)
                             <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="py-3 px-6 text-left">{{ $adAccount->id }}</td>
-                                <td class="py-3 px-6 text-left">{{ $adAccount->name }}</td>
+                                <td class="py-3 px-6 text-left">{{ $adAccount->provider_account_name ? $adAccount->provider_account_name : $adAccount->name }}</td>
                                 <td class="py-3 px-6 text-left">{{ $adAccount->type }}</td>
                                 <td class="py-3 px-6 text-left">{{ $adAccount->provider }}</td>
                                 <td class="py-3 px-6 text-center">
@@ -47,6 +47,12 @@
                                            class="text-blue-500 hover:text-blue-700">
                                             Edit
                                         </a>
+                                        @if ($adAccount->provider_id)
+                                                    <button onclick="unlinkAccount('{{ $adAccount->id }}')"
+                                                        class="text-yellow-500 hover:text-yellow-700">
+                                                        Unlink Meta
+                                                    </button>
+                                                @endif
                                         <form action="{{ route('admin.adaccounts.destroy', $adAccount->id) }}" 
                                               method="POST" 
                                               class="inline"
@@ -67,4 +73,33 @@
             </div>
         </main>
     </div>
+
+    <script>
+        async function unlinkAccount(adAccountId) {
+            if (!confirm('Are you sure you want to unlink this Meta account?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/adaccounts/unlink-meta', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        ad_account_id: adAccountId
+                    })
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to unlink account');
+                }
+            } catch (error) {
+                alert('Error unlinking account. Please try again.');
+            }
+        }
+    </script>
 </x-admin-layout> 

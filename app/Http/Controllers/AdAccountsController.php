@@ -264,12 +264,28 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+
+            // Check if account is approved
+            if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
+                return redirect()->back()
+                    ->with('error', 'Ad account must be approved to deposit funds');
+            }
+
             $wallet = Wallet::findOrFail($validated['wallet_id']);
 
             // Check if currencies match
             if ($wallet->currency !== $adAccount->currency) {
                 return redirect()->back()
                     ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // For Meta ad accounts, check if account has provider_id
+            if ($adAccount->type === 'meta') {
+                if (!$adAccount->provider_id) {
+                    return redirect()->back()
+                        ->with('error', 'Meta ad account must be linked to deposit funds');
+                }
             }
 
             // Calculate fees
@@ -295,7 +311,7 @@ class AdAccountsController extends Controller
                 'description' => 'Deposit to ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager) {
                 // Save transaction
                 $transaction->save();
 
@@ -309,17 +325,33 @@ class AdAccountsController extends Controller
                     'status' => 'completed'
                 ]);
 
+                // For Meta ad accounts, update spend cap
+                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                    try {
+                        $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
+                        $metaService->fundAccount($adAccount->provider_id, $validated['amount']);
+                    } catch (\Exception $e) {
+                        Log::error('Meta API Error during deposit:', [
+                            'message' => $e->getMessage(),
+                            'ad_account_id' => $adAccount->id
+                        ]);
+                        throw $e; // Re-throw to rollback transaction
+                    }
+                }
+
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
             });
+
             try {
                 // After successful deposit
                 $user = auth()->user();
                 $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Deposit',
-                    'message' => "You have deposited {$validated['amount']} to ad account {$adAccount->name}",
+                    'message' => "You have deposited {$validated['amount']} {$adAccount->currency} to ad account {$adAccount->name}",
                     'type' => 'ad_account_deposit',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
@@ -347,12 +379,49 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+
+            // Check if account is approved
+            if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
+                return redirect()->back()
+                    ->with('error', 'Ad account must be approved to withdraw funds');
+            }
+
             $wallet = Wallet::findOrFail($validated['wallet_id']);
 
             // Check if currencies match
             if ($wallet->currency !== $adAccount->currency) {
                 return redirect()->back()
                     ->with('error', 'Wallet currency must match ad account currency');
+            }
+
+            // For Meta ad accounts, check if account has provider_id
+            if ($adAccount->type === 'meta') {
+                if (!$adAccount->provider_id) {
+                    return redirect()->back()
+                        ->with('error', 'Meta ad account must be linked to withdraw funds');
+                }
+
+                // Check available funds in Meta account
+                try {
+                    $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
+                    $account = $metaService->getAdAccount($adAccount->provider_id);
+                    $spendCap = $account['spend_cap'] ?? 0;
+                    $amountSpent = $account['amount_spent'] ?? 0;
+                    $availableToWithdraw = $spendCap - $amountSpent;
+
+                    if ($validated['amount'] > $availableToWithdraw) {
+                        return redirect()->back()
+                            ->with('error', 'Insufficient funds available in Meta ad account');
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Meta API Error checking withdrawal availability:', [
+                        'message' => $e->getMessage(),
+                        'ad_account_id' => $adAccount->id
+                    ]);
+                    return redirect()->back()
+                        ->with('error', 'Error checking Meta ad account balance: ' . $e->getMessage());
+                }
             }
 
             // Calculate fees
@@ -378,7 +447,7 @@ class AdAccountsController extends Controller
                 'description' => 'Withdrawal from ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager) {
                 // Save transaction
                 $transaction->save();
 
@@ -392,6 +461,20 @@ class AdAccountsController extends Controller
                     'status' => 'completed'
                 ]);
 
+                // For Meta ad accounts, update spend cap
+                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                    try {
+                        $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
+                        $metaService->withdrawFunds($adAccount->provider_id, $validated['amount']);
+                    } catch (\Exception $e) {
+                        Log::error('Meta API Error during withdrawal:', [
+                            'message' => $e->getMessage(),
+                            'ad_account_id' => $adAccount->id
+                        ]);
+                        throw $e; // Re-throw to rollback transaction
+                    }
+                }
+
                 // Mark transaction as completed
                 $transaction->update(['status' => 'completed']);
             });
@@ -401,15 +484,15 @@ class AdAccountsController extends Controller
                 $user = auth()->user();
                 $user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Withdrawal',
-                    'message' => "You have withdrawn {$validated['amount']} from ad account {$adAccount->name}",
+                    'message' => "You have withdrawn {$validated['amount']} {$adAccount->currency} from ad account {$adAccount->name}",
                     'type' => 'ad_account_withdrawal',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
                 Log::error('Ad account withdrawal notification error: ' . $e->getMessage());
             }
-
 
             return redirect()->back()
                 ->with('success', 'Funds withdrawn successfully');
@@ -443,13 +526,13 @@ class AdAccountsController extends Controller
         });
 
         $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
-        if ($adAccount->provider == "meta" 
-            && !empty($adAccount->provider_bm_id) 
-            && !empty($adAccount->provider_id) 
-            )
-        {
+        if (
+            $adAccount->provider == "meta"
+            && !empty($adAccount->provider_bm_id)
+            && !empty($adAccount->provider_id)
+        ) {
             $providerInfo["_provider"] = "meta";
-            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
+            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
             $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
             $metaAdAccount = $adAccountService->getAdAccount($adAccount->provider_id);
             $providerInfo["_meta_ad_account"] = $metaAdAccount;

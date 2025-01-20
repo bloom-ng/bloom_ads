@@ -244,9 +244,10 @@ class WalletController extends Controller
                         $user = auth()->user();
                         $user->notify(new WalletNotification([
                             'subject' => 'Wallet Funded Successfully',
-                            'message' => "Your wallet has been credited with {$convertedAmount}",
+                            'message' => "Your wallet has been credited with {$convertedAmount} {$wallet->currency}",
                             'type' => 'wallet_funded',
-                            'amount' => $convertedAmount
+                            'amount' => $convertedAmount,
+                            'currency' => $wallet->currency
                         ]));
                     } catch (\Exception $e) {
                         Log::error('Wallet funding notification error: ' . $e->getMessage());
@@ -312,9 +313,10 @@ class WalletController extends Controller
                 try {
                     auth()->user()->notify(new WalletNotification([
                         'subject' => 'Wallet Funded Successfully',
-                        'message' => "Your wallet has been credited with {$convertedAmount}",
+                        'message' => "Your wallet has been credited with {$convertedAmount} {$wallet->currency}",
                         'type' => 'wallet_funded',
-                        'amount' => $convertedAmount
+                        'amount' => $convertedAmount,
+                        'currency' => $wallet->currency
                     ]));
                 } catch (\Exception $e) {
                     Log::error('Wallet funding notification error: ' . $e->getMessage());
@@ -426,12 +428,30 @@ class WalletController extends Controller
             });
 
             try {
+                // Notify source wallet owner
                 auth()->user()->notify(new WalletNotification([
                     'subject' => 'Wallet Transfer',
-                    'message' => "You have transferred {$validated['amount']} from your wallet",
-                    'type' => 'wallet_transfer',
-                    'amount' => $validated['amount']
+                    'message' => "You have transferred {$validated['amount']} {$sourceWallet->currency} from your wallet",
+                    'type' => 'wallet_transfer_debit',
+                    'amount' => $validated['amount'],
+                    'currency' => $sourceWallet->currency,
+                    'converted_amount' => $convertedAmount,
+                    'converted_currency' => $destinationWallet->currency
                 ]));
+
+                // Notify destination wallet owner (if different)
+                if ($destinationWallet->organization_id !== $sourceWallet->organization_id) {
+                    $destinationWallet->organization->users()
+                        ->wherePivot('role', 'owner')
+                        ->first()
+                        ->notify(new WalletNotification([
+                            'subject' => 'Wallet Transfer Received',
+                            'message' => "Your wallet has been credited with {$convertedAmount} {$destinationWallet->currency}",
+                            'type' => 'wallet_transfer_credit',
+                            'amount' => $convertedAmount,
+                            'currency' => $destinationWallet->currency
+                        ]));
+                }
             } catch (\Exception $e) {
                 Log::error('Wallet transfer notification error: ' . $e->getMessage());
             }

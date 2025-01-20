@@ -155,7 +155,9 @@ class AdminAdAccountsController extends Controller
 
             $adAccount->update([
                 'provider' => null,
-                'provider_id' => null
+                'provider_id' => null,
+                'provider_account_name' => null,
+                'provider_bm_id' => null
             ]);
 
             return response()->json(['success' => true]);
@@ -220,9 +222,10 @@ class AdminAdAccountsController extends Controller
                 // Notify the user who owns the ad account
                 $adAccount->user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Funded',
-                    'message' => "Your ad account {$adAccount->name} has been funded with {$validated['amount']} by admin",
+                    'message' => "Your ad account {$adAccount->name} has been funded with {$validated['amount']} {$adAccount->currency} by admin",
                     'type' => 'ad_account_funded',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
@@ -238,9 +241,10 @@ class AdminAdAccountsController extends Controller
                 try {
                     $organizationOwner->notify(new AdAccountNotification([
                         'subject' => 'Ad Account Funded',
-                        'message' => "Ad account {$adAccount->name} has been funded with {$validated['amount']} by admin",
+                        'message' => "Ad account {$adAccount->name} has been funded with {$validated['amount']} {$adAccount->currency} by admin",
                         'type' => 'ad_account_funded',
                         'amount' => $validated['amount'],
+                        'currency' => $adAccount->currency,
                         'ad_account_id' => $adAccount->id
                     ]));
                 } catch (\Exception $e) {
@@ -260,11 +264,11 @@ class AdminAdAccountsController extends Controller
         $adAccount->load('organization.wallets');
         $wallets = $adAccount->organization->wallets;
         $providerInfo = ["_provider" => null, "_meta_ad_account" => null];
-        if ($adAccount->provider == "meta" 
-            && !empty($adAccount->provider_bm_id) 
-            && !empty($adAccount->provider_id) 
-            )
-        {
+        if (
+            $adAccount->provider == "meta"
+            && !empty($adAccount->provider_bm_id)
+            && !empty($adAccount->provider_id)
+        ) {
             $providerInfo["_provider"] = "meta";
             $businessManager = BusinessManager::find($adAccount->provider_bm_id);
             $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
@@ -338,9 +342,10 @@ class AdminAdAccountsController extends Controller
                 // Notify the user who owns the ad account
                 $adAccount->user->notify(new AdAccountNotification([
                     'subject' => 'Ad Account Withdrawal',
-                    'message' => "Amount {$validated['amount']} has been withdrawn from your ad account {$adAccount->name} by admin",
+                    'message' => "Amount {$validated['amount']} {$adAccount->currency} has been withdrawn from your ad account {$adAccount->name} by admin",
                     'type' => 'ad_account_withdrawal',
                     'amount' => $validated['amount'],
+                    'currency' => $adAccount->currency,
                     'ad_account_id' => $adAccount->id
                 ]));
             } catch (\Exception $e) {
@@ -356,9 +361,10 @@ class AdminAdAccountsController extends Controller
                 try {
                     $organizationOwner->notify(new AdAccountNotification([
                         'subject' => 'Ad Account Withdrawal',
-                        'message' => "Amount {$validated['amount']} has been withdrawn from ad account {$adAccount->name} by admin",
+                        'message' => "Amount {$validated['amount']} {$adAccount->currency} has been withdrawn from ad account {$adAccount->name} by admin",
                         'type' => 'ad_account_withdrawal',
                         'amount' => $validated['amount'],
+                        'currency' => $adAccount->currency,
                         'ad_account_id' => $adAccount->id
                     ]));
                 } catch (\Exception $e) {

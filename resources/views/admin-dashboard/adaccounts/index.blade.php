@@ -78,7 +78,7 @@
                                     <tr
                                         class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <td class="py-3 px-6 text-left">{{ $adAccount->id }}</td>
-                                        <td class="py-3 px-6 text-left">{{ $adAccount->name }}</td>
+                                        <td class="py-3 px-6 text-left">{{ $adAccount->provider_account_name ? $adAccount->provider_account_name : $adAccount->name }}</td>
                                         <td class="py-3 px-6 text-left">{{ $adAccount->type }}</td>
                                         <td class="py-3 px-6 text-left">{{ $adAccount->organization->name }}</td>
                                         <td class="py-3 px-6 text-center">
