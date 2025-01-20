@@ -106,9 +106,15 @@
                                                 </a>
                                                 @if($account['is_linked'] === false)
                                                     <button 
-                                                        onclick="openLinkAccountModal('{{ $account['id'] }}', '{{ $account['name'] }}')"
+                                                        onclick="openLinkAccountModal('{{ $account['id'] }}', '{{ $account['name'] }}', '{{ $account['currency'] }}')"
                                                         class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
                                                         Link Account
+                                                    </button>
+                                                @else
+                                                <button 
+                                                        onclick="unlinkAccount('{{ $account['_adaccount']->id }}')"
+                                                        class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
+                                                        Unlink Account
                                                     </button>
                                                 @endif
                                             </div>
@@ -253,11 +259,13 @@
     let selectedAccountName = null;
     let selectedOrganizationId = null;
     let selectedAdAccountId = null;
+    let selectedAccountCurrency = null;
 
-    function openLinkAccountModal(accountId, accountName) {
+    function openLinkAccountModal(accountId, accountName, currency) {
         console.log('Opening modal for account ID:', accountId, 'and name:', accountName);
         selectedAccountId = accountId;
         selectedAccountName = accountName;
+        selectedAccountCurrency = currency;
         fetchOrganizations();
         const event = new CustomEvent('open-modal', { detail: 'link-ad-account' });
         window.dispatchEvent(event);
@@ -332,6 +340,7 @@
                     account_id: selectedAccountId, //meta account id
                     ad_account_id: selectedAdAccountId,
                     ad_account_name: selectedAccountName,
+                    currency: selectedAccountCurrency,
                     business_manager_id:  "{{ $businessManager->id }}"
                 })
             });
@@ -410,6 +419,34 @@
         } catch (error) {
             console.error('Error fetching organizations:', error);
             alert('Failed to load organizations');
+        }
+    }
+
+    
+    async function unlinkAccount(adAccountId) {
+        if (!confirm('Are you sure you want to unlink this Ad account?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/admin/adaccounts/unlink-meta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    ad_account_id: adAccountId
+                })
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                throw new Error('Failed to unlink account');
+            }
+        } catch (error) {
+            alert('Error unlinking account. Please try again.');
         }
     }
     </script>

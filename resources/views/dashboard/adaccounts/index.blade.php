@@ -50,14 +50,14 @@
                     <tbody>
                         @foreach ($adAccounts as $account)
                             <tr>
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->name }}
+                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500"> {{ $account->provider_account_name ? $account->provider_account_name : $account->name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->type }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
                                     {{ $account->currency }}</td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                                    {{ $account->provider_account_name ? $account->provider_account_name : $account->organization->name }}</td>
+                                    {{ $account->organization->name }}</td>
                                 <td class="px-6 uppercase py-4 whitespace-no-wrap border-b border-gray-500">
                                     {{ $account->status }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">

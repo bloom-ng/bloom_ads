@@ -98,10 +98,14 @@ class BusinessManagerController extends Controller
             $linkedAccountIds = $_adAccounts->pluck('provider_id');
 
 
-            $adAccounts = $adAccounts->map(function ($account) use ($linkedAccountIds) {
+            // lets add _adaccount that is linked to this business manager from the $_adAccounts collection above
+            $adAccounts = $adAccounts->map(function ($account) use ($linkedAccountIds, $_adAccounts) {
                 $account['is_linked'] = in_array($account['id'], $linkedAccountIds->toArray());
+                $account['_adaccount'] = collect($_adAccounts)->where('provider_id', $account['id'])->first();
                 return $account;
             });
+
+            // dd($adAccounts);
 
             return view('admin-dashboard.business-managers.accounts', [
                 'businessManager' => $businessManager,
