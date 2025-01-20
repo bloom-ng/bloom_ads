@@ -264,7 +264,7 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
-            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
 
             // Check if account is approved
             if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
@@ -326,7 +326,7 @@ class AdAccountsController extends Controller
                 ]);
 
                 // For Meta ad accounts, update spend cap
-                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                if ($adAccount->provider === 'meta' && $adAccount->provider_id) {
                     try {
                         $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
                         $metaService->fundAccount($adAccount->provider_id, $validated['amount']);
@@ -379,7 +379,7 @@ class AdAccountsController extends Controller
                 'wallet_id' => 'required|exists:wallets,id',
             ]);
 
-            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
 
             // Check if account is approved
             if ($adAccount->status !== AdAccount::STATUS_APPROVED) {
@@ -532,7 +532,7 @@ class AdAccountsController extends Controller
             && !empty($adAccount->provider_id)
         ) {
             $providerInfo["_provider"] = "meta";
-            $businessManager = BusinessManager::where('id', $adAccount->provider_bm_id);
+            $businessManager = BusinessManager::find($adAccount->provider_bm_id);
             $adAccountService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
             $metaAdAccount = $adAccountService->getAdAccount($adAccount->provider_id);
             $providerInfo["_meta_ad_account"] = $metaAdAccount;

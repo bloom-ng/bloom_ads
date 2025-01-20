@@ -8,6 +8,7 @@ use App\Models\BusinessManager;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Services\Meta\AdAccountService;
 
 class AdAccountController extends Controller
 {
@@ -28,7 +29,7 @@ class AdAccountController extends Controller
         }
 
         $adAccount = AdAccount::find($validated['ad_account_id']);
-        
+
         if (!$adAccount) {
             return response()->json(['message' => 'Ad account not found'], 404);
         }
@@ -37,7 +38,7 @@ class AdAccountController extends Controller
             'provider' => 'meta',
             'provider_bm_id' => $businessManager->id,
             'provider_id' => $validated['account_id'],
-            'provider_account_name' => $validated['ad_account_name'], 
+            'provider_account_name' => $validated['ad_account_name'],
             'currency' => $validated['currency'],
             'status' => AdAccount::STATUS_APPROVED
         ]);
@@ -53,5 +54,25 @@ class AdAccountController extends Controller
 
         return response()->json($accounts);
     }
-    
-} 
+
+    public function getSpendCap(AdAccount $adAccount): JsonResponse
+    {
+        $businessManager = BusinessManager::find($adAccount->provider_bm_id);
+
+        if (!$adAccount->provider_id) {
+            return response()->json(['spend_cap' => 0]);
+        }
+
+        try {
+            $metaService = new AdAccountService($businessManager->portfolio_id, $businessManager->token);
+            $accountInfo = $metaService->getAdAccount($adAccount->provider_id);
+
+            return response()->json([
+                'spend_cap' => $accountInfo['spend_cap'] ?? 20,
+                'balance' => $adAccount->getBalance()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+}

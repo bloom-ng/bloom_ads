@@ -191,8 +191,10 @@ class AdAccountService
             throw new \Exception('Ad account must be approved to fund');
         }
 
+        
+        $koboAmount = $amount * 100;
         $currentSpendCap = $account['spend_cap'] ?? 0;
-        $newSpendCap = $currentSpendCap + $amount;
+        $newSpendCap = $currentSpendCap + $koboAmount;
         
         return $this->updateSpendCap($adAccountId, $newSpendCap);
     }
@@ -217,8 +219,8 @@ class AdAccountService
         if ($amount > $availableToWithdraw) {
             throw new \Exception('Withdrawal amount exceeds available funds');
         }
-        
-        $newSpendCap = $currentSpendCap - $amount;
+        $koboAmount = $amount * 100;
+        $newSpendCap = $currentSpendCap - $koboAmount;
         
         return $this->updateSpendCap($adAccountId, $newSpendCap);
     }

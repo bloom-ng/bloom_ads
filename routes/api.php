@@ -19,3 +19,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/organizations/{organization}/ad-accounts', [AdAccountController::class, 'getOrganizationAccounts']);
     Route::post('/ad-accounts/link', [AdAccountController::class, 'linkAccount']);
 }); 
+
+// Route::middleware('auth')->group(function () {
+    Route::get('/ad-accounts/{adAccount}/spend-cap', [AdAccountController::class, 'getSpendCap'])->name('api.ad-accounts.spend-cap');
+// }); 
