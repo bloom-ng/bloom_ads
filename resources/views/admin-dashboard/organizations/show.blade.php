@@ -2,9 +2,9 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl text-black dark:text-white pb-6">Organization: {{ $organization->name }}</h1>
+                <h1 class="text-3xl text-black dark:text-white pb-6">Business: {{ $organization->name }}</h1>
                 <a href="{{ route('admin.organizations.index') }}" class="text-blue-500 hover:text-blue-700">
-                    ← Back to Organizations
+                    ← Back to Businesses
                 </a>
             </div>
             

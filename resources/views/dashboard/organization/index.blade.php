@@ -2,17 +2,17 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl text-black">My Organizations</h1>
+                <h1 class="text-3xl text-black">My Businesses</h1>
                 <a href="{{ route('organizations.create') }}" 
                     class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Create Organization
+                    Create Business
                 </a>
             </div>
 
             <div class="w-full mt-6">
                 <div class="bg-white overflow-auto p-6">
                     @if ($organizations->isEmpty())
-                        <p class="text-gray-600 text-center py-4">You are not a member of any organizations yet.</p>
+                        <p class="text-gray-600 text-center py-4">You are not a member of any businesses yet.</p>
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach ($organizations as $org)

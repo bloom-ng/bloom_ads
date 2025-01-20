@@ -294,7 +294,7 @@
                             src="{{ asset('images/organizationIcon.png') }}" alt="">
                     @endif
                 </span>
-                Organizations
+                Business
             </a>
             <!-- <a href="{{ route('admin.adaccounts.index') }}"
                 class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : 'inactive-nav-link' }} 

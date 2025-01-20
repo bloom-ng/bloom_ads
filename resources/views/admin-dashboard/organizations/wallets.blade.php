@@ -7,7 +7,7 @@
                 </div>
                 <a href="{{ route('admin.organizations.index') }}" 
                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Back to Organizations
+                    Back to Businesses
                 </a>
             </div>
             
@@ -34,25 +34,9 @@
                                 <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <div class="relative inline-block text-left" x-data="{ open: false }">
-                                        <button @click="open = !open" class="flex items-center text-gray-600 hover:text-gray-700">
-                                            <span class="mr-2">Actions</span>
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-                                            </svg>
-                                        </button>
-                                        <div x-show="open" 
-                                             @click.away="open = false"
-                                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 overflow-hidden"
-                                             style="display: none;">
-                                            <div class="py-1">
-                                                <button onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    Fund Wallet
-                                                </button>
-                                                <a href="{{ route('admin.wallets.transactions', $wallet) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    View Transactions
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <a href="{{ route('admin.wallets.show', $wallet) }}" class="flex items-center text-blue-600 hover:text-blue-900">
+                                            <span>View</span>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

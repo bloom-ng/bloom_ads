@@ -12,6 +12,9 @@ class AdminWalletController extends Controller
 {
     public function index()
     {
+        $transactions = WalletTransaction::with(['wallet', 'wallet.organization', 'wallet.organization.users'])
+            ->orderBy('created_at', 'desc');
+
         $my_date = Carbon::now()->format('l, F j, Y');
 
         // Add pagination while maintaining the eager loading of relationships
@@ -19,7 +22,32 @@ class AdminWalletController extends Controller
             ->orderBy('created_at', 'desc')  // Sort by newest first
             ->paginate(10);  // 10 wallets per page
 
-        return view('admin-dashboard.wallets.index', compact('wallets', 'my_date'));
+        return view('admin-dashboard.wallets.index', compact('wallets', 'my_date', 'transactions'));
+    }
+
+    public function show(Wallet $wallet)
+    {
+        $transactions = $wallet->transactions()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        
+        return view('admin-dashboard.wallets.index', [
+            'wallet' => $wallet,
+            'transactions' => $transactions,
+            'my_date' => Carbon::now()->format('l, F j, Y')
+        ]);
+    }
+
+    public function transactions(Wallet $wallet)
+    {
+        $wallet = $wallet->load(['transactions' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+        
+        return view('admin-dashboard.organizations.transactions', [
+            'wallet' => $wallet,
+            'transactions' => $wallet->transactions
+        ]);
     }
 
     public function credit(Request $request, Wallet $wallet)
@@ -54,20 +82,24 @@ class AdminWalletController extends Controller
             return back()->with('error', 'Insufficient wallet balance');
         }
 
-        DB::transaction(function () use ($wallet, $validated) {
-            $wallet->transactions()->create([
-                'amount' => $validated['amount'],
-                'currency' => $wallet->currency,
-                'type' => 'debit',
-                'description' => $validated['description'],
-                'reference' => 'ADMIN-' . Str::random(20),
-                'status' => 'completed',
-                'rate' => 1,
-                'source_currency' => $wallet->currency
-            ]);
-        });
+        try {
+            DB::transaction(function () use ($wallet, $validated) {
+                $wallet->transactions()->create([
+                    'amount' => $validated['amount'],
+                    'currency' => $wallet->currency,
+                    'type' => 'debit',
+                    'description' => $validated['description'],
+                    'reference' => 'ADMIN-' . Str::random(20),
+                    'status' => 'completed',
+                    'rate' => 1,
+                    'source_currency' => $wallet->currency
+                ]);
+            });
 
-        return back()->with('success', 'Wallet debited successfully');
+            return back()->with('success', 'Wallet debited successfully');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to debit wallet: ' . $e->getMessage());
+        }
     }
 
     public function transferFromAdAccount(Request $request, AdAccount $adAccount)

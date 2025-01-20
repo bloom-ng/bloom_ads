@@ -58,19 +58,16 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
 
     Route::get('/wallets', [AdminWalletController::class, 'index'])->name('wallets.index');
-    Route::get('/wallets/{wallet}/transactions', function (App\Models\Wallet $wallet) {
-        $wallet = App\Models\Wallet::withBalances()->findOrFail($wallet->id);
-        return view('admin-dashboard.organizations.transactions', ['wallet' => $wallet]);
-    })->name('wallets.transactions');
+    Route::get('/wallets/{wallet}', [AdminWalletController::class, 'show'])->name('wallets.show');
     Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
     Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
+    Route::get('/wallets/{wallet}/transactions', [AdminWalletController::class, 'transactions'])->name('wallets.transactions');
    
     Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('adaccounts.show');
     Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('adaccounts.edit');
     Route::put('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'update'])->name('adaccounts.update');
     Route::delete('/adaccounts/{adAccount}', [AdminAdAccountsController::class, 'destroy'])->name('adaccounts.destroy');
-    Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/export/processing', [AdminAdAccountsController::class, 'exportProcessingAccounts'])
         ->name('adaccounts.export.processing');
 
@@ -83,6 +80,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
         ->name('organizations.members');
     Route::get('/organizations/{organization}/wallets', [AdminOrganizationsController::class, 'wallets'])->name('organizations.wallets');
     Route::get('/organizations/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('organizations.adaccounts.show');
+
 
     Route::resource('adminsettings', AdminSettingsController::class);
     Route::post('adminsettings/{adminSetting}/update-value', [AdminSettingsController::class, 'updateValue'])->name('adminsettings.update-value');

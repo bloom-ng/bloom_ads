@@ -122,10 +122,10 @@
             @endphp
 
             @if ($currentOrganization)
-                <p class="text-sm text-white text-center mt-2">Current Organization: {{ $currentOrganization->name }}
+                <p class="text-sm text-white text-center mt-2">Current Business: {{ $currentOrganization->name }}
                 </p>
             @else
-                <p class="text-sm text-white text-center mt-2">No organization selected</p>
+                <p class="text-sm text-white text-center mt-2">No business selected</p>
             @endif
         </div>
         <nav class="text-black text-base font-semibold">
@@ -155,7 +155,7 @@
                 class="flex items-center {{ $page == 'organizations' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <img src="{{ $page == 'organizations' ? asset('images/organizationIcon.png') : asset('images/organizationIconInactive.png') }}"
                     alt="Organizations" class="w-10 h-10">
-                <p class="pl-2">Organizations</p>
+                <p class="pl-2">Business</p>
             </a>
             <a href="{{ route('settings.index') }}"
                 class="flex items-center {{ $page == 'settings' ? 'active-nav-link text-white' : 'text-black' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">

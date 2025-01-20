@@ -1,7 +1,7 @@
 <x-user-layout page="invites">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Organization Invites</h1>
+            <h1 class="text-3xl text-black pb-6">Business Invites</h1>
 
             <div class="w-full mt-6">
                 <div class="bg-white overflow-auto">
@@ -95,9 +95,9 @@
                         </table>
                     </div>
 
-                    <!-- Organization Members Table -->
+                    <!-- Business Members Table -->
                     <div class="p-6">
-                        <h2 class="text-xl text-black pb-3">Organization Members</h2>
+                        <h2 class="text-xl text-black pb-3">Business Members</h2>
                         <table class="min-w-full bg-white">
                             <thead class="bg-gray-800 text-white">
                                 <tr>
