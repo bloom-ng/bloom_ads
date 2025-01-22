@@ -438,7 +438,7 @@ class AdAccountsController extends Controller
             $transaction = new AdAccountTransaction([
                 'ad_account_id' => $adAccount->id,
                 'wallet_id' => $wallet->id,
-                'amount' => $totalAmount,
+                'amount' => $validated['amount'],
                 'type' => 'withdrawal',
                 'vat' => $fees['vat'],
                 'service_fee' => $fees['service_fee'],
