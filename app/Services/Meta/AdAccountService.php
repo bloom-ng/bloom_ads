@@ -15,7 +15,7 @@ class AdAccountService
     private string $businessId;
     private string $accessToken;
     private string $baseUrl = 'https://graph.facebook.com/v21.0';
-    
+
     public function __construct($businessId = null, $accessToken = null)
     {
         $this->businessId = $businessId ?? config('services.meta.business_id');
@@ -25,7 +25,7 @@ class AdAccountService
     public function createAdAccount(CreateAdAccountDTO $dto): array
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/adaccount";
-        
+
         $response = Http::post($endpoint, [
             'name' => $dto->name,
             'currency' => $dto->currency,
@@ -43,7 +43,7 @@ class AdAccountService
     public function claimAdAccount(ClaimAdAccountDTO $dto): array
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/owned_ad_accounts";
-        
+
         $response = Http::post($endpoint, [
             'adaccount_id' => $dto->adAccountId,
             'access_token' => $this->accessToken,
@@ -55,7 +55,7 @@ class AdAccountService
     public function getAdAccount(string $adaccountId)
     {
         $endpoint = "{$this->baseUrl}/act_{$adaccountId}";
-        
+
         $response = Http::get($endpoint, [
             'access_token' => $this->accessToken,
             'fields' => 'account_status,amount_spent,spend_cap,balance,business,currency,name,owner,id',
@@ -67,7 +67,7 @@ class AdAccountService
     public function getOwnedAdAccounts(?string $before = null, ?string $after = null, int $limit = 10): PaginatedResult
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/owned_ad_accounts";
-        
+
         $params = [
             'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
             'access_token' => $this->accessToken,
@@ -79,7 +79,7 @@ class AdAccountService
         } elseif ($after) {
             $params['after'] = $after;
         }
-        
+
         $response = Http::get($endpoint, $params);
         $data = $this->handleResponse($response);
 
@@ -89,7 +89,7 @@ class AdAccountService
     public function getPendingAdAccounts(): Collection
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/pending_owned_ad_accounts";
-        
+
         $response = Http::get($endpoint, [
             'access_token' => $this->accessToken,
         ]);
@@ -100,7 +100,7 @@ class AdAccountService
     public function getClientAdAccounts(?string $before = null, ?string $after = null, int $limit = 10): PaginatedResult
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/client_ad_accounts";
-        
+
         $params = [
             'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
             'access_token' => $this->accessToken,
@@ -112,7 +112,7 @@ class AdAccountService
         } elseif ($after) {
             $params['after'] = $after;
         }
-        
+
         $response = Http::get($endpoint, $params);
         $data = $this->handleResponse($response);
 
@@ -122,7 +122,7 @@ class AdAccountService
     public function getPendingClientAdAccounts(): Collection
     {
         $endpoint = "{$this->baseUrl}/{$this->businessId}/pending_client_ad_accounts";
-        
+
         $response = Http::get($endpoint, [
             'access_token' => $this->accessToken,
         ]);
@@ -133,7 +133,7 @@ class AdAccountService
     public function assignUserToAccount(AssignUserDTO $dto): array
     {
         $endpoint = "{$this->baseUrl}/act_{$dto->adAccountId}/assigned_users";
-        
+
         $response = Http::post($endpoint, [
             'user' => $dto->userId,
             'tasks' => json_encode($dto->tasks),
@@ -146,7 +146,7 @@ class AdAccountService
     public function removeUserFromAccount(string $adAccountId, string $userId): bool
     {
         $endpoint = "{$this->baseUrl}/act_{$adAccountId}/assigned_users";
-        
+
         $response = Http::delete($endpoint, [
             'user' => $userId,
             'access_token' => $this->accessToken,
@@ -165,7 +165,7 @@ class AdAccountService
     public function updateSpendCap(string $adAccountId, float $spendCap)
     {
         $endpoint = "{$this->baseUrl}/act_{$adAccountId}";
-        
+
         $response = Http::post($endpoint, [
             'spend_cap' => $spendCap,
             'access_token' => $this->accessToken,
@@ -183,19 +183,17 @@ class AdAccountService
      * @return array The updated ad account data
      * @throws \Exception If account is not approved or has no provider ID
      */
-    public function fundAccount(string $adAccountId, float $amount)
+    public function fundAccount(string $adAccountId, $amount)
     {
         $account = $this->getAdAccount($adAccountId);
-        
+
         if ($account['account_status'] !== 1) { // 1 is ACTIVE status in Meta
             throw new \Exception('Ad account must be approved to fund');
         }
 
-        
-        $koboAmount = $amount * 100;
-        $currentSpendCap = $account['spend_cap'] ?? 0;
-        $newSpendCap = $currentSpendCap + $koboAmount;
-        
+        $currentSpendCap = $account['spend_cap'] / 100 ?? 0;
+        $newSpendCap = $currentSpendCap + $amount;
+
         return $this->updateSpendCap($adAccountId, $newSpendCap);
     }
 
@@ -207,21 +205,24 @@ class AdAccountService
      * @return array The updated ad account data
      * @throws \Exception If withdrawal amount exceeds available funds
      */
-    public function withdrawFunds(string $adAccountId, float $amount)
+    public function withdrawFunds(string $adAccountId, $amount)
     {
+
         $account = $this->getAdAccount($adAccountId);
-        
+
         $currentSpendCap = $account['spend_cap'] ?? 0;
         $amountSpent = $account['amount_spent'] ?? 0;
-        
+
         $availableToWithdraw = $currentSpendCap - $amountSpent;
-        
-        if ($amount > $availableToWithdraw) {
+
+        if ($amount > $availableToWithdraw / 100) {
             throw new \Exception('Withdrawal amount exceeds available funds');
         }
-        $koboAmount = $amount * 100;
-        $newSpendCap = $currentSpendCap - $koboAmount;
-        
+
+        $floatCurrentSpendCap = $currentSpendCap / 100;
+
+        $newSpendCap = $floatCurrentSpendCap - $amount;
+
         return $this->updateSpendCap($adAccountId, $newSpendCap);
     }
 
@@ -233,5 +234,4 @@ class AdAccountService
 
         return $response->json();
     }
-
 }

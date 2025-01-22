@@ -462,7 +462,7 @@ class AdAccountsController extends Controller
                 ]);
 
                 // For Meta ad accounts, update spend cap
-                if ($adAccount->type === 'meta' && $adAccount->provider_id) {
+                if ($adAccount->provider === 'meta' && $adAccount->provider_id) {
                     try {
                         $metaService = new MetaAdAccountService($businessManager->portfolio_id, $businessManager->token);
                         $metaService->withdrawFunds($adAccount->provider_id, $validated['amount']);

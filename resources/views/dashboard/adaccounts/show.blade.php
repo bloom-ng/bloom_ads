@@ -13,7 +13,8 @@
         </div>
 
         <!-- Deposit Modal -->
-        <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="depositModal"
+            class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 overflow-auto py-6">
             <div class="bg-white p-8 rounded-lg w-full max-w-md">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-medium">Deposit Funds</h3>
@@ -76,7 +77,8 @@
                         <div class="bg-gray-50 p-4 rounded-md mt-4">
                             <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                                <div id="depositSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full" style="width: 0%"></div>
+                                <div id="depositSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full"
+                                    style="width: 0%"></div>
                             </div>
                             <div class="flex justify-between text-sm text-gray-600">
                                 <span id="depositCurrentBalance">Current: 0.00</span>
@@ -94,7 +96,8 @@
         </div>
 
         <!-- Withdraw Modal -->
-        <div id="withdrawModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="withdrawModal"
+            class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 overflow-auto py-6">
             <div class="bg-white p-8 rounded-lg w-full max-w-md">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-medium">Withdraw Funds</h3>
@@ -153,6 +156,18 @@
                             </div>
                         </div>
 
+                        <div class="bg-gray-50 p-4 rounded-md mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                                <div id="withdrawSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full"
+                                    style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span id="withdrawCurrentBalance">Current: 0.00</span>
+                                <span id="withdrawSpendCap">Spend Cap: 0.00</span>
+                            </div>
+                        </div>
+
                         <button type="submit"
                             class="w-full bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
                             Confirm Withdrawal
@@ -170,33 +185,33 @@
         </div>
 
         <!-- Meta Account -->
-        @if($providerInfo["_provider"] == "meta")
+        @if ($providerInfo['_provider'] == 'meta')
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-medium mb-4">Meta Account</h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-gray-600">Name</p>
-                        <p class="font-medium">{{ $providerInfo["_meta_ad_account"]["name"] }}</p>
+                        <p class="font-medium">{{ $providerInfo['_meta_ad_account']['name'] }}</p>
                     </div>
-                   
+
                     <div>
                         <p class="text-gray-600">Status</p>
-                            <p class="font-medium">
-                                <span
-                                    class="px-2 py-1 rounded-full text-sm">
-                                    {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo["_meta_ad_account"]["account_status"]] }}
-                                </span>
-                            </p>
+                        <p class="font-medium">
+                            <span class="px-2 py-1 rounded-full text-sm">
+                                {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo['_meta_ad_account']['account_status']] }}
+                            </span>
+                        </p>
                     </div>
                     <div>
                         <p class="text-gray-600">Amount Spent</p>
-                        <p class="font-medium"> {{ $providerInfo["_meta_ad_account"]["currency"] }} {{$providerInfo["_meta_ad_account"]["amount_spent"]}}</p>
+                        <p class="font-medium"> {{ $providerInfo['_meta_ad_account']['currency'] }}
+                            {{ $providerInfo['_meta_ad_account']['amount_spent'] }}</p>
                     </div>
                     <div>
                         <p class="text-gray-600">Remaininig Balance</p>
-                        <p class="font-medium"> 
-                            {{ $providerInfo["_meta_ad_account"]["currency"] }} 
-                            {{ abs( round( ( $providerInfo["_meta_ad_account"]["spend_cap"] - $providerInfo["_meta_ad_account"]["amount_spent"] ) / 100, 2 ) ) }}
+                        <p class="font-medium">
+                            {{ $providerInfo['_meta_ad_account']['currency'] }}
+                            {{ abs(round(($providerInfo['_meta_ad_account']['spend_cap'] - $providerInfo['_meta_ad_account']['amount_spent']) / 100, 2)) }}
                         </p>
                     </div>
                 </div>
@@ -247,7 +262,7 @@
         function closeDepositModal() {
             document.getElementById('depositModal').style.display = 'none';
         }
-        
+
         function openWithdrawModal() {
             document.getElementById('withdrawModal').style.display = 'flex';
             updateSpendCapInfo('withdraw');
@@ -309,14 +324,16 @@
 
                 const response = await fetch(`/api/ad-accounts/{{ $adAccount->id }}/spend-cap`);
                 const data = await response.json();
-                
+
                 const spendCap = parseFloat(data.spend_cap) || 0;
                 const balance = parseFloat(data.balance) || 0;
                 const percentage = spendCap > 0 ? (balance / spendCap * 100) : 0;
-        
+
                 document.getElementById(`${modalType}SpendCapProgress`).style.width = `${Math.min(percentage, 100)}%`;
-                document.getElementById(`${modalType}CurrentBalance`).textContent = `Current: ${balance.toFixed(2)} {{ $adAccount->currency }}`;
-                document.getElementById(`${modalType}SpendCap`).textContent = `Spend Cap: ${spendCap.toFixed(2)/ 100} {{ $adAccount->currency }}`;
+                document.getElementById(`${modalType}CurrentBalance`).textContent =
+                    `Current: ${balance.toFixed(2)} {{ $adAccount->currency }}`;
+                document.getElementById(`${modalType}SpendCap`).textContent =
+                    `Spend Cap: ${spendCap.toFixed(2)/ 100} {{ $adAccount->currency }}`;
             } catch (error) {
                 console.error('Error fetching spend cap:', error);
             }
