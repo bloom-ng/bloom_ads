@@ -20,7 +20,16 @@ class AdminOrganizationsController extends Controller
 
     public function show(Organization $organization)
     {
-        $adAccounts = $organization->adAccounts()->with(['user'])->get();
+        $search = request('search');
+        $adAccounts = $organization->adAccounts()
+            ->with(['user'])
+            ->when($search, function($query) use ($search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('provider_account_name', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
         return view('admin-dashboard.organizations.show', compact('organization', 'adAccounts'));
     }
 
@@ -52,7 +61,15 @@ class AdminOrganizationsController extends Controller
 
     public function wallets(Organization $organization)
     {
-        $wallets = $organization->wallets;
+        $search = request('search');
+        $wallets = $organization->wallets()
+            ->when($search, function($query) use ($search) {
+                return $query->where(function($q) use ($search) {
+                    $q->where('id', 'like', '%' . $search . '%')
+                      ->orWhere('currency', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
         return view('admin-dashboard.organizations.wallets', compact('organization', 'wallets'));
     }
 } 

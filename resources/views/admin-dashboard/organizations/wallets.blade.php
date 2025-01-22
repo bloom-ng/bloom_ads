@@ -4,6 +4,19 @@
             <div class="flex items-center justify-between pb-6">
                 <div>
                     <h1 class="text-3xl text-black text pb-6">Wallets of {{ $organization->name }}</h1>
+                    <div class="mt-4">
+                        <form action="" method="GET" class="flex items-center">
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Search wallets..." 
+                                   value="{{ request('search') }}"
+                                   class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                            <button type="submit" 
+                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                                Search
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 <a href="{{ route('admin.organizations.index') }}" 
                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
@@ -25,22 +38,34 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 text-sm font-light">
-                            @foreach($wallets as $wallet)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                <td class="py-3 px-6 text-left">{{ $wallet->id }}</td>
-                                <td class="py-3 px-6 text-left">{{ number_format($wallet->getBalance(), 2) }}</td>
-                                <td class="py-3 px-6 text-left">{{ $wallet->currency }}</td>
-                                <td class="py-3 px-6 text-center">{{ $wallet->created_at->format('Y-m-d') }}</td>
-                                <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
-                                <td class="py-3 px-6 text-center">
-                                    <div class="relative inline-block text-left" x-data="{ open: false }">
-                                        <a href="{{ route('admin.wallets.show', $wallet) }}" class="flex items-center text-blue-600 hover:text-blue-900">
-                                            <span>View</span>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
+                            @if($wallets->isEmpty())
+                                <tr>
+                                    <td colspan="6" class="py-6 px-6 text-center text-gray-500 dark:text-gray-400">
+                                        @if(request('search'))
+                                            No wallets found matching "{{ request('search') }}"
+                                        @else
+                                            No wallets found for this business
+                                        @endif
+                                    </td>
+                                </tr>
+                            @else
+                                @foreach($wallets as $wallet)
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-3 px-6 text-left">{{ $wallet->id }}</td>
+                                    <td class="py-3 px-6 text-left">{{ number_format($wallet->getBalance(), 2) }}</td>
+                                    <td class="py-3 px-6 text-left">{{ $wallet->currency }}</td>
+                                    <td class="py-3 px-6 text-center">{{ $wallet->created_at->format('Y-m-d') }}</td>
+                                    <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
+                                    <td class="py-3 px-6 text-center">
+                                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                                            <a href="{{ route('admin.wallets.show', $wallet) }}" class="flex items-center text-blue-600 hover:text-blue-900">
+                                                <span>View</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

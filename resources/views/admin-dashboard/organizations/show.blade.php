@@ -2,7 +2,22 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl text-black dark:text-white pb-6">Business: {{ $organization->name }}</h1>
+                <div>
+                    <h1 class="text-3xl text-black dark:text-white pb-6">Business: {{ $organization->name }}</h1>
+                    <div class="mt-4">
+                        <form action="" method="GET" class="flex items-center">
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Search ad accounts..." 
+                                   value="{{ request('search') }}"
+                                   class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                            <button type="submit" 
+                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <a href="{{ route('admin.organizations.index') }}" class="text-blue-500 hover:text-blue-700">
                     ← Back to Businesses
                 </a>
@@ -25,7 +40,18 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 dark:text-gray-300 text-sm font-light">
-                            @foreach ($adAccounts as $adAccount)
+                            @if($adAccounts->isEmpty())
+                                <tr>
+                                    <td colspan="8" class="py-6 px-6 text-center text-gray-500 dark:text-gray-400">
+                                        @if(request('search'))
+                                            No ad accounts found matching "{{ request('search') }}"
+                                        @else
+                                            No ad accounts found for this business
+                                        @endif
+                                    </td>
+                                </tr>
+                            @else
+                                @foreach ($adAccounts as $adAccount)
                                 <tr
                                     class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="py-3 px-6 text-left">{{ $adAccount->id }}</td>
@@ -72,6 +98,7 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
