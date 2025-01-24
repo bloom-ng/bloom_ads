@@ -40,11 +40,13 @@ class RockAds
             throw new \Exception('RockAds API credentials not configured');
         }
 
-        return Http::withHeaders([
-            'X-Api-Key' => $apiKey,
-            'X-Api-Secret' => $apiSecret,
-            'Accept' => 'application/json',
-        ])->baseUrl($this->baseUrl);
+        return Http::withoutVerifying()
+            ->withHeaders([
+                'X-Api-Key' => $apiKey,
+                'X-Api-Secret' => $apiSecret,
+                'Accept' => 'application/json',
+            ])
+            ->baseUrl($this->baseUrl);
     }
 
     /**
@@ -52,12 +54,28 @@ class RockAds
      */
     protected function get(string $endpoint, array $params = [])
     {
-        $response = $this->client()->get($endpoint, $params)->throw()->json();
-        Log::info('API GET Response:', [
-            'endpoint' => $endpoint,
-            'response' => $response
-        ]);
-        return $response;
+        try {
+            Log::info('Making RockAds API request:', [
+                'endpoint' => $endpoint,
+                'params' => $params,
+                'api_key' => $this->apiKey ? 'present' : 'missing',
+                'api_secret' => $this->apiSecret ? 'present' : 'missing'
+            ]);
+            
+            $response = $this->client()->get($endpoint, $params)->throw()->json();
+            Log::info('API GET Response:', [
+                'endpoint' => $endpoint,
+                'response' => $response
+            ]);
+            return $response;
+        } catch (\Exception $e) {
+            Log::error('API GET Request failed:', [
+                'endpoint' => $endpoint,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -69,15 +87,17 @@ class RockAds
     }
 
     /**
-     * Get list of supported advertising platforms
+     * Get list of supported advertising platforms from RockAds API
      */
-    public function getAdPlatforms(): AdPlatformsResponse
+    public function getAdPlatformsFromApi(): AdPlatformsResponse
     {
         try {
             $response = $this->get('ad-platforms');
-            Log::info('RockAds API Raw Response:', ['response' => $response]);
+            Log::info('RockAds Ad Platforms Raw Response:', [
+                'raw' => $response,
+                'structure' => json_encode($response, JSON_PRETTY_PRINT)
+            ]);
             
-            // Pass the entire response array to the AdPlatformsResponse constructor
             return new AdPlatformsResponse([
                 'response' => $response
             ]);
@@ -91,9 +111,42 @@ class RockAds
     }
 
     /**
-     * Get list of supported timezones
+     * Get list of supported advertising platforms (from database)
      */
-    public function getTimezones(): TimezonesResponse
+    public function getAdPlatforms(): AdPlatformsResponse
+    {
+        try {
+            // Get platforms from database instead of API
+            $platforms = \App\Models\RockAdsAdPlatform::all()
+                ->map(function($platform) {
+                    return [
+                        'id' => $platform->platform_id,
+                        'name' => $platform->name
+                    ];
+                })
+                ->toArray();
+
+            // Format response to match original API structure
+            $response = [
+                'response' => [
+                    'ad_platforms' => $platforms
+                ]
+            ];
+            
+            return new AdPlatformsResponse($response);
+        } catch (\Exception $e) {
+            Log::error('Error fetching ad platforms from database:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Get list of supported timezones from RockAds API
+     */
+    public function getTimezonesFromApi(): TimezonesResponse
     {
         try {
             $response = $this->get('timezones');
@@ -110,6 +163,41 @@ class RockAds
             ]);
         } catch (\Exception $e) {
             Log::error('RockAds API Error in getTimezones:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Get list of supported timezones (from database)
+     */
+    public function getTimezones(): TimezonesResponse
+    {
+        try {
+            // Get timezones from database instead of API
+            $timezones = \App\Models\RockAdsTimezone::all()
+                ->map(function($timezone) {
+                    return [
+                        'key' => $timezone->timezone_id,
+                        'name' => $timezone->name,
+                        'offset_str' => $timezone->offset_str,
+                        'offset' => $timezone->offset,
+                    ];
+                })
+                ->toArray();
+
+            // Format response to match original API structure
+            $response = [
+                'response' => [
+                    'data' => $timezones
+                ]
+            ];
+            
+            return new TimezonesResponse($response);
+        } catch (\Exception $e) {
+            Log::error('Error fetching timezones from database:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
