@@ -83,8 +83,10 @@ class AdAccountController extends Controller
     ];
         */
 
+        $organization = Organization::find($validated['organization']);
+
         AdAccount::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => $organization->user_id,
             'organization_id' => $validated['organization'],
             'landing_page' => 'example.com',
             'provider' => 'meta',
