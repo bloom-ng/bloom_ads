@@ -98,7 +98,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                            <div class="flex justify-center space-x-3">
+                                            <div class="flex flex-col gap-y-2 items-start">
                                                 <a href="https://business.facebook.com/adsmanager/manage/accounts?act={{ $account['account_id'] }}" 
                                                    target="_blank"
                                                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
@@ -110,12 +110,18 @@
                                                         class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
                                                         Link Account
                                                     </button>
+                                                    <button 
+                                                        onclick="openLinkNewAccountModal('{{ $account['id'] }}', '{{ $account['name'] }}', '{{ $account['currency'] }}', '{{ $account['timezone_name'] }}')"
+                                                        class="text-green-800 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
+                                                        Link To New Account
+                                                    </button>
                                                 @else
-                                                <button 
+                                                    <button 
                                                         onclick="unlinkAccount('{{ $account['_adaccount']->id }}')"
                                                         class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
                                                         Unlink Account
                                                     </button>
+                                                    
                                                 @endif
                                             </div>
                                         </td>
@@ -141,7 +147,7 @@
                                 @if($hasNext)
                                     <a href="{{ request()->fullUrlWithQuery(['after' => $nextCursor, 'before' => null, 'tab' => $activeTab]) }}" 
                                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center">
-                                        Link
+                                        Next
                                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
@@ -195,6 +201,43 @@
                 <button 
                     type="button"
                     onclick="handleLink()"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                    Link
+                </button>
+            </div>
+        </div>
+    </x-modal>
+
+    <x-modal name="link-new-ad-account" :show="false">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                Link New Ad Account
+            </h2>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Select Organization
+                </label>
+                <select 
+                    id="new-organization-select"
+                    onchange="handleOrganizationChange(this.value)"
+                    class="w-full mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">Select an organization...</option>
+                    
+                </select>
+            </div>
+    
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button 
+                    type="button"
+                    onclick="closeModal()"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition">
+                    Cancel
+                </button>
+                <button 
+                    type="button"
+                    onclick="handleNewLink()"
                     class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
                     Link
                 </button>
@@ -260,6 +303,7 @@
     let selectedOrganizationId = null;
     let selectedAdAccountId = null;
     let selectedAccountCurrency = null;
+    let selectedAccountTimezone = null;
 
     function openLinkAccountModal(accountId, accountName, currency) {
         console.log('Opening modal for account ID:', accountId, 'and name:', accountName);
@@ -268,6 +312,16 @@
         selectedAccountCurrency = currency;
         fetchOrganizations();
         const event = new CustomEvent('open-modal', { detail: 'link-ad-account' });
+        window.dispatchEvent(event);
+    }
+
+    function openLinkNewAccountModal(accountId, accountName, currency, timezone) {
+        selectedAccountId = accountId;
+        selectedAccountName = accountName;
+        selectedAccountCurrency = currency;
+        selectedAccountTimezone = timezone;
+        fetchOrganizations();
+        const event = new CustomEvent('open-modal', { detail: 'link-new-ad-account' });
         window.dispatchEvent(event);
     }
 
@@ -282,6 +336,11 @@
             adAccountSelect.value = '';
             selectedAdAccountId = null;
         }
+
+    }
+
+    function handleNewOrganizationChange(value) {
+        selectedOrganizationId = value;
     }
 
     async function fetchAdAccounts(organizationId) {
@@ -359,6 +418,45 @@
             alert('Failed to link account. Please try again.');
         }
     }
+    async function handleNewLink() {
+        if (!selectedOrganizationId) {
+            alert('Please select an organization');
+            return;
+        }
+
+
+        try {
+            const response = await fetch('/admin/meta/ad-accounts/new-link', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    account_id: selectedAccountId, //meta account id
+                    ad_account_name: selectedAccountName,
+                    currency: selectedAccountCurrency,
+                    business_manager_id:  "{{ $businessManager->id }}",
+                    timezone: selectedAccountTimezone,
+                    organization: selectedOrganizationId
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to link account');
+
+            // Show success message and close modal
+            alert('Account linked successfully');
+            closeModal();
+            
+            // Refresh the page to show updated data
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Error linking account:', error);
+            alert('Failed to link account. Please try again.');
+        }
+    }
 
     // Add event listener for ad account select
     document.getElementById('ad-account-select').addEventListener('change', function(e) {
@@ -380,6 +478,17 @@
     // Update clean up event listener
     window.addEventListener('close-modal', (event) => {
         if (event.detail === 'link-ad-account') {
+            selectedAccountId = null;
+            selectedOrganizationId = null;
+            selectedAdAccountId = null;
+            document.getElementById('organization-select').value = '';
+            document.getElementById('ad-account-select').value = '';
+            document.getElementById('ad-account-select-container').style.display = 'none';
+        }
+    });
+
+    window.addEventListener('close-new-modal', (event) => {
+        if (event.detail === 'link-new-ad-account') {
             selectedAccountId = null;
             selectedOrganizationId = null;
             selectedAdAccountId = null;
@@ -414,6 +523,20 @@
             organizations.forEach(org => {
                 const option = new Option(org.name, org.id);
                 select.add(option);
+            });
+
+            // Get the select element
+            const selectNew = document.getElementById('new-organization-select');
+            
+            // Clear existing options except the first one
+            while (selectNew.options.length > 1) {
+                selectNew.remove(1);
+            }
+
+            // Add new options
+            organizations.forEach(org => {
+                const option = new Option(org.name, org.id);
+                selectNew.add(option);
             });
             
         } catch (error) {

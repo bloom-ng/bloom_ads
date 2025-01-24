@@ -92,6 +92,7 @@ class BusinessManagerController extends Controller
                 'amount_spent' => $account['amount_spent'],
                 'balance' => $account['balance'],
                 'business_name' => $account['business']['name'] ?? null,
+                'timezone_name' => $account['timezone_name'] ?? null,
             ]);
 
             $_adAccounts = AdAccount::whereIn('provider_id', $adAccounts->pluck('id'))->get();
