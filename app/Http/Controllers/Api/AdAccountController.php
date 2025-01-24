@@ -64,25 +64,6 @@ class AdAccountController extends Controller
         }
 
        
-
-        /* 
-            protected $fillable = [
-        'name',
-        'type',
-        'timezone',
-        'currency',
-        'provider',
-        'provider_id',
-        'status',
-        'business_manager_id',
-        'landing_page',
-        'user_id',
-        'organization_id',
-        'provider_bm_id',
-        'provider_account_name'
-    ];
-        */
-
         $organization = Organization::find($validated['organization']);
 
         AdAccount::create([
