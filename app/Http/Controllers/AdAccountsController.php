@@ -203,7 +203,7 @@ class AdAccountsController extends Controller
 
         return view('dashboard.adaccounts.edit', [
             'adAccount' => $adAccount,
-            'currencies' => ['USD', 'NGN']
+            'currencies' => ['USD', 'NGN', 'GBP']
         ]);
     }
 
@@ -221,7 +221,7 @@ class AdAccountsController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|in:meta,google,tiktok',
             'currency' => 'required|in:USD,NGN',
-            'business_manager_id' => 'nullable|string|size:32',
+            'business_manager_id' => 'nullable|string|max:35',
             'landing_page' => 'nullable|url',
         ]);
 
