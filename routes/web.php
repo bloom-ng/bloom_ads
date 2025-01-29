@@ -111,6 +111,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/data/organizations', [ApiOrganizationController::class, 'index']);
     Route::get('/data/organizations/{organization}/ad-accounts', [ApiAdAccountController::class, 'getOrganizationAccounts']);
     Route::post('/meta/ad-accounts/link', [ApiAdAccountController::class, 'linkAccount']);
+    Route::post('/meta/ad-accounts/new-link', [ApiAdAccountController::class, 'linkNewAccount']);
     // API endpoint for updating dark mode preference
 
     Route::post('/update-dark-mode', function (Request $request) {

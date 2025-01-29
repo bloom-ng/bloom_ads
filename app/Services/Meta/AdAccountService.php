@@ -58,7 +58,7 @@ class AdAccountService
 
         $response = Http::get($endpoint, [
             'access_token' => $this->accessToken,
-            'fields' => 'account_status,amount_spent,spend_cap,balance,business,currency,name,owner,id',
+            'fields' => 'account_status,amount_spent,spend_cap,balance,business,currency,name,owner,id,timezone_name',
         ]);
 
         return $this->handleResponse($response);
@@ -69,7 +69,7 @@ class AdAccountService
         $endpoint = "{$this->baseUrl}/{$this->businessId}/owned_ad_accounts";
 
         $params = [
-            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
+            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id,timezone_name',
             'access_token' => $this->accessToken,
             'limit' => $limit
         ];
@@ -102,7 +102,7 @@ class AdAccountService
         $endpoint = "{$this->baseUrl}/{$this->businessId}/client_ad_accounts";
 
         $params = [
-            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id',
+            'fields' => 'account_status,amount_spent,balance,business,currency,name,owner,id,timezone_name',
             'access_token' => $this->accessToken,
             'limit' => $limit
         ];

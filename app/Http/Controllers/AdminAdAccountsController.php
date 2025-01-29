@@ -157,7 +157,8 @@ class AdminAdAccountsController extends Controller
                 'provider' => null,
                 'provider_id' => null,
                 'provider_account_name' => null,
-                'provider_bm_id' => null
+                'provider_bm_id' => null,
+                'status' => AdAccount::STATUS_PENDING
             ]);
 
             return response()->json(['success' => true]);
