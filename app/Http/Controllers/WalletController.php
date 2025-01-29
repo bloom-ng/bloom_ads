@@ -594,83 +594,105 @@ class WalletController extends Controller
         }
     }
 
-    public function withdraw(Request $request, FlutterwaveService $flutterwaveService)
+    public function withdraw(Request $request)
     {
-        $validated = $request->validate([
-            'wallet_id' => 'required|exists:wallets,id',
-            'bank_code' => 'required|string',
-            'account_number' => 'required|string',
-            'amount' => 'required|numeric|min:100',
-        ]);
-
-        $wallet = Wallet::findOrFail($validated['wallet_id']);
-        
-        // Check if user has permission
-        $organization = $wallet->organization;
-        $userRole = $organization->users()->where('user_id', auth()->id())->first()->pivot->role;
-        if (!in_array($userRole, ['owner', 'admin', 'finance'])) {
-            return back()->with('error', 'You do not have permission to withdraw funds.');
-        }
-
-        // Check if wallet has sufficient balance
-        if ($wallet->calculated_balance < $validated['amount']) {
-            return back()->with('error', 'Insufficient wallet balance.');
-        }
-
         try {
+            $validated = $request->validate([
+                'wallet_id' => 'required|exists:wallets,id',
+                'amount' => 'required|numeric|min:0',
+                'bank_code' => 'required|string',
+                'account_number' => 'required|string',
+            ]);
+
             DB::beginTransaction();
+
+            $wallet = Wallet::findOrFail($validated['wallet_id']);
+            
+            // Check if user has permission
+            $organization = $wallet->organization;
+            $userRole = $organization->users()->where('user_id', auth()->id())->first()->pivot->role;
+            if (!in_array($userRole, ['owner', 'admin', 'finance'])) {
+                throw new \Exception('You do not have permission to withdraw funds.');
+            }
+
+            $balance = $wallet->getBalance();
+            if ($balance < $validated['amount']) {
+                throw new \Exception("Insufficient wallet balance. Available: {$balance}, Requested: {$validated['amount']}");
+            }
+
+            // Verify bank account first
+            $flutterwaveService = new FlutterwaveService();
+            $accountVerification = $flutterwaveService->verifyBankAccount(
+                $validated['account_number'],
+                $validated['bank_code']
+            );
+
+            if ($accountVerification['status'] !== 'success') {
+                throw new \Exception($accountVerification['message']);
+            }
+
+            $accountName = $accountVerification['data']['account_name'];
 
             // Create a pending withdrawal transaction
             $reference = 'WD_' . Str::random(16);
             $transaction = $wallet->transactions()->create([
-                'type' => 'withdrawal',
-                'amount' => -$validated['amount'], // Negative amount for withdrawal
+                'user_id' => auth()->id(),
+                'amount' => $validated['amount'],
+                'type' => 'debit',
                 'status' => 'pending',
+                'description' => "Withdrawal to {$accountName}",
                 'reference' => $reference,
                 'meta' => [
                     'bank_code' => $validated['bank_code'],
                     'account_number' => $validated['account_number'],
+                    'account_name' => $accountName,
+                    'withdrawal_type' => 'bank_transfer'
                 ]
             ]);
 
-            // Initiate transfer via Flutterwave
-            $response = $flutterwaveService->initiateTransfer([
-                'bank_code' => $validated['bank_code'],
+            // Initiate transfer
+            $data = [
                 'account_number' => $validated['account_number'],
+                'bank_code' => $validated['bank_code'],
                 'amount' => $validated['amount'],
                 'currency' => $wallet->currency,
                 'reference' => $reference,
-                'callback_url' => route('wallet.withdrawal.callback'),
-            ]);
-
-            if (!isset($response['status']) || $response['status'] !== 'success') {
-                throw new \Exception('Failed to initiate transfer: ' . ($response['message'] ?? 'Unknown error'));
-            }
+                'narration' => "Withdrawal to {$accountName}",
+                'callback_url' => route('wallet.withdrawal.callback')
+            ];
+            $response = $flutterwaveService->initiateTransfer($data);
+            
+            
 
             // Update transaction with transfer details
             $transaction->update([
+                'status' => 'processing',
                 'provider_reference' => $response['data']['id'] ?? null,
                 'meta' => array_merge($transaction->meta, [
                     'transfer_id' => $response['data']['id'] ?? null,
-                    'transfer_status' => $response['data']['status'] ?? 'pending'
+                    'transfer_status' => $response['data']['status'] ?? 'pending',
+                    'bank_name' => $response['data']['bank_name'] ?? null,
+                    'fee' => $response['data']['fee'] ?? 0
                 ])
             ]);
 
             DB::commit();
+            return back()->with('success', 'Withdrawal initiated successfully. The funds will be credited to your account shortly.');
 
-            // Notify user
-            $user = auth()->user();
-            $user->notify(new WalletNotification(
-                'Withdrawal Initiated',
-                "Your withdrawal of {$wallet->currency} {$validated['amount']} has been initiated.",
-                'success'
-            ));
-
-            return back()->with('success', 'Withdrawal initiated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Withdrawal failed: ' . $e->getMessage());
-            return back()->with('error', 'Failed to process withdrawal. Please try again.');
+            Log::error('Withdrawal failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $validated ?? null,
+                'wallet_info' => isset($wallet) ? [
+                    'id' => $wallet->id,
+                    'currency' => $wallet->currency,
+                    'balance' => $wallet->getBalance()
+                ] : null
+            ]);
+            
+            return back()->with('error', $e->getMessage());
         }
     }
 

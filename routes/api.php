@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AdAccountController;
 use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\FlutterwaveWebhookController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,3 +24,7 @@ Route::middleware('auth:admin')->group(function () {
 // Route::middleware('auth')->group(function () {
     Route::get('/ad-accounts/{adAccount}/spend-cap', [AdAccountController::class, 'getSpendCap'])->name('api.ad-accounts.spend-cap');
 // }); 
+
+// Flutterwave Webhooks
+Route::post('/webhooks/flutterwave/transfer', [FlutterwaveWebhookController::class, 'handleTransferWebhook'])
+    ->name('webhooks.flutterwave.transfer');

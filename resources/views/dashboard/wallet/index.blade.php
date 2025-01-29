@@ -58,22 +58,14 @@
                         <!-- Existing Wallets -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @forelse ($organization->wallets as $wallet)
-                                <div class="bg-white border rounded-lg shadow-sm p-6">
-                                    <div class="flex justify-between items-center">
-                                        <h3 class="text-lg font-semibold">{{ $wallet->currency }} Wallet</h3>
-                                        <span
-                                            class="text-2xl font-bold">{{ number_format($wallet->calculated_balance, 2) }}</span>
-                                    </div>
-
-                                    <div class="mt-4 space-y-2">
-                                        <!-- Fund Button - For all wallets -->
-                                        <button
-                                            onclick="openFundModal('{{ $wallet->id }}', '{{ $wallet->currency }}')"
-                                            class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                            Fund Wallet
-                                        </button>
-                                    </div>
-                                </div>
+                                <x-card 
+                                    :wallet-id="$wallet->id"
+                                    :icon-src="asset('images/naira_icon.png')"
+                                    :currency="$wallet->currency . ' Wallet'"
+                                    :balance="$wallet->balance"
+                                    :button-text="'Fund Wallet'"
+                                    :button-action="'openFundModal'"
+                                />
                             @empty
                                 <p class="text-gray-500">No wallets found.</p>
                             @endforelse
@@ -734,6 +726,20 @@
             const modal = document.getElementById('withdrawModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+
+            // Find the NGN wallet and get its balance
+            const ngnWallet = Array.from(document.querySelectorAll('.bg-white.border.rounded-lg.shadow-sm.p-6')).find(
+                wallet => wallet.querySelector('h3').textContent.trim() === 'NGN Wallet'
+            );
+
+            if (ngnWallet) {
+                const balanceText = ngnWallet.querySelector('span.text-2xl.font-bold').textContent;
+                // Remove commas and convert to number
+                const balance = parseFloat(balanceText.replace(/,/g, ''));
+                document.getElementById('withdrawAvailableBalance').textContent = balanceText;
+                document.getElementById('withdrawWalletId').value = ngnWallet.dataset.walletId;
+            }
+
             loadBanks();
         }
 
@@ -743,16 +749,6 @@
             modal.classList.add('hidden');
             document.getElementById('withdrawForm').reset();
         }
-
-        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-            const amount = parseFloat(document.getElementById('withdrawAmount').value);
-            const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g, ''));
-            
-            if (amount > balance) {
-                e.preventDefault();
-                alert('Withdrawal amount cannot exceed available balance');
-            }
-        });
 
         let verifyAccountTimeout;
 
@@ -768,7 +764,7 @@
 
             try {
                 accountNameDisplay.textContent = 'Verifying account...';
-                
+
                 const response = await fetch('{{ route('wallet.verify.account') }}', {
                     method: 'POST',
                     headers: {
@@ -782,17 +778,19 @@
                 });
 
                 const data = await response.json();
+                console.log('Verification response:', data);
 
                 if (data.status === 'success' && data.data) {
                     accountNameDisplay.textContent = data.data.account_name;
                     accountNameDisplay.classList.remove('text-red-500');
                     accountNameDisplay.classList.add('text-green-500');
                 } else {
-                    accountNameDisplay.textContent = 'Could not verify account';
+                    accountNameDisplay.textContent = data.message || 'Could not verify account';
                     accountNameDisplay.classList.remove('text-green-500');
                     accountNameDisplay.classList.add('text-red-500');
                 }
             } catch (error) {
+                console.error('Error:', error);
                 accountNameDisplay.textContent = 'Error verifying account';
                 accountNameDisplay.classList.remove('text-green-500');
                 accountNameDisplay.classList.add('text-red-500');
@@ -809,6 +807,16 @@
             const accountNumber = document.getElementById('account_number').value;
             if (accountNumber) {
                 verifyBankAccount();
+            }
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g, ''));
+            
+            if (amount > balance) {
+                e.preventDefault();
+                alert('Withdrawal amount cannot exceed available balance');
             }
         });
     </script>

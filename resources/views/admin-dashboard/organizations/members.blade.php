@@ -31,6 +31,7 @@
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                 <th class="py-3 px-6 text-left">Name</th>
                                 <th class="py-3 px-6 text-left">Email</th>
+                                <th class="py-3 px-6 text-left">User Type</th>
                                 <th class="py-3 px-6 text-center">Role</th>
                                 <th class="py-3 px-6 text-center">Joined At</th>
                             </tr>
@@ -40,6 +41,7 @@
                             <tr class="border-b border-gray-200 hover:bg-gray-100">
                                 <td class="py-3 px-6 text-left">{{ $member->name }}</td>
                                 <td class="py-3 px-6 text-left">{{ $member->email }}</td>
+                                <td class="py-3 px-6 text-left">{{ ucwords(str_replace('_', ' ', $member->user_type)) }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <span class="bg-blue-200 text-blue-600 py-1 px-3 rounded-full text-xs">
                                         {{ ucfirst($member->pivot->role) }}

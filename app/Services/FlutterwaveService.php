@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Wallet;
+use Illuminate\Support\Str;
 
 class FlutterwaveService
 {
@@ -90,27 +91,49 @@ class FlutterwaveService
 
     /**
      * Initiate a transfer to a bank account
+     * 
+     * @param array $data Transfer details including account_number, bank_code, amount, and currency
+     * @return array Response from Flutterwave
+     * @throws \Exception
      */
     public function initiateTransfer(array $data)
     {
-        try {
+        try {  
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/transfers', [
-                'account_bank' => $data['bank_code'],
                 'account_number' => $data['account_number'],
+                'account_bank' => $data['bank_code'],
                 'amount' => $data['amount'],
                 'currency' => $data['currency'],
-                'narration' => $data['narration'] ?? 'Withdrawal from wallet',
-                'reference' => $data['reference'],
-                'callback_url' => $data['callback_url'],
-                'debit_currency' => $data['currency']
+                'narration' => $data['narration'] ?? 'Transfer from Bloom Ads',
+                'reference' => $data['reference'] ?? Str::random(16),
+                'callback_url' => $data['callback_url'] ?? null
+            ]);
+            Log::info('Flutterwave transfer response:', [
+                'status_code' => $response->status(),
+                'body' => json_encode($response->json())
             ]);
 
-            return $response->json();
+            if (!$response->successful()) {
+                throw new \Exception($response->json()['message'] ?? 'Transfer failed1');
+            }
+
+            $responseData = $response->json();
+            if ($responseData['status'] !== 'success') {
+                throw new \Exception($responseData['message'] ?? 'Transfer failed2');
+            }
+
+            return $responseData;
         } catch (\Exception $e) {
-            Log::error('Flutterwave transfer initiation failed: ' . $e->getMessage());
+            Log::error('Transfer failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            Log::info('Headers sent to Flutterwave:', [
+                'Authorization' => 'Bearer ' . $this->secretKey,
+            ]);
             throw $e;
         }
     }
@@ -146,11 +169,32 @@ class FlutterwaveService
                 'account_number' => $accountNumber,
                 'account_bank' => $bankCode
             ]);
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['status'] === 'success') {
+                    return [
+                        'status' => 'success',
+                        'data' => [
+                            'account_name' => $data['data']['account_name'],
+                            'account_number' => $data['data']['account_number']
+                        ]
+                    ];
+                }
+            }
 
-            return $response->json();
+            // Log the error response for debugging
+            Log::error('Flutterwave account verification failed. Response: ' . json_encode($response->json()));
+
+            return [
+                'status' => 'error',
+                'message' => $response->json()['message'] ?? 'Could not verify account'
+            ];
         } catch (\Exception $e) {
-            Log::error('Flutterwave account verification failed: ' . $e->getMessage());
-            throw $e;
+            Log::error('Flutterwave bank account verification failed: ' . $e->getMessage());
+            return [
+                'status' => 'error',
+                'message' => 'Failed to verify account'
+            ];
         }
     }
 }
