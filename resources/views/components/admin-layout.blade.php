@@ -120,12 +120,29 @@
             color: #F0F0F0;
         }
 
+        .btn{
+            background: #000080;
+            border-radius: 0.75rem;
+            font-size: 18px;
+            color: white;
+        }
+
+        .btn-primary{
+            background: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #000080;
+            font-size: 18px;
+            color: #000080;
+        }
+
+        .btn-search{
+            background: #000080;
+            font-size: 18px;
+            color: white;
+        }
         </style>
 
    <!-- Add Alpine.js -->
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-<!-- Initialize Alpine.js store -->
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <!-- Initialize Alpine.js store -->

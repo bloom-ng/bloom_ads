@@ -56,15 +56,35 @@
 
         .card {
             background: #F1F1FF;
+            border-radius: 20px;
         }
 
         .card-btn {
             background: #000080;
+            border-radius: 9999px;
+            color: white;
+            font-size: 0.75rem;
         }
 
         .card-btn:hover {
             background: #000080;
         }
+
+        .btn{
+            background: #000080;
+            border-radius: 0.75rem;
+            font-size: 18px;
+            color: white;
+        }
+
+        .btn-primary{
+            background: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #000080;
+            font-size: 18px;
+            color: #000080;
+        }
+
     </style>
 </head>
 

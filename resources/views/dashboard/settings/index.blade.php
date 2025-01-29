@@ -72,7 +72,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                    <button type="submit" class="btn px-6 py-2">Save Settings</button>
                 </form>
             </div>
         </main>

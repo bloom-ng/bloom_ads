@@ -1,4 +1,4 @@
-<x-user-layout page="invites">
+<x-user-layout page="organizations">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <h1 class="text-3xl text-black pb-6">Business Invites</h1>
@@ -36,7 +36,7 @@
                             </div>
                             <div class="flex items-center justify-end">
                                 <button type="submit"
-                                    class="bg-[#F48857] hover:bg-[#F48857]/90 text-black border-orange-400 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                    class="bg-[#F48857] btn hover:bg-[#F48857]/90 text-black border-orange-400 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                     Send Invitation
                                 </button>
                             </div>

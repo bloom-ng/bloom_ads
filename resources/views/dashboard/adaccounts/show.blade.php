@@ -1,13 +1,13 @@
 <x-user-layout page="adaccounts">
     <div class="mt-2 space-y-6 overflow-y-scroll">
         <!-- Action Buttons -->
-        <div class="flex space-x-4">
+        <div class="flex space-x-4 pl-3">
             <button onclick="openDepositModal()"
-                class="bg-[#F48857] text-black px-6 py-3 rounded-md hover:bg-[#F48857]/80 font-medium">
+                class="btn-primary px-6 py-3 rounded-md ">
                 Deposit Funds
             </button>
             <button onclick="openWithdrawModal()"
-                class="bg-white text-black border border-[#F48857] px-6 py-3 rounded-md hover:bg-gray-50 font-medium">
+                class="btn px-6 py-3 rounded-md">
                 Withdraw Funds
             </button>
         </div>
@@ -87,7 +87,7 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                            class="w-full btn bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
                             Confirm Deposit
                         </button>
                     </div>
@@ -169,7 +169,7 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                            class="w-full btn bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
                             Confirm Withdrawal
                         </button>
                     </div>

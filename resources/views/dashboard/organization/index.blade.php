@@ -16,7 +16,7 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach ($organizations as $org)
-                                <div class="bg-white border rounded-lg shadow-sm p-6">
+                                <div class="card border rounded-lg shadow-sm p-6">
                                     <div class="flex justify-between items-start mb-4">
                                         <div>
                                             <h3 class="text-xl font-semibold text-gray-900">{{ $org->name }}</h3>
@@ -27,7 +27,7 @@
                                     <div class="flex justify-end mt-4">
                                         @if (in_array($org->pivot->role, ['owner', 'admin']))
                                             <a href="{{ route('organization.invites', $org) }}"
-                                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                                class="card-btn font-bold py-2 px-5  focus:outline-none focus:shadow-outline">
                                                 Manage
                                             </a>
                                         @endif

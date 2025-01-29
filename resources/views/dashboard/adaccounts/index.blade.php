@@ -23,7 +23,7 @@
         <div class="flex justify-between items-center">
             <h3 class="text-gray-700 dark:text-gray-300 text-3xl font-medium">Ad Accounts</h3>
             <a href="{{ route('adaccounts.create') }}"
-                class="px-4 py-2 bg-[#F48857] text-gray-700 rounded-md hover:bg-[#F48857]/80">
+                class="px-4 py-2 btn rounded-md hover:bg-[#F48857]/80">
                 Create Ad Account
             </a>
         </div>
@@ -62,7 +62,7 @@
                                     {{ $account->status }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                     <a href="{{ route('adaccounts.show', $account->id) }}"
-                                        class="text-[#F48857] hover:text-[#F48857]/80">
+                                        class=" text-green-600 hover:text-green-800">
                                         Manage
                                     </a>
 

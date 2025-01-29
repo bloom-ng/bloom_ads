@@ -12,7 +12,7 @@
                                    value="{{ request('search') }}"
                                    class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                             <button type="submit" 
-                                    class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-r">
+                                    class="btn-search hover:bg-blue-700 text-white px-4 py-2">
                                 Search
                             </button>
                         </form>
@@ -72,7 +72,7 @@
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex justify-center space-x-4">
                                             <a href="{{ route('admin.adaccounts.show', $adAccount->id) }}"
-                                                class="text-blue-500 hover:text-blue-700">
+                                                class="text-green-600 hover:text-green-800">
                                                 View
                                             </a>
                                             <a href="{{ route('admin.adaccounts.edit', $adAccount->id) }}"

@@ -4,7 +4,7 @@
             <div class="flex justify-between items-center pb-6">
                 <h1 class="text-3xl text-black dark:text-white">Business Managers</h1>
                 <a href="{{ route('admin.business-managers.create') }}" 
-                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                   class="btn hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Add New Manager
                 </a>
             </div>

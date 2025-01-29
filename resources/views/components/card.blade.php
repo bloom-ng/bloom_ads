@@ -23,7 +23,7 @@
         <h3 class="text-xl font-bold">{{ $currency }}</h3>
         @endif
         @if($balance !== null)
-        <span class="text-2xl font-bold">{{ is_numeric($balance) ? number_format($balance, 2) : $balance }}</span>
+        <span class="text-2xl font-bold">{{ is_numeric($balance) ? ($currency === 'Total Organizations' ? number_format($balance) : number_format($balance, 2)) : $balance }}</span>
         @endif
     </div>
     @if($buttonText && $buttonAction)
