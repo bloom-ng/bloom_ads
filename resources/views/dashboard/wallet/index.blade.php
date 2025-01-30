@@ -203,7 +203,7 @@
                             </button>
                         </form>
 
-                        <!-- Paystack Button -->
+                        {{-- <!-- Paystack Button -->
                         <form action="{{ route('wallet.fund.paystack') }}" method="POST" id="paystackForm">
                             @csrf
                             <input type="hidden" name="wallet_id" id="paystackWalletId">
@@ -214,7 +214,7 @@
                                 class="w-full bg-[#0BA4DB] hover:bg-[#0BA4DB]/90 text-black font-bold py-2 px-4 rounded">
                                 Pay with Paystack
                             </button>
-                        </form>
+                        </form> --}}
                     </div>
 
                     <!-- Message for foreign currency high amounts -->
@@ -395,15 +395,15 @@
             document.getElementById('flutterwaveForm').submit();
         }
 
-        function submitPaystackPayment() {
-            const amount = document.getElementById('fundAmount').value;
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid amount');
-                return;
-            }
-            document.getElementById('paystackAmount').value = amount;
-            document.getElementById('paystackForm').submit();
-        }
+        // function submitPaystackPayment() {
+        //     const amount = document.getElementById('fundAmount').value;
+        //     if (!amount || amount <= 0) {
+        //         alert('Please enter a valid amount');
+        //         return;
+        //     }
+        //     document.getElementById('paystackAmount').value = amount;
+        //     document.getElementById('paystackForm').submit();
+        // }
 
         function openFundModal(walletId, currency) {
             // Reset the amount input
@@ -413,9 +413,9 @@
             document.getElementById('flutterwaveWalletId').value = walletId;
             document.getElementById('flutterwaveWalletCurrency').value = currency;
 
-            // Update Paystack form fields
-            document.getElementById('paystackWalletId').value = walletId;
-            document.getElementById('paystackWalletCurrency').value = currency;
+            // // Update Paystack form fields
+            // document.getElementById('paystackWalletId').value = walletId;
+            // document.getElementById('paystackWalletCurrency').value = currency;
 
             // Update Invoice form fields
             document.getElementById('invoiceWalletId').value = walletId;
@@ -484,7 +484,7 @@
                 }
                 // Update payment form amounts
                 document.getElementById('flutterwaveAmount').value = amount;
-                document.getElementById('paystackAmount').value = amount;
+                // document.getElementById('paystackAmount').value = amount;
             }
 
             if (currency === 'NGN') {
@@ -593,11 +593,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                    <div class="border-b pb-4">
-                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                    </div>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                                            <div class="border-b pb-4">
+                                                                                                                                                                                                <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
