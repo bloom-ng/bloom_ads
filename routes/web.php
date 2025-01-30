@@ -28,6 +28,7 @@ use Illuminate\Foundation\Auth\User;
 use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +63,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/wallets/{wallet}/credit', [AdminWalletController::class, 'credit'])->name('wallets.credit');
     Route::post('/wallets/{wallet}/debit', [AdminWalletController::class, 'debit'])->name('wallets.debit');
     Route::get('/wallets/{wallet}/transactions', [AdminWalletController::class, 'transactions'])->name('wallets.transactions');
-   
+
     Route::get('/adaccounts', [AdminAdAccountsController::class, 'index'])->name('adaccounts.index');
     Route::get('/adaccounts/{adAccount}/show', [AdminAdAccountsController::class, 'show'])->name('adaccounts.show');
     Route::get('/adaccounts/{adAccount}/edit', [AdminAdAccountsController::class, 'edit'])->name('adaccounts.edit');
@@ -117,7 +118,10 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/update-dark-mode', function (Request $request) {
         $request->validate(['dark_mode' => 'required|boolean']);
         $user = Auth::user(); // since there's only one admin
-        $user->update(['dark_mode' => $request->dark_mode]);
+        if ($user) {
+            $user->dark_mode = $request->dark_mode;
+            $user->save();
+        }
 
         return response()->json(['success' => true]);
     });
@@ -315,7 +319,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/wallet/banks', [WalletController::class, 'getBanks'])->name('wallet.banks');
     Route::post('/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
-    Route::post('/wallet/withdrawal/callback', [WalletController::class, 'withdrawalCallback'])->name('wallet.withdrawal.callback');
     Route::post('/wallet/verify-account', [WalletController::class, 'verifyBankAccount'])->name('wallet.verify.account');
 });
 
@@ -340,3 +343,5 @@ Route::middleware('web')->group(function () {
     })->name('2fa.verify');
     Route::post('2fa/verify', [SignupController::class, 'verify2fa'])->name('2fa.verify.post');
 });
+
+Route::post('/wallet/withdrawal/callback', [WalletController::class, 'withdrawalCallback'])->name('wallet.withdrawal.callback');

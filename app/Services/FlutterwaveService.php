@@ -85,8 +85,12 @@ class FlutterwaveService
      */
     public function verifyWebhookSignature($signature, $payload)
     {
-        $expectedSignature = hash_hmac('sha256', json_encode($payload), $this->secretKey);
-        return hash_equals($signature, $expectedSignature);
+        if (!$signature) {
+            return false;
+        }
+
+        $computedSignature = hash_hmac('sha256', $payload, $this->secretKey);
+        return hash_equals($signature, $computedSignature);
     }
 
     /**
@@ -98,41 +102,41 @@ class FlutterwaveService
      */
     public function initiateTransfer(array $data)
     {
-        try {  
+        try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/transfers', [
-                'account_number' => $data['account_number'],
                 'account_bank' => $data['bank_code'],
+                'account_number' => $data['account_number'],
                 'amount' => $data['amount'],
-                'currency' => $data['currency'],
-                'narration' => $data['narration'] ?? 'Transfer from Bloom Ads',
-                'reference' => $data['reference'] ?? Str::random(16),
-                'callback_url' => $data['callback_url'] ?? null
+                'currency' => $data['currency'] ?? 'NGN',
+                'narration' => $data['narration'] ?? 'Transfer from Billing',
+                'reference' => $data['reference'] ?? 'TRF-' . uniqid(),
+                'callback_url' => $data['callback_url'] ?? null,
+                'debit_currency' => $data['debit_currency'] ?? 'NGN'
             ]);
+
+            // Log the response for debugging
             Log::info('Flutterwave transfer response:', [
                 'status_code' => $response->status(),
-                'body' => json_encode($response->json())
+                'body' => $response->json()
             ]);
 
             if (!$response->successful()) {
-                throw new \Exception($response->json()['message'] ?? 'Transfer failed1');
+                throw new \Exception($response->json()['message'] ?? 'Transfer failed');
             }
 
             $responseData = $response->json();
             if ($responseData['status'] !== 'success') {
-                throw new \Exception($responseData['message'] ?? 'Transfer failed2');
+                throw new \Exception($responseData['message'] ?? 'Transfer failed');
             }
 
             return $responseData;
         } catch (\Exception $e) {
-            Log::error('Transfer failed:', [
+            Log::error('Flutterwave transfer failed:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
-            Log::info('Headers sent to Flutterwave:', [
-                'Authorization' => 'Bearer ' . $this->secretKey,
             ]);
             throw $e;
         }
@@ -195,6 +199,27 @@ class FlutterwaveService
                 'status' => 'error',
                 'message' => 'Failed to verify account'
             ];
+        }
+    }
+
+    /**
+     * Get transfer status
+     * 
+     * @param string $transferId
+     * @return array
+     */
+    public function getTransferStatus($transferId)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->get($this->baseUrl . '/transfers/' . $transferId);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Failed to get transfer status: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

@@ -38,6 +38,7 @@
                                         </div>
                                     </div>
                                 </form>
+
                                 <!-- Add Global Convert Button -->
                                 <div class="mt-7">
                                     <button onclick="openTransferModal()"
@@ -45,6 +46,7 @@
                                         Convert Currency
                                     </button>
                                 </div>
+
                                 <div class="mt-7">
                                     <button onclick="openWithdrawModal()"
                                         class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -54,24 +56,17 @@
                             </div>
                         @endif
 
-                        
                         <!-- Existing Wallets -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @forelse ($organization->wallets as $wallet)
-                                <x-card 
-                                    :wallet-id="$wallet->id"
-                                    :icon-src="asset('images/naira_icon.png')"
-                                    :currency="$wallet->currency . ' Wallet'"
-                                    :balance="$wallet->balance"
-                                    :button-text="'Fund Wallet'"
-                                    :button-action="'openFundModal'"
-                                />
+                                <x-card :wallet-id="$wallet->id" :icon-src="asset($wallet->currency === 'NGN' ? 'images/naira_icon.svg' : ($wallet->currency === 'USD' ? 'images/usd_icon.svg' : 'images/gbp_icon.svg'))" :currency="$wallet->currency" :balance="$wallet->getBalance()"
+                                    :button-text="'Fund Wallet'" :button-action="'openFundModal'" />
                             @empty
                                 <p class="text-gray-500">No wallets found.</p>
                             @endforelse
                         </div>
 
-                        
+
 
                         <!-- Transaction History Section -->
                         <div class="mt-8">
@@ -105,7 +100,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                        {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                    {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                         {{ ucfirst($transaction->type) }}
                                                     </span>
                                                 </td>
@@ -121,7 +116,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                        {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                    {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                         {{ ucfirst($transaction->status) }}
                                                     </span>
                                                 </td>
@@ -316,13 +311,14 @@
     </div>
 
     <!-- Withdraw Modal -->
-    <div id="withdrawModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div id="withdrawModal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 overflow-auto">
         <div class="bg-white p-8 rounded-lg max-w-md w-full">
             <h2 class="text-2xl font-bold mb-4">Withdraw Funds</h2>
             <form action="{{ route('wallet.withdraw') }}" method="POST" class="space-y-4" id="withdrawForm">
                 @csrf
                 <input type="hidden" name="wallet_id" id="withdrawWalletId">
-                
+
                 <div>
                     <label for="bank_code" class="block text-sm font-medium text-gray-700 mb-2">Select Bank</label>
                     <select name="bank_code" id="bank_code" required
@@ -332,7 +328,8 @@
                 </div>
 
                 <div>
-                    <label for="account_number" class="block text-sm font-medium text-gray-700 mb-2">Account Number</label>
+                    <label for="account_number" class="block text-sm font-medium text-gray-700 mb-2">Account
+                        Number</label>
                     <input type="text" name="account_number" id="account_number" required
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
                         placeholder="Enter account number">
@@ -342,11 +339,13 @@
                 <div>
                     <label for="withdrawAmount" class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="number" name="amount" id="withdrawAmount" required min="100" step="0.01"
+                        <input type="number" name="amount" id="withdrawAmount" required min="100"
+                            step="0.01"
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
                             placeholder="Enter amount">
                     </div>
-                    <p class="mt-1 text-sm text-gray-500">Available balance: <span id="withdrawAvailableBalance">0.00</span></p>
+                    <p class="mt-1 text-sm text-gray-500">Available balance: <span
+                            id="withdrawAvailableBalance">0.00</span></p>
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
@@ -364,7 +363,8 @@
     </div>
 
     <!-- Receipt Modal -->
-    <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+    <div id="receiptModal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center overflow-auto">
         <div class="bg-white p-8 rounded-lg max-w-2xl w-full">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold">Transaction Receipt</h2>
@@ -593,11 +593,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                    <div class="border-b pb-4">
-                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                    </div>
-                                                                                ` : ''}
+                                                                                                                                                                    <div class="border-b pb-4">
+                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                    </div>
+                                                                                                                                                                ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
@@ -705,11 +705,11 @@
             try {
                 const response = await fetch('{{ route('wallet.banks') }}');
                 const data = await response.json();
-                
+
                 if (data.data) {
                     const bankSelect = document.getElementById('bank_code');
                     bankSelect.innerHTML = '<option value="">Select Bank</option>';
-                    
+
                     data.data.forEach(bank => {
                         const option = document.createElement('option');
                         option.value = bank.code;
@@ -723,23 +723,25 @@
         }
 
         function openWithdrawModal() {
+            // Find the NGN wallet from the organization's wallets
+            const ngnWallet = @json($organization->wallets->where('currency', 'NGN')->first());
+
+            if (!ngnWallet) {
+                alert('NGN wallet is required for withdrawals');
+                return;
+            }
+
+            // Set the wallet ID and display the balance
+            document.getElementById('withdrawWalletId').value = ngnWallet.id;
+            document.getElementById('withdrawAvailableBalance').textContent =
+                `NGN ${parseFloat(ngnWallet.calculated_balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            // Show the modal
             const modal = document.getElementById('withdrawModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            // Find the NGN wallet and get its balance
-            const ngnWallet = Array.from(document.querySelectorAll('.bg-white.border.rounded-lg.shadow-sm.p-6')).find(
-                wallet => wallet.querySelector('h3').textContent.trim() === 'NGN Wallet'
-            );
-
-            if (ngnWallet) {
-                const balanceText = ngnWallet.querySelector('span.text-2xl.font-bold').textContent;
-                // Remove commas and convert to number
-                const balance = parseFloat(balanceText.replace(/,/g, ''));
-                document.getElementById('withdrawAvailableBalance').textContent = balanceText;
-                document.getElementById('withdrawWalletId').value = ngnWallet.dataset.walletId;
-            }
-
+            // Load banks
             loadBanks();
         }
 
@@ -756,7 +758,7 @@
             const accountNumber = document.getElementById('account_number').value;
             const bankCode = document.getElementById('bank_code').value;
             const accountNameDisplay = document.getElementById('account_name_display');
-            
+
             if (!accountNumber || !bankCode || accountNumber.length < 10) {
                 accountNameDisplay.textContent = '';
                 return;
@@ -812,8 +814,9 @@
 
         document.getElementById('withdrawForm').addEventListener('submit', function(e) {
             const amount = parseFloat(document.getElementById('withdrawAmount').value);
-            const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g, ''));
-            
+            const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g,
+                ''));
+
             if (amount > balance) {
                 e.preventDefault();
                 alert('Withdrawal amount cannot exceed available balance');
