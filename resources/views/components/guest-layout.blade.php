@@ -69,7 +69,7 @@
     <!-- desktop header -->
     <header class="md:flex flex-row w-full justify-between items-center bg-[#000031] py-8 px-16 hidden">
         <a href="/" class="w-1/5">
-            <img src="/images/billings2 1.png" alt="" class="w-[107px] h-[35px]">
+            <img src="/images/billingsIcon.png" alt="" class="w-[107px] h-[35px]">
         </a>
 
         @if (!$isAuth)
@@ -84,7 +84,7 @@
 
     <!-- mobile header -->
     <header class="flex flex-row w-full bg-[#000031] justify-between items-center px-8 py-5 md:hidden">
-        <a href="/"><img src="/images/billings2 1.png" alt="" class="w-[107px] h-[35px]"></a>
+        <a href="/"><img src="/images/billingsIcon.png" alt="" class="w-[107px] h-[35px]"></a>
 
         <!-- <button id="menu-btn" class="text-gray-700 focus:outline-none">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
