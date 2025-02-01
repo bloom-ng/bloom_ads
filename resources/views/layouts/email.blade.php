@@ -53,9 +53,7 @@
 
 <body>
     <div class="container">
-        <div class="banner">
-            <img src="{{ asset('images/email_banner.jpg') }}" alt="{{ config('app.name') }} Banner" style="width: 100%;">
-        </div>
+        <img src="{{ asset('images/email_banner.jpg') }}" alt="{{ config('app.name') }} Banner" style="width: 100%;">
 
         <div class="content">
             @yield('content')
