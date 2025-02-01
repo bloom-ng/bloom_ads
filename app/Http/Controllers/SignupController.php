@@ -188,21 +188,21 @@ class SignupController extends Controller
                         'oauth_provider' => $provider,
                     ]);
 
-                    // // Create organization
-                    // $organization = Organization::create([
-                    //     'name' => $user->name . "'s Organization",
-                    //     'user_id' => $user->id
-                    // ]);
+                    // Create organization
+                    $organization = Organization::create([
+                        'name' => $user->name . "'s Organization",
+                        'user_id' => $user->id
+                    ]);
 
-                    // // Create user settings
-                    // UserSettings::create([
-                    //     'user_id' => $user->id,
-                    //     'current_organization_id' => $organization->id,
-                    //     'preferences' => UserSettings::getPreferences()
-                    // ]);
+                    // Create user settings
+                    UserSettings::create([
+                        'user_id' => $user->id,
+                        'current_organization_id' => $organization->id,
+                        'preferences' => UserSettings::getPreferences()
+                    ]);
 
-                    // // Attach user to organization with 'owner' role
-                    // $user->organizations()->attach($organization->id, ['role' => 'owner']);
+                    // Attach user to organization with 'owner' role
+                    $user->organizations()->attach($organization->id, ['role' => 'owner']);
 
                     DB::commit();
                 } catch (\Exception $e) {

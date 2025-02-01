@@ -543,14 +543,14 @@ class WalletController extends Controller
 
     public function downloadInvoice(Request $request)
     {
-        // Similar logic to generateInvoice but return PDF
+        // Validate request
         $validated = $request->validate([
             'amount' => 'required|numeric',
             'currency' => 'required|in:NGN,USD,GBP'
         ]);
 
         // Get current organization
-        $organization = Organization::findOrFail(auth()->user()->settings->current_organization_id);
+        $organization = Organization::findOrFail(Auth::user()->settings->current_organization_id);
 
         // Get rates from admin settings
         $vatRate = AdminSetting::where('key', 'ad_account_vat')->first()->value ?? 7.5;
@@ -566,7 +566,8 @@ class WalletController extends Controller
         $serviceFee = ($validated['amount'] * $serviceFeeRate) / 100;
         $total = $validated['amount'] + $vat + $serviceFee;
 
-        $pdf = PDF::loadView('dashboard.wallet.invoice-pdf', [
+        // Return view instead of PDF download
+        return view('dashboard.wallet.invoice-pdf', [
             'organization' => $organization,
             'amount' => $validated['amount'],
             'currency' => $validated['currency'],
@@ -578,10 +579,9 @@ class WalletController extends Controller
             'invoiceNumber' => 'INV-' . strtoupper(Str::random(8)),
             'accountName' => $accountName,
             'bankName' => $bankName,
-            'accountNumber' => $accountNumber
+            'accountNumber' => $accountNumber,
+            'description' => 'Wallet Funding'
         ]);
-
-        return $pdf->download('invoice.pdf');
     }
 
     public function getBanks(FlutterwaveService $flutterwaveService)
