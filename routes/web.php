@@ -385,9 +385,22 @@ Route::get('/test-mail/{type?}', function ($type = 'all') {
                     'action_text' => 'View Ad Account',
                     'action_url' => url('/dashboard/adaccounts/1')
                 ]);
+                break;
 
+                // Add new test case for wallet funding
+            case 'wallet-funding':
+                $notification = new \App\Notifications\WalletNotification([
+                    'subject' => 'Wallet Funded Successfully',
+                    'message' => "Your wallet has been funded with USD 1,000.00 via Flutterwave",
+                    'type' => 'wallet_funded',
+                    'amount' => 1000,
+                    'currency' => 'USD',
+                    'wallet_id' => 1,
+                    // 'action_text' => 'View Wallet',
+                    // 'action_url' => url('/dashboard/wallet')
+                ]);
                 Notification::route('mail', $testEmail)->notify($notification);
-                $results[] = 'Ad account notification email sent successfully';
+                $results[] = 'Base notification email sent successfully';
                 break;
 
             case 'base':
@@ -455,4 +468,4 @@ Route::get('/test-mail/{type?}', function ($type = 'all') {
             'error' => 'Error sending email(s): ' . $e->getMessage()
         ], 500);
     }
-});
+})->middleware('auth:admin');

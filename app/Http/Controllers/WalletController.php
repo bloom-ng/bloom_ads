@@ -242,15 +242,18 @@ class WalletController extends Controller
                     // After successful funding
                     try {
                         $user = auth()->user();
+                        $amount = number_format($convertedAmount, 2);
+
                         $user->notify(new WalletNotification([
                             'subject' => 'Wallet Funded Successfully',
-                            'message' => "Your wallet has been credited with {$convertedAmount} {$wallet->currency}",
+                            'message' => "Your wallet has been funded with {$wallet->currency} {$amount} via Flutterwave",
                             'type' => 'wallet_funded',
                             'amount' => $convertedAmount,
-                            'currency' => $wallet->currency
+                            'currency' => $wallet->currency,
+                            'wallet_id' => $wallet->id
                         ]));
                     } catch (\Exception $e) {
-                        Log::error('Wallet funding notification error: ' . $e->getMessage());
+                        Log::error('Failed to send wallet funding notification: ' . $e->getMessage());
                     }
                 }
 
@@ -311,15 +314,19 @@ class WalletController extends Controller
 
                 // After successful funding
                 try {
-                    auth()->user()->notify(new WalletNotification([
+                    $user = auth()->user();
+                    $amount = number_format($convertedAmount, 2);
+
+                    $user->notify(new WalletNotification([
                         'subject' => 'Wallet Funded Successfully',
-                        'message' => "Your wallet has been credited with {$convertedAmount} {$wallet->currency}",
+                        'message' => "Your wallet has been funded with {$wallet->currency} {$amount} via Paystack",
                         'type' => 'wallet_funded',
                         'amount' => $convertedAmount,
-                        'currency' => $wallet->currency
+                        'currency' => $wallet->currency,
+                        'wallet_id' => $wallet->id
                     ]));
                 } catch (\Exception $e) {
-                    Log::error('Wallet funding notification error: ' . $e->getMessage());
+                    Log::error('Failed to send wallet funding notification: ' . $e->getMessage());
                 }
 
                 return redirect()->route('wallet.index')
