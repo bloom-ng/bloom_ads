@@ -144,7 +144,11 @@
         </div>
 
         <!-- Print Button - Only visible on screen -->
-        <div class="mt-8 flex justify-end print:hidden">
+        <div class="mt-8 flex justify-between print:hidden">
+            <button onclick="window.location.href='/dashboard'"
+                class="bg-white text-[#27237C] px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                Goto dashboard
+            </button>
             <button onclick="window.print()"
                 class="bg-white text-[#27237C] px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                 Print Invoice
