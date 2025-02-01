@@ -18,10 +18,8 @@ class TwoFactorCodeMail extends Mailable
     }
 
     public function build()
-{
-    return $this->subject('Your Two-Factor Authentication Code')
-                ->html("Your two-factor authentication code is: {$this->code}");
-}
-
-
+    {
+        return $this->view('emails.two-factor-code')
+            ->subject('Your Two-Factor Authentication Code');
+    }
 }

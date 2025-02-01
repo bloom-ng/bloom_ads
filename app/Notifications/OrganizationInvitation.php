@@ -31,13 +31,10 @@ class OrganizationInvitation extends Notification
     {
         $url = url("/signup/invite?email={$this->invite->email}&token={$this->invite->token}");
 
-        return (new MailMessage)
-            ->subject('You\'ve been invited to join ' . $this->organization->name)
-            ->greeting('Hello!')
-            ->line('You have been invited to join ' . $this->organization->name . ' on Bloom Ads.')
-            ->line('You have been assigned the role of ' . $this->invite->role . '.')
-            ->action('Accept Invitation', $url)
-            ->line('This invitation will expire in 7 days.')
-            ->line('If you did not expect this invitation, you can ignore this email.');
+        return (new MailMessage)->view('emails.organization-invitation', [
+            'organizationName' => $this->organization->name,
+            'role' => $this->invite->role,
+            'url' => $url
+        ])->subject('You\'ve been invited to join ' . $this->organization->name);
     }
 }

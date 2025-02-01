@@ -21,15 +21,12 @@ class BaseNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $mailMessage = (new MailMessage)
-            ->subject($this->data['subject'])
-            ->line($this->data['message']);
-
-        if (isset($this->data['action_url'])) {
-            $mailMessage->action($this->data['action_text'] ?? 'View Details', $this->data['action_url']);
-        }
-
-        return $mailMessage;
+        return (new MailMessage)->view('emails.base-notification', [
+            'subject' => $this->data['subject'],
+            'message' => $this->data['message'],
+            'actionText' => $this->data['action_text'] ?? null,
+            'actionUrl' => $this->data['action_url'] ?? null
+        ])->subject($this->data['subject']);
     }
 
     public function toArray($notifiable)

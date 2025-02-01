@@ -29,6 +29,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Exception;
 
 /*
 |--------------------------------------------------------------------------
@@ -345,3 +347,15 @@ Route::middleware('web')->group(function () {
 });
 
 Route::post('/wallet/withdrawal/callback', [WalletController::class, 'withdrawalCallback'])->name('wallet.withdrawal.callback');
+
+Route::get('/test-mail', function () {
+    try {
+        Mail::send('emails.test', [], function ($message) {
+            $message->to('segun8427@gmail.com')
+                ->subject('Test Email from ' . config('app.name'));
+        });
+        return 'Test email sent successfully!';
+    } catch (Exception $e) {
+        return 'Error sending email: ' . $e->getMessage();
+    }
+});
