@@ -30,7 +30,6 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Exception;
 
 /*
 |--------------------------------------------------------------------------
@@ -355,7 +354,7 @@ Route::get('/test-mail', function () {
                 ->subject('Test Email from ' . config('app.name'));
         });
         return 'Test email sent successfully!';
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         return 'Error sending email: ' . $e->getMessage();
     }
 });
