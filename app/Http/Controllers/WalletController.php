@@ -489,12 +489,33 @@ class WalletController extends Controller
             abort(403);
         }
 
-        $pdf = PDF::loadView('dashboard.wallet.receipt-pdf', [
-            'transaction' => $transaction,
-            'organization' => $transaction->wallet->organization
-        ]);
+        // Check if this is an ad account transaction by looking for AD- prefix in reference
+        $adTransaction = null;
+        $vat = 0;
+        $serviceFee = 0;
+        $subTotal = $transaction->amount;
 
-        return $pdf->download("receipt-{$transaction->reference}.pdf");
+        if (Str::startsWith($transaction->reference, 'AD-')) {
+            // Try to find matching ad account transaction
+            $adTransaction = DB::table('ad_account_transactions')
+                ->where('reference', $transaction->reference)
+                ->first();
+
+            if ($adTransaction) {
+                // If found, calculate the original amount before fees
+                $vat = $adTransaction->vat ?? 0;
+                $serviceFee = $adTransaction->service_fee ?? 0;
+                $subTotal = $transaction->amount - ($vat + $serviceFee);
+            }
+        }
+
+        return view('dashboard.wallet.receipt-pdf', [
+            'transaction' => $transaction,
+            'organization' => $transaction->wallet->organization,
+            'subTotal' => $subTotal,
+            'vat' => $vat,
+            'serviceFee' => $serviceFee
+        ]);
     }
 
     public function generateInvoice(Request $request)
