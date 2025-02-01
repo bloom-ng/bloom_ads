@@ -3,7 +3,7 @@
 @section('content')
     <h1>Hello!</h1>
 
-    <p>{{ $message }}</p>
+    <p>{{ $messages }}</p>
 
     @if (isset($actionUrl))
         <a href="{{ $actionUrl }}" class="button">{{ $actionText ?? 'View Details' }}</a>
