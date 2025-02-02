@@ -301,10 +301,10 @@
                 @csrf
                 <input type="hidden" name="wallet_id" id="withdrawWalletId">
 
-                <div>
+                <div class="w-full">
                     <label for="bank_code" class="block text-sm font-medium text-gray-700 mb-2">Select Bank</label>
                     <select name="bank_code" id="bank_code" required
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm">
+                        class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
                         <option value="">Loading banks...</option>
                     </select>
                 </div>
@@ -313,7 +313,7 @@
                     <label for="account_number" class="block text-sm font-medium text-gray-700 mb-2">Account
                         Number</label>
                     <input type="text" name="account_number" id="account_number" required
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                        class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
                         placeholder="Enter account number">
                     <p class="mt-1 text-sm text-gray-500" id="account_name_display"></p>
                 </div>
@@ -322,8 +322,7 @@
                     <label for="withdrawAmount" class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                     <div class="relative rounded-md shadow-sm">
                         <input type="number" name="amount" id="withdrawAmount" required min="100"
-                            step="0.01"
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                            step="0.01" class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
                             placeholder="Enter amount">
                     </div>
                     <p class="mt-1 text-sm text-gray-500">Available balance: <span
@@ -404,6 +403,13 @@
     </div>
 
     <script>
+        // In your Javascript (external .js resource or <script> tag)
+        $(document).ready(function() {
+            $('#bank_code').select2({
+                width: '100%'
+            });
+        });
+
         const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
         const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
 
@@ -615,11 +621,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                                                                                                                                                        <div class="border-b pb-4">
-                                                                                                                                                                                                                                                                                                                            <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                                                                                                                                            <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                    ` : ''}
+                                                                                                                                                                                                                                                                                                                                                                    <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
