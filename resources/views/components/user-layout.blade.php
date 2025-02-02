@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Include Tailwind CSS -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Include Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -70,21 +70,20 @@
             background: #000080;
         }
 
-        .btn{
+        .btn {
             background: #000080;
             border-radius: 0.75rem;
             font-size: 18px;
             color: white;
         }
 
-        .btn-primary{
+        .btn-primary {
             background: #ffffff;
             border-radius: 0.75rem;
             border: 1px solid #000080;
             font-size: 18px;
             color: #000080;
         }
-
     </style>
 </head>
 

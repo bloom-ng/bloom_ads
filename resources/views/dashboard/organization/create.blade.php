@@ -4,7 +4,7 @@
             <div class="flex justify-between items-center pb-6">
                 <h1 class="text-3xl text-black">Create Business</h1>
                 <a href="{{ route('organizations.index') }}"
-                    class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    class="px-4 py-2 btn-primary rounded-mdfont-bold rounded focus:outline-none focus:shadow-outline">
                     Back
                 </a>
             </div>
@@ -26,8 +26,7 @@
                         </div>
 
                         <div class="flex justify-end">
-                            <button type="submit"
-                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <button type="submit" class="px-4 py-2 btn rounded-md">
                                 Create Business
                             </button>
                         </div>

@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-[#F48857] text-black rounded-md hover:bg-[#F48857]/80">
+                    <button type="submit" class="px-4 py-2 btn rounded-md">
                         Create Ad Account
                     </button>
                 </div>

@@ -21,16 +21,15 @@
         @endif
 
         <div class="flex justify-between items-center">
-            <h3 class="text-gray-700 dark:text-gray-300 text-3xl font-medium">Ad Accounts</h3>
-            <a href="{{ route('adaccounts.create') }}"
-                class="px-4 py-2 btn rounded-md hover:bg-[#F48857]/80">
+            <h3 class="text-black text-3xl font-medium">Ad Accounts</h3>
+            <a href="{{ route('adaccounts.create') }}" class="px-4 py-2 btn rounded-md">
                 Create Ad Account
             </a>
         </div>
 
         <div class="mt-8">
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white dark:bg-gray-800 shadow-md rounded my-6">
+                <table class="min-w-full bg-white shadow-md rounded my-6">
                     <thead>
                         <tr>
                             <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 tracking-wider">
@@ -50,7 +49,8 @@
                     <tbody>
                         @foreach ($adAccounts as $account)
                             <tr>
-                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500"> {{ $account->provider_account_name ? $account->provider_account_name : $account->name }}
+                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
+                                    {{ $account->provider_account_name ? $account->provider_account_name : $account->name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">{{ $account->type }}
                                 </td>
@@ -60,15 +60,14 @@
                                     {{ $account->organization->name }}</td>
                                 <td class="px-6 uppercase py-4 whitespace-no-wrap border-b border-gray-500">
                                     {{ $account->status }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium space-x-2">
                                     <a href="{{ route('adaccounts.show', $account->id) }}"
-                                        class=" text-green-600 hover:text-green-800">
+                                        class="text-[#000080] text-lg font-bold">
                                         Manage
                                     </a>
 
                                     @if ($account->status === 'processing')
-                                        <a href="{{ route('adaccounts.edit', $account->id) }}"
-                                            class="text-indigo-600 hover:text-indigo-900">
+                                        <a href="{{ route('adaccounts.edit', $account->id) }}" class="text-[#000080]">
                                             Edit
                                         </a>
 

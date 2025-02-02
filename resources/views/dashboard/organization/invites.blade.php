@@ -35,8 +35,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-end">
-                                <button type="submit"
-                                    class="bg-[#F48857] btn hover:bg-[#F48857]/90 text-black border-orange-400 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                <button type="submit" class="px-4 py-2 btn rounded-md font-semibold">
                                     Send Invitation
                                 </button>
                             </div>
@@ -47,7 +46,7 @@
                     <div class="p-6">
                         <h2 class="text-xl text-black pb-3">Pending Invitations</h2>
                         <table class="min-w-full bg-white">
-                            <thead class="bg-gray-800 text-white">
+                            <thead class="bg-gray-300 text-black">
                                 <tr>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Role</th>
@@ -99,7 +98,7 @@
                     <div class="p-6">
                         <h2 class="text-xl text-black pb-3">Business Members</h2>
                         <table class="min-w-full bg-white">
-                            <thead class="bg-gray-800 text-white">
+                            <thead class="bg-gray-300 text-black">
                                 <tr>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>

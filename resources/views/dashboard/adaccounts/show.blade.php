@@ -2,12 +2,10 @@
     <div class="mt-2 space-y-6 overflow-y-scroll">
         <!-- Action Buttons -->
         <div class="flex space-x-4 pl-3">
-            <button onclick="openDepositModal()"
-                class="btn-primary px-6 py-3 rounded-md ">
+            <button onclick="openDepositModal()" class="btn-primary px-6 py-3 rounded-md ">
                 Deposit Funds
             </button>
-            <button onclick="openWithdrawModal()"
-                class="btn px-6 py-3 rounded-md">
+            <button onclick="openWithdrawModal()" class="btn px-6 py-3 rounded-md">
                 Withdraw Funds
             </button>
         </div>
@@ -77,7 +75,7 @@
                         <div class="bg-gray-50 p-4 rounded-md mt-4">
                             <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                                <div id="depositSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full"
+                                <div id="depositSpendCapProgress" class="bg-[#000080] h-2.5 rounded-full"
                                     style="width: 0%"></div>
                             </div>
                             <div class="flex justify-between text-sm text-gray-600">
@@ -86,8 +84,7 @@
                             </div>
                         </div>
 
-                        <button type="submit"
-                            class="w-full btn bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                        <button type="submit" class="w-full btn px-4 py-2 rounded-md">
                             Confirm Deposit
                         </button>
                     </div>
@@ -159,7 +156,7 @@
                         <div class="bg-gray-50 p-4 rounded-md mt-4">
                             <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                                <div id="withdrawSpendCapProgress" class="bg-[#F48857] h-2.5 rounded-full"
+                                <div id="withdrawSpendCapProgress" class="bg-[#000080] h-2.5 rounded-full"
                                     style="width: 0%"></div>
                             </div>
                             <div class="flex justify-between text-sm text-gray-600">
@@ -168,8 +165,7 @@
                             </div>
                         </div>
 
-                        <button type="submit"
-                            class="w-full btn bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                        <button type="submit" class="w-full btn text-white px-4 py-2 rounded-md">
                             Confirm Withdrawal
                         </button>
                     </div>

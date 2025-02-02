@@ -3,8 +3,7 @@
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center pb-6">
                 <h1 class="text-3xl text-black">My Businesses</h1>
-                <a href="{{ route('organizations.create') }}" 
-                    class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <a href="{{ route('organizations.create') }}" class="px-4 py-2 btn rounded-md">
                     Create Business
                 </a>
             </div>
