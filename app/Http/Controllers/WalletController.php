@@ -235,10 +235,7 @@ class WalletController extends Controller
                     'source_currency' => 'NGN'
                 ]);
 
-                // Update wallet balance with converted amount
-                // $wallet->increment('balance', $convertedAmount);
-
-                if ($transaction->status === 'successful') {
+                if ($transaction->status === 'completed') {
                     // After successful funding
                     try {
                         $user = auth()->user();
@@ -438,7 +435,7 @@ class WalletController extends Controller
                 // Notify source wallet owner
                 auth()->user()->notify(new WalletNotification([
                     'subject' => 'Wallet Transfer',
-                    'message' => "You have transferred {$validated['amount']} {$sourceWallet->currency} from your wallet",
+                    'message' => "You have transferred {$validated['amount']} {$sourceWallet->currency} from your wallet to your {$destinationWallet->currency} wallet",
                     'type' => 'wallet_transfer_debit',
                     'amount' => $validated['amount'],
                     'currency' => $sourceWallet->currency,

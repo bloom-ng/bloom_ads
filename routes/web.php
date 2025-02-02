@@ -349,123 +349,123 @@ Route::middleware('web')->group(function () {
 
 Route::post('/wallet/withdrawal/callback', [WalletController::class, 'withdrawalCallback'])->name('wallet.withdrawal.callback');
 
-Route::get('/test-mail/{type?}', function ($type = 'all') {
-    $results = [];
-    $testEmail = 'segun8427@gmail.com';
+// Route::get('/test-mail/{type?}', function ($type = 'all') {
+//     $results = [];
+//     $testEmail = 'segun8427@gmail.com';
 
-    try {
-        switch ($type) {
-            case '2fa':
-                Mail::to($testEmail)->send(new TwoFactorCodeMail('123456'));
-                $results[] = '2FA email sent successfully';
-                break;
+//     try {
+//         switch ($type) {
+//             case '2fa':
+//                 Mail::to($testEmail)->send(new TwoFactorCodeMail('123456'));
+//                 $results[] = '2FA email sent successfully';
+//                 break;
 
-            case 'organization':
-                $organization = new \App\Models\Organization();
-                $organization->name = 'Test Organization';
+//             case 'organization':
+//                 $organization = new \App\Models\Organization();
+//                 $organization->name = 'Test Organization';
 
-                $invite = new \App\Models\OrganizationInvite();
-                $invite->email = $testEmail;
-                $invite->role = 'admin';
-                $invite->token = Str::random(32);
+//                 $invite = new \App\Models\OrganizationInvite();
+//                 $invite->email = $testEmail;
+//                 $invite->role = 'admin';
+//                 $invite->token = Str::random(32);
 
-                Notification::route('mail', $testEmail)
-                    ->notify(new \App\Notifications\OrganizationInvitation($organization, $invite));
-                $results[] = 'Organization invitation email sent successfully';
-                break;
+//                 Notification::route('mail', $testEmail)
+//                     ->notify(new \App\Notifications\OrganizationInvitation($organization, $invite));
+//                 $results[] = 'Organization invitation email sent successfully';
+//                 break;
 
-            case 'ad-account':
-                $notification = new \App\Notifications\BaseNotification([
-                    'subject' => 'Ad Account Funded',
-                    'message' => "Your ad account Test Account has been funded with 1000 USD by admin",
-                    'type' => 'ad_account_funded',
-                    'amount' => 1000,
-                    'currency' => 'USD',
-                    'ad_account_id' => 1,
-                    'action_text' => 'View Ad Account',
-                    'action_url' => url('/dashboard/adaccounts/1')
-                ]);
-                break;
+//             case 'ad-account':
+//                 $notification = new \App\Notifications\BaseNotification([
+//                     'subject' => 'Ad Account Funded',
+//                     'message' => "Your ad account Test Account has been funded with 1000 USD by admin",
+//                     'type' => 'ad_account_funded',
+//                     'amount' => 1000,
+//                     'currency' => 'USD',
+//                     'ad_account_id' => 1,
+//                     'action_text' => 'View Ad Account',
+//                     'action_url' => url('/dashboard/adaccounts/1')
+//                 ]);
+//                 break;
 
-                // Add new test case for wallet funding
-            case 'wallet-funding':
-                $notification = new \App\Notifications\WalletNotification([
-                    'subject' => 'Wallet Funded Successfully',
-                    'message' => "Your wallet has been funded with USD 1,000.00 via Flutterwave",
-                    'type' => 'wallet_funded',
-                    'amount' => 1000,
-                    'currency' => 'USD',
-                    'wallet_id' => 1,
-                    // 'action_text' => 'View Wallet',
-                    // 'action_url' => url('/dashboard/wallet')
-                ]);
-                Notification::route('mail', $testEmail)->notify($notification);
-                $results[] = 'Base notification email sent successfully';
-                break;
+//                 // Add new test case for wallet funding
+//             case 'wallet-funding':
+//                 $notification = new \App\Notifications\WalletNotification([
+//                     'subject' => 'Wallet Funded Successfully',
+//                     'message' => "Your wallet has been funded with USD 1,000.00 via Flutterwave",
+//                     'type' => 'wallet_funded',
+//                     'amount' => 1000,
+//                     'currency' => 'USD',
+//                     'wallet_id' => 1,
+//                     // 'action_text' => 'View Wallet',
+//                     // 'action_url' => url('/dashboard/wallet')
+//                 ]);
+//                 Notification::route('mail', $testEmail)->notify($notification);
+//                 $results[] = 'Base notification email sent successfully';
+//                 break;
 
-            case 'base':
-                $notification = new \App\Notifications\BaseNotification([
-                    'subject' => 'Test Notification',
-                    'message' => 'This is a test base notification',
-                    'action_text' => 'View Details',
-                    'action_url' => url('/')
-                ]);
+//             case 'base':
+//                 $notification = new \App\Notifications\BaseNotification([
+//                     'subject' => 'Test Notification',
+//                     'message' => 'This is a test base notification',
+//                     'action_text' => 'View Details',
+//                     'action_url' => url('/')
+//                 ]);
 
-                Notification::route('mail', $testEmail)->notify($notification);
-                $results[] = 'Base notification email sent successfully';
-                break;
+//                 Notification::route('mail', $testEmail)->notify($notification);
+//                 $results[] = 'Base notification email sent successfully';
+//                 break;
 
-            case 'all':
-                // Send all email types
-                Mail::to($testEmail)->send(new TwoFactorCodeMail('123456'));
-                $results[] = '2FA email sent successfully';
+//             case 'all':
+//                 // Send all email types
+//                 Mail::to($testEmail)->send(new TwoFactorCodeMail('123456'));
+//                 $results[] = '2FA email sent successfully';
 
-                $organization = new \App\Models\Organization();
-                $organization->name = 'Test Organization';
+//                 $organization = new \App\Models\Organization();
+//                 $organization->name = 'Test Organization';
 
-                $invite = new \App\Models\OrganizationInvite();
-                $invite->email = $testEmail;
-                $invite->role = 'admin';
-                $invite->token = Str::random(32);
+//                 $invite = new \App\Models\OrganizationInvite();
+//                 $invite->email = $testEmail;
+//                 $invite->role = 'admin';
+//                 $invite->token = Str::random(32);
 
-                Notification::route('mail', $testEmail)
-                    ->notify(new \App\Notifications\OrganizationInvitation($organization, $invite));
-                $results[] = 'Organization invitation email sent successfully';
+//                 Notification::route('mail', $testEmail)
+//                     ->notify(new \App\Notifications\OrganizationInvitation($organization, $invite));
+//                 $results[] = 'Organization invitation email sent successfully';
 
-                $adAccountNotification = new \App\Notifications\BaseNotification([
-                    'subject' => 'Ad Account Funded',
-                    'message' => "Your ad account Test Account has been funded with 1000 USD by admin",
-                    'type' => 'ad_account_funded',
-                    'amount' => 1000,
-                    'currency' => 'USD',
-                    'ad_account_id' => 1,
-                    'action_text' => 'View Ad Account',
-                    'action_url' => url('/dashboard/adaccounts/1')
-                ]);
+//                 $adAccountNotification = new \App\Notifications\BaseNotification([
+//                     'subject' => 'Ad Account Funded',
+//                     'message' => "Your ad account Test Account has been funded with 1000 USD by admin",
+//                     'type' => 'ad_account_funded',
+//                     'amount' => 1000,
+//                     'currency' => 'USD',
+//                     'ad_account_id' => 1,
+//                     'action_text' => 'View Ad Account',
+//                     'action_url' => url('/dashboard/adaccounts/1')
+//                 ]);
 
-                Notification::route('mail', $testEmail)->notify($adAccountNotification);
-                $results[] = 'Ad account notification email sent successfully';
+//                 Notification::route('mail', $testEmail)->notify($adAccountNotification);
+//                 $results[] = 'Ad account notification email sent successfully';
 
-                $baseNotification = new \App\Notifications\BaseNotification([
-                    'subject' => 'Test Notification',
-                    'message' => 'This is a test base notification',
-                    'action_text' => 'View Details',
-                    'action_url' => url('/')
-                ]);
+//                 $baseNotification = new \App\Notifications\BaseNotification([
+//                     'subject' => 'Test Notification',
+//                     'message' => 'This is a test base notification',
+//                     'action_text' => 'View Details',
+//                     'action_url' => url('/')
+//                 ]);
 
-                Notification::route('mail', $testEmail)->notify($baseNotification);
-                $results[] = 'Base notification email sent successfully';
-                break;
-        }
+//                 Notification::route('mail', $testEmail)->notify($baseNotification);
+//                 $results[] = 'Base notification email sent successfully';
+//                 break;
+//         }
 
-        return response()->json([
-            'success' => true,
-            'messages' => $results
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => 'Error sending email(s): ' . $e->getMessage()
-        ], 500);
-    }
-})->middleware('auth:admin');
+//         return response()->json([
+//             'success' => true,
+//             'messages' => $results
+//         ]);
+//     } catch (\Exception $e) {
+//         return response()->json([
+//             'success' => false,
+//             'error' => 'Error sending email(s): ' . $e->getMessage()
+//         ], 500);
+//     }
+// })->middleware('auth:admin');
