@@ -16,40 +16,25 @@
                     @else
                         <!-- Create Wallet Form -->
                         @if (in_array($userRole, ['owner', 'admin', 'finance']))
-                            <div class="flex gap-3">
-                                <form method="POST" action="{{ route('wallet.create') }}" class="mb-8">
-                                    @csrf
-                                    <input type="hidden" name="organization_id" value="{{ $organization->id }}">
-                                    <div>
-                                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Create New Wallet
-                                        </label>
-                                        <div class="flex gap-4">
-                                            <select name="currency" id="currency" required
-                                                class="rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm">
-                                                <option value="NGN">NGN</option>
-                                                <option value="USD">USD</option>
-                                                <option value="GBP">GBP</option>
-                                            </select>
-                                            <button type="submit"
-                                                class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                                Select Currency
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-
+                            <div class="flex gap-3 mb-8 mt-2">
                                 <!-- Add Global Convert Button -->
-                                <div class="mt-7">
+                                <div class="">
+                                    <button onclick="openCreateWalletModal()"
+                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        Create New Wallet
+                                    </button>
+                                </div>
+
+                                <div class="">
                                     <button onclick="openTransferModal()"
-                                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
                                         Convert Currency
                                     </button>
                                 </div>
 
-                                <div class="mt-7">
+                                <div class="">
                                     <button onclick="openWithdrawModal()"
-                                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
                                         Withdraw Funds
                                     </button>
                                 </div>
@@ -198,7 +183,7 @@
                             <input type="hidden" name="currency" value="NGN">
                             <input type="hidden" name="wallet_currency" id="flutterwaveWalletCurrency">
                             <button type="button" onclick="submitFlutterwavePayment()"
-                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded mb-2">
+                                class="w-full px-4 py-2 btn rounded-md mb-2">
                                 Pay with Flutterwave
                             </button>
                         </form>
@@ -229,8 +214,7 @@
                             <input type="hidden" name="wallet_id" id="invoiceWalletId">
                             <input type="hidden" name="amount" id="invoiceAmount">
                             <input type="hidden" name="currency" id="invoiceCurrency">
-                            <button type="submit"
-                                class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                            <button type="submit" class="w-full px-4 py-2 btn-primary rounded-md font-bold">
                                 Generate Invoice
                             </button>
                         </form>
@@ -297,14 +281,12 @@
                     <p id="convertedAmountDisplay"></p>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-[#F48857] hover:bg-[#F48857]/90 text-black font-bold py-2 px-4 rounded">
+                <button type="submit" class="w-full px-4 py-2 btn-primary rounded-md">
                     Convert
                 </button>
             </form>
 
-            <button onclick="closeTransferModal()"
-                class="w-full mt-4 border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
+            <button onclick="closeTransferModal()" class="w-full mt-4 px-4 py-2 btn rounded-md">
                 Cancel
             </button>
         </div>
@@ -349,12 +331,10 @@
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" onclick="closeWithdrawModal()"
-                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 btn-primary rounded-md">
                         Cancel
                     </button>
-                    <button type="submit"
-                        class="bg-[#F48857] hover:bg-[#F48857]/90 text-black px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#F48857]">
+                    <button type="submit" class="px-4 py-2 btn rounded-md">
                         Withdraw
                     </button>
                 </div>
@@ -378,6 +358,48 @@
             <div id="receiptContent" class="space-y-4">
                 <!-- Receipt content will be loaded here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Create Wallet Modal -->
+    <div id="createWalletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-medium">Create New Wallet</h3>
+                <button onclick="closeCreateWalletModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form method="POST" action="{{ route('wallet.create') }}" class="space-y-4">
+                @csrf
+                <input type="hidden" name="organization_id" value="{{ $organization->id }}">
+
+                <div>
+                    <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
+                        Select Currency
+                    </label>
+                    <select name="currency" id="currency" required
+                        class="w-full rounded-md border border-[#000080] shadow-sm sm:text-sm px-3 py-3">
+                        <option value="NGN">NGN</option>
+                        <option value="USD">USD</option>
+                        <option value="GBP">GBP</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col space-y-3 mt-6">
+                    <button type="button" onclick="closeCreateWalletModal()"
+                        class="px-4 py-2 rounded-md text-[#000080] border border-[#000080]">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-md bg-[#000080] text-white">
+                        Create Wallet
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -593,11 +615,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                            <div class="border-b pb-4">
-                                                                                                                                                                                                <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                            </div>
-                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                                                        <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                            <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                            <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                    ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
@@ -822,5 +844,15 @@
                 alert('Withdrawal amount cannot exceed available balance');
             }
         });
+
+        function openCreateWalletModal() {
+            document.getElementById('createWalletModal').classList.remove('hidden');
+            document.getElementById('createWalletModal').classList.add('flex');
+        }
+
+        function closeCreateWalletModal() {
+            document.getElementById('createWalletModal').classList.remove('flex');
+            document.getElementById('createWalletModal').classList.add('hidden');
+        }
     </script>
 </x-user-layout>
