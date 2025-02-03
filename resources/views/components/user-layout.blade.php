@@ -295,7 +295,7 @@
         <div class="flex-grow"></div>
         <footer class="flex bg-white justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
             <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
-                    DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
+                    DIGITAL MEDIA LTD.</a> {{ date('Y') }}. All Rights Reserved</p>
             <div class="flex">
                 <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
