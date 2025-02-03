@@ -1,10 +1,10 @@
 <x-user-layout page="wallet">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Organization Wallets</h1>
+            <h1 class="text-3xl text-black pb-2 lg:pb-6">Organization Wallets</h1>
 
             <div class="w-full mt-6">
-                <div class="bg-white overflow-auto p-6 rounded-lg shadow-sm">
+                <div class="bg-white overflow-auto p-2 lg:p-6 rounded-lg shadow-sm">
                     @if (!$organization)
                         <div class="text-center py-8">
                             <p class="text-gray-500 mb-4">Please select a current organization to manage wallets.</p>
@@ -16,25 +16,25 @@
                     @else
                         <!-- Create Wallet Form -->
                         @if (in_array($userRole, ['owner', 'admin', 'finance']))
-                            <div class="flex gap-3 mb-8 mt-2">
+                            <div class="flex flex-col md:flex-row gap-3 mb-8 mt-2">
                                 <!-- Add Global Convert Button -->
                                 <div class="">
                                     <button onclick="openCreateWalletModal()"
-                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
                                         Create New Wallet
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openTransferModal()"
-                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
                                         Convert Currency
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openWithdrawModal()"
-                                        class="text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
                                         Withdraw Funds
                                     </button>
                                 </div>
@@ -621,11 +621,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                                                                                                                                                                                                    <div class="border-b pb-4">
-                                                                                                                                                                                                                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                ` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                                                                                                    <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                                                                                                    <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                            ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
