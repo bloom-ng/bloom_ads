@@ -5,8 +5,9 @@
                 class="flex flex-col md:flex-row bg-gradient-to-r from-[#E6E6F380] to-[#6666B380] w-full lg:pl-10 pl-8 lg:text-start">
                 <div class="lg:w-2/5 flex-col lg:ml-24 lg:mt-20 mt-10 items-center justify-center">
                     <h1 class="text-4xl lg:text-6xl font-bold mb-5 lg:mb-10">Digital <span class="text-[#000080]">Ads
-                            Made Easy</span> With Bloom</h1>
-                    <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and Meta Ads account
+                            Made Easy</span> With Billing</h1>
+                    <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and
+                        Meta Ads account
                     </h3>
                     <a href="/signup"
                         class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-20">Get
@@ -54,7 +55,7 @@
                         </defs>
                     </svg>
 
-                    <p class="flex-1 text-lg">With Bloom, you <strong>gain access to Google, TikTok, and Meta Ad
+                    <p class="flex-1 text-lg">With Billing, you <strong>gain access to Google, TikTok, and Meta Ad
                             accounts</strong>, allowing you to run campaigns effortlessly.</p>
                 </div>
 
@@ -131,7 +132,8 @@
                         </defs>
                     </svg>
 
-                    <p class="flex-1 text-lg">With Bloom, you can <strong>focus on growing your business while we take
+                    <p class="flex-1 text-lg">With Billing, you can <strong>focus on growing your business while we
+                            take
                             care of the financial logistics</strong> managed efficiently.</p>
                 </div>
 
@@ -158,12 +160,13 @@
                     </svg>
 
                     <p class="flex-1 text-lg">Whether you choose to handle your campaigns or let us take the reins,
-                        <strong>Bloom is dedicated to supporting your success.</strong>
+                        <strong>Billing is dedicated to supporting your success.</strong>
                     </p>
                 </div>
 
 
-                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started Now</a>
+                <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started
+                    Now</a>
             </div>
         </section>
 
@@ -171,11 +174,12 @@
             class="flex flex-col md:flex-row w-full bg-gradient-to-r from-[#6666B380] to-[#E6E6F380] lg:px-14 px-10 pt-8">
             <div class="md:w-1/2 flex flex-col md:justify-center lg:pl-32">
                 <p class="text-4xl font-bold mb-5">Contact Us</p>
-                <p class="text-lg md:text-xl lg:text-2xl mb-8">For ease, Schedule a consultation with the Bloom team
+                <p class="text-lg md:text-xl lg:text-2xl mb-8">For ease, Schedule a consultation with the Billing team
                     today.</p>
 
                 <div class="flex flex-col md:flex-row gap-7 lg:justify-start justify-center items-start">
-                    <a href="https://wa.me/+2347086278644" class="bg-[#57BA63] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
+                    <a href="https://wa.me/+2347086278644"
+                        class="bg-[#57BA63] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="40" height="40" fill="url(#pattern0_519_198)" />
@@ -193,13 +197,16 @@
                     </a>
 
                     <a href="" class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="40" height="40" fill="url(#pattern0_999_143)"/>
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="40" height="40" fill="url(#pattern0_999_143)" />
                             <defs>
-                            <pattern id="pattern0_999_143" patternContentUnits="objectBoundingBox" width="1" height="1">
-                            <use xlink:href="#image0_999_143" transform="scale(0.0111111)"/>
-                            </pattern>
-                            <image id="image0_999_143" width="90" height="90" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAABvElEQVR4nO3cO07DQBSF4VsRlgAJSyTQ4ayQR0VYCkqaVAdZuIiQKUbyHM/j/ySa6MqRfyxHusVEAAAAAAAAICTdSnqW9CHprHadJb1LepK0sf7rJT1I+lJ/juO9O5/kHiNfx87/ZE+vi97tHaHHd3Lv3hyhT2vfZQFOjtCzolFa634J/YvQC9M/2v3ilRDahNAmhDYhtAmhTQhtQmgTQvcaujdBaA9CmxDahNAmhDYhtAmhTQhtUlPoi6QXSdvpb5g+q2K+ptDDzLWHWuYjNy3nfubad7XMR25aznbm2rta5iM3LWeYufahlvnITcu5TO/AlB+rYuZrCl01QpsQ2oTQJoQ2IXQHoYvaRajhXUdRuwg1vOsoahehhncdRe0i1PCuo6hdhBredRS1ixC7jjas+UR3JQjtQWgTQpsQuoPQRe0ilD5fTeiidhFKn08SudWyi1D6fJLIrZZdhNLnk0RutewilD6fJHKrZReh9PlqQnclCO1B6IZCcxyb9O0IzQGD8hwwOJ4627tHR+jNdBBqrz4l3WQPfXWs8bHTyDtL5D9P9n58XzX+A3mS9Dq+LmxPMgAAAAAAQJTtB1O+o5e1KxH7AAAAAElFTkSuQmCC"/>
+                                <pattern id="pattern0_999_143" patternContentUnits="objectBoundingBox" width="1"
+                                    height="1">
+                                    <use xlink:href="#image0_999_143" transform="scale(0.0111111)" />
+                                </pattern>
+                                <image id="image0_999_143" width="90" height="90"
+                                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAABvElEQVR4nO3cO07DQBSF4VsRlgAJSyTQ4ayQR0VYCkqaVAdZuIiQKUbyHM/j/ySa6MqRfyxHusVEAAAAAAAAICTdSnqW9CHprHadJb1LepK0sf7rJT1I+lJ/juO9O5/kHiNfx87/ZE+vi97tHaHHd3Lv3hyhT2vfZQFOjtCzolFa634J/YvQC9M/2v3ilRDahNAmhDYhtAmhTQhtQmgTQvcaujdBaA9CmxDahNAmhDYhtAmhTQhtUlPoi6QXSdvpb5g+q2K+ptDDzLWHWuYjNy3nfubad7XMR25aznbm2rta5iM3LWeYufahlvnITcu5TO/AlB+rYuZrCl01QpsQ2oTQJoQ2IXQHoYvaRajhXUdRuwg1vOsoahehhncdRe0i1PCuo6hdhBredRS1ixC7jjas+UR3JQjtQWgTQpsQuoPQRe0ilD5fTeiidhFKn08SudWyi1D6fJLIrZZdhNLnk0RutewilD6fJHKrZReh9PlqQnclCO1B6IZCcxyb9O0IzQGD8hwwOJ4627tHR+jNdBBqrz4l3WQPfXWs8bHTyDtL5D9P9n58XzX+A3mS9Dq+LmxPMgAAAAAAQJTtB1O+o5e1KxH7AAAAAElFTkSuQmCC" />
                             </defs>
                         </svg>
 
@@ -453,7 +460,7 @@
             </div> --}}
 
             <div class="flex flex-col items-center mt-10">
-                <p class="text-4xl text-black font-bold mb-10 md:mb-20">Bloom's Ad Numbers</p>
+                <p class="text-4xl text-black font-bold mb-10 md:mb-20">Billing Numbers</p>
 
                 <div class="grid md:grid-cols-3 grid-cols-1 gap-10 md:gap-20 text-center mb-10 md:mb-20">
                     <div class="flex flex-col items-center">

@@ -6,7 +6,7 @@
                 @if (session('invite_data'))
                     Complete Your Registration
                 @else
-                    Bloom Ads for Direct Advertisers
+                    Billing for Direct Advertisers
                 @endif
             </h1>
             <p class="text-2xl font-light mb-10">Please enter a valid & active email address</p>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom Ads | The Premier Platform for Google and Meta Ads in Nigeria</title>
+    <title>Billing | The Premier Platform for Google and Meta Ads in Nigeria</title>
     <link rel="icon" href="{{ asset('/images/fav-icon.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -103,7 +103,7 @@
     <footer
         class="bg-[#000031] flex flex-col w-full justify-start items-start md:justify-center md:items-center md:py-14 md:px-0 px-10">
         @if (!$isAuth)
-            <p class="md:text-4xl text-2xl text-white mb-5 md:mb-10 mt-5">Bloom's Financial Solutions</p>
+            <p class="md:text-4xl text-2xl text-white mb-5 md:mb-10 mt-5">Billing Financial Solutions</p>
 
             <div class="grid grid-cols-2 mb-5 md:mb-10 md:px-14">
                 <img src="/images/Interswitch_logo.png" alt="interswitch logo" class="h-[60%] w-[80%]">
