@@ -9,9 +9,9 @@
                     <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and
                         Meta Ads account
                     </h3>
-                    <a href="/signup"
-                        class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-5 lg:mb-20">Get
-                        Started Now</a>
+                    <button onclick="window.location.href='/signup'"
+                        class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-8 lg:mb-20">Get
+                        Started Now</button>
                 </div>
 
                 <div class="lg:w-3/5 md:w-[500px] justify-end items-end">
@@ -21,10 +21,10 @@
         </section>
 
         <section class="bg-[#F1F1F1] lg:py-10 py-5">
-            <div class="grid grid-cols-3 gap-4 items-center lg:flex md:flex-row lg:px-6">
-                <img src="/images/google_ads.png" alt="" class="w-auto h-auto">
-                <img src="/images/meta_ads.png" alt="" class="w-auto h-auto lg:mr-4">
-                <img src="/images/tiktok_ads.png" alt="" class="w-auto h-auto">
+            <div class="grid grid-cols-3 gap-4 items-center lg:flex md:flex-row lg:px-2 px-4 py-4">
+                <img src="/images/google_ads.png" alt="" class="2xl:w-auto md:w-22 h-auto">
+                <img src="/images/meta_ads.png" alt="" class="2xl:w-auto md:w-22 h-auto lg:mr-4">
+                <img src="/images/tiktok_ads.png" alt="" class="2xl:w-auto md:w-22 h-auto">
             </div>
         </section>
 

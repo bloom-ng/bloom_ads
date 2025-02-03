@@ -106,8 +106,8 @@
             <p class="md:text-4xl text-2xl text-white mb-5 md:mb-10 mt-5">Billing Financial Solutions</p>
 
             <div class="grid grid-cols-2 mb-5 md:mb-10 md:px-14">
-                <img src="/images/Interswitch_logo.png" alt="interswitch logo" class="h-[60%] w-[80%]">
-                <img src="/images/paypal-logo.png" alt="paypal logo" class="h-[60%] w-[80%]">
+                <img src="/images/flutterwave.png" alt="interswitch logo" class="h-[60%] w-[80%]">
+                {{-- <img src="/images/paypal-logo.png" alt="paypal logo" class="h-[60%] w-[80%]"> --}}
             </div>
         @endif
 
