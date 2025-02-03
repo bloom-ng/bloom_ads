@@ -3,14 +3,14 @@
         <section class="flex flex-col">
             <div
                 class="flex flex-col md:flex-row bg-gradient-to-r from-[#E6E6F380] to-[#6666B380] w-full lg:pl-10 pl-8 lg:text-start">
-                <div class="lg:w-2/5 flex-col lg:ml-24 lg:mt-20 mt-10 items-center justify-center">
+                <div class="lg:w-2/5 flex-col lg:ml-24 lg:mt-20 mt-10 items-center justify-center h-auto">
                     <h1 class="text-4xl lg:text-6xl font-bold mb-5 lg:mb-10">Digital <span class="text-[#000080]">Ads
                             Made Easy</span> With Billing</h1>
                     <h3 class="text-sm lg:text-2xl mb-10 lg:mb-16 text-[#04080F]">Get Access to TikTok, Google <br>and
                         Meta Ads account
                     </h3>
                     <a href="/signup"
-                        class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-20">Get
+                        class="rounded-xl bg-[#000080] text-[#ffffff] font-semibold text-base lg:text-xl p-3 px-7 mb-5 lg:mb-20">Get
                         Started Now</a>
                 </div>
 

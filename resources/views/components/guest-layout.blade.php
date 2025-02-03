@@ -92,8 +92,8 @@
             </svg>
         </button> -->
 
-        <a href="/signup" class="rounded-xl bg-[#FFFFFF] text-[00031] font-semibold text-base p-2 px-7">Get
-            Started</a>
+        <a href="/login" class="rounded-xl bg-[#FFFFFF] text-[00031] font-semibold text-base p-2 px-7">
+            Login</a>
 
     </header>
     <main>
@@ -120,13 +120,32 @@
         </div>
 
         <div class="flex flex-row lg:space-x-3 mb-10">
-            <a
-                href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><img
-                    src="/images/Instagram.png" alt="instagram logo"></a>
-            <a href="https://www.facebook.com/bloomdigitmedia/"><img src="/images/Facebook.png" alt="facebook logo"></a>
-            <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"><img src="/images/LinkedIn.png"
-                    alt="linkedin logo"></a>
-            <a href="https://x.com/bloomdigitmedia?s=20"><img src="/images/TwitterX.png" alt="twitter logo"></a>
+            <span>
+                {{-- <a class="dark-hidden"
+                    href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a> --}}
+                <a class="dark-block"
+                    href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
+            </span>
+            <span>
+                {{-- <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img
+                        src="/images/twitter.png" alt="X Link" /></a> --}}
+                <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img
+                        src="/images/darkModeX.png" alt="X Link" /></a>
+            </span>
+            <span>
+                {{-- <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                        src="/images/facebook.png" alt="Facebook Link" /></a> --}}
+                <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                        src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
+            </span>
+            <span>
+                {{-- <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                    target="_blank"><img src="/images/linkedin.png" alt="LinkedIn Link" /></a> --}}
+                <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                    target="_blank"><img src="/images/darkModeLinkedin.png" alt="LinkedIn Link" /></a>
+            </span>
         </div>
 
         <div class="flex flex-row mb-5 space-x-2">
