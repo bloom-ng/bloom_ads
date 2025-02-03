@@ -148,7 +148,7 @@
     <aside class="bg-sidebar relative h-screen w-64 hidden sm:block">
         <div class="p-6 bg-sidebar-top">
             <a href="/dashboard" class="flex justify-center">
-                <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="">
+                <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="Billing Logo">
             </a>
             @php
                 use Illuminate\Support\Facades\Auth;
@@ -239,32 +239,52 @@
         <!-- Mobile Header & Nav -->
         <header x-data="{ isOpen: false }" class="w-full bg-sidebar py-5 px-6 sm:hidden">
             <div class="flex items-center justify-between">
-                <a href="index.html" class="w-24 md:w-34">
-                    <img src="/images/sharepadi-rebrand-02.png" alt="">
+                <a href="/dashboard" class="w-24 md:w-34">
+                    <img src="{{ asset('images/billings2 1.png') }}" alt="Billing Logo">
                 </a>
-                <button @click="isOpen = !isOpen" class="text-[#F48857] text-3xl focus:outline-none">
+                <button @click="isOpen = !isOpen" class="text-[#000080] text-3xl focus:outline-none">
                     <i x-show="!isOpen" class="fas fa-bars"></i>
                     <i x-show="isOpen" class="fas fa-times"></i>
                 </button>
             </div>
 
             <!-- Dropdown Nav -->
-            <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4 text-[#F48857]">
+            <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4">
                 <a href="/dashboard"
-                    class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i></i>
+                    class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <img src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}"
+                        alt="Dashboard" class="w-4 h-4 mr-4">
                     Dashboard
                 </a>
                 <a href="/wallet"
-                    class="flex items-center {{ $page == 'wallet' ? 'active-nav-link' : '' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-table mr-3"></i>
+                    class="flex items-center {{ $page == 'wallet' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <img src="{{ $page == 'wallet' ? asset('images/walletIcon.png') : asset('images/walletIconInactive.png') }}"
+                        alt="Wallet" class="w-4 h-4 mr-4">
                     Wallet
+                </a>
+                <a href="/dashboard/adaccounts"
+                    class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <img src="{{ $page == 'adaccounts' ? asset('images/adaccountIcon.png') : asset('images/adaccountIconInactive.png') }}"
+                        alt="Ad Accounts" class="w-4 h-4 mr-4">
+                    Ad Account
+                </a>
+                <a href="{{ route('organizations.index') }}"
+                    class="flex items-center {{ $page == 'organizations' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <img src="{{ $page == 'organizations' ? asset('images/organizationIcon.png') : asset('images/organizationIconInactive.png') }}"
+                        alt="Organizations" class="w-4 h-4 mr-4">
+                    Business
+                </a>
+                <a href="{{ route('settings.index') }}"
+                    class="flex items-center {{ $page == 'settings' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <img src="{{ $page == 'settings' ? asset('images/settingsIcon.png') : asset('images/settingsIconInactive.png') }}"
+                        alt="Settings" class="w-4 h-4 mr-4">
+                    Settings
                 </a>
                 <form method="POST" action="{{ route('user.logout') }}" class="block">
                     @csrf
                     <button type="submit"
-                        class="flex w-full items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        class="flex w-full items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item text-black">
+                        <i class="fas fa-sign-out-alt mr-3 text-[#000080]"></i>
                         Sign Out
                     </button>
                 </form>
