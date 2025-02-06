@@ -113,7 +113,25 @@
                     </button>
                 </div>
 
-                <button type="submit" class="w-full bg-[#000080] text-white px-5 py-3 rounded-xl hover:bg-[#000050]">
+                <div class="mb-3">
+                    <input type="password" name="password_confirmation"
+                        class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
+                        placeholder="Confirm Password" required>
+                </div>
+
+                <div class="mb-3 flex items-start space-x-2">
+                    <input type="checkbox" name="terms_accepted" id="terms_accepted" class="mt-1" required>
+                    <label for="terms_accepted" class="text-sm text-gray-700">
+                        I agree to the <a href="#" class="text-[#000080] hover:underline">Terms and Conditions</a> and 
+                        <a href="#" class="text-[#000080] hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+                @error('terms_accepted')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+
+                <button type="submit"
+                    class="w-full bg-[#000080] text-white px-5 py-3 rounded-xl hover:bg-[#000050]">
                     Sign Up
                 </button>
             </form>

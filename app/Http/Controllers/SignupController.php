@@ -43,7 +43,8 @@ class SignupController extends Controller
                 'country_code' => 'required',
                 'phone_number' => 'required',
                 'country' => 'required',
-                'weblink' => session('invite_data') ? 'nullable|url' : 'required|url', // Make weblink optional for invites
+                'weblink' => session('invite_data') ? 'nullable|url' : 'required|url',
+                'terms_accepted' => 'required|accepted',
             ]);
 
             // Create user
