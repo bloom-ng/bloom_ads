@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Organization;
 use App\Models\OrganizationInvite;
 use App\Models\User;
 use App\Models\UserSettings;
+use App\Notifications\NewUserRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,8 +56,13 @@ class SignupController extends Controller
                 'phone_country_code' => $request->country_code,
                 'phone' => $request->phone_number,
                 'weblink' => $request->weblink,
-                'country' => $request->country,
+                'country' => $request->country
             ]);
+
+            // Notify admin about new user registration
+            if ($admin = Admin::getAdminForNotification()) {
+                $admin->notify(new NewUserRegistration($user));
+            }
 
             // Check if user is being invited to an organization
             if ($inviteData = session('invite_data')) {

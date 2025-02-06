@@ -33,4 +33,9 @@ class Admin extends Authenticatable
             ->withTimestamps();
     }
 
-} 
+    public static function getAdminForNotification()
+    {
+        return self::where('email', AdminSetting::get('notification_email'))->first() 
+            ?? self::first();
+    }
+}

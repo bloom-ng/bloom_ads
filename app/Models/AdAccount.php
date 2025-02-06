@@ -21,7 +21,8 @@ class AdAccount extends Model
         'user_id',
         'organization_id',
         'provider_bm_id',
-        'provider_account_name'
+        'provider_account_name',
+        'facebook_page_url'
     ];
 
     protected $casts = [

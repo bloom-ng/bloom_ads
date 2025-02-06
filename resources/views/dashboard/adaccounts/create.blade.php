@@ -50,6 +50,16 @@
                 </div>
 
                 <div>
+                    <label class="text-gray-700" for="facebook_page_url">Facebook Page URL</label>
+                    <input type="url" name="facebook_page_url" id="facebook_page_url" value="{{ old('facebook_page_url') }}"
+                        class="form-input mt-1 block w-full rounded-md border-gray-300" 
+                        placeholder="https://facebook.com/your-page">
+                    @error('facebook_page_url')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
                     <label class="text-gray-700" for="currency">Currency</label>
                     <select name="currency" id="currency"
                         class="form-select mt-1 block w-full rounded-md border-gray-300" required>
