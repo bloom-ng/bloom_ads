@@ -29,13 +29,12 @@ class Admin extends Authenticatable
 
     public function organizations(): BelongsToMany
     {
-        return $this->belongsToMany(Organization::class, 'organization_admins')
+        return $this->belongsToMany(Organization::class, 'admin_organization')
             ->withTimestamps();
     }
 
-    public static function getAdminForNotification()
+    public static function getAllAdmins()
     {
-        return self::where('email', AdminSetting::get('notification_email'))->first() 
-            ?? self::first();
+        return self::all();
     }
 }

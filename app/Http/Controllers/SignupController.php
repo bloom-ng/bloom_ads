@@ -7,7 +7,8 @@ use App\Models\Organization;
 use App\Models\OrganizationInvite;
 use App\Models\User;
 use App\Models\UserSettings;
-use App\Notifications\NewUserRegistration;
+use App\Mail\NewUserRegistrationMail;
+use App\Mail\TwoFactorCodeMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\TwoFactorCodeMail;
 
 class SignupController extends Controller
 {
@@ -60,9 +60,28 @@ class SignupController extends Controller
                 'country' => $request->country
             ]);
 
-            // Notify admin about new user registration
-            if ($admin = Admin::getAdminForNotification()) {
-                $admin->notify(new NewUserRegistration($user));
+            Log::info('User created successfully', ['user_id' => $user->id, 'email' => $user->email]);
+
+            // Send email to all admins about new user registration
+            Log::info('Fetching all admins for notification');
+            $admins = Admin::getAllAdmins();
+            Log::info('Found admins to notify', ['admin_count' => $admins->count()]);
+
+            foreach ($admins as $admin) {
+                try {
+                    Mail::to($admin->email)->send(new NewUserRegistrationMail($user));
+                    Log::info('Email sent successfully to admin', [
+                        'admin_id' => $admin->id,
+                        'admin_email' => $admin->email
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send email to admin', [
+                        'admin_id' => $admin->id,
+                        'admin_email' => $admin->email,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                }
             }
 
             // Check if user is being invited to an organization
