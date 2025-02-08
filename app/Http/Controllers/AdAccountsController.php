@@ -429,9 +429,9 @@ class AdAccountsController extends Controller
             $totalAmount = $fees['total_amount'];
 
             // Check if ad account has sufficient balance
-            if ($adAccount->getBalance() < $totalAmount) {
+            if ($adAccount->getBalance() < $validated['amount']) {
                 return redirect()->back()
-                    ->with('error', 'Insufficient ad account balance. Total amount (including fees) exceeds available balance.');
+                    ->with('error', 'Insufficient ad account balance.');
             }
 
             // Create transaction record
