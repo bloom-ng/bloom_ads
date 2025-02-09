@@ -166,6 +166,7 @@ class AdAccountsController extends Controller
                 'currency' => 'required|in:USD,NGN',
                 'business_manager_id' => 'nullable|string|max:35',
                 'landing_page' => 'nullable|url',
+                'facebook_page_url' => 'required|url',
             ]);
 
             $user = Auth::user();
@@ -223,6 +224,7 @@ class AdAccountsController extends Controller
             'currency' => 'required|in:USD,NGN',
             'business_manager_id' => 'nullable|string|max:35',
             'landing_page' => 'nullable|url',
+            'facebook_page_url' => 'required|url',
         ]);
 
         $adAccount->update($validated);
