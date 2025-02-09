@@ -1,7 +1,7 @@
 <x-user-layout page="wallet">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-y-scroll">
                 <!-- Receipt Header -->
                 <div class="p-6 border-b">
                     <div class="flex justify-between items-start">

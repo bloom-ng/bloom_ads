@@ -1,5 +1,5 @@
 <x-user-layout page="wallet">
-    <div class="max-w-4xl mx-auto my-8 bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="max-w-4xl mx-auto my-8 bg-white shadow-lg rounded-lg overflow-y-scroll">
         <!-- Invoice Header -->
         <div class="p-6 border-b">
             <div class="flex justify-between items-start">
