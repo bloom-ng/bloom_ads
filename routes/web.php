@@ -323,6 +323,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/wallet/banks', [WalletController::class, 'getBanks'])->name('wallet.banks');
     Route::post('/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
     Route::post('/wallet/verify-account', [WalletController::class, 'verifyBankAccount'])->name('wallet.verify.account');
+
+    // User routes
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/update-dark-mode', function (Request $request) {
+            auth()->user()->update(['dark_mode' => $request->dark_mode]);
+            return response()->json(['success' => true]);
+        })->name('user.update-dark-mode');
+    });
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])

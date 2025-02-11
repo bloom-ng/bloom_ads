@@ -79,7 +79,7 @@
                     <div class="mb-3">
                         <input type="url" name="weblink"
                             class="w-full py-3 px-5 border border-[#000000] rounded-xl bg-transparent text-black"
-                            placeholder="Website Link" required>
+                            placeholder="Website Link" :required="$user_type !== 'direct_advertiser'">
                     </div>
                 @endif
 
@@ -140,4 +140,19 @@
                     class="text-[#000080] hover:underline">Login</a></p>
         </div>
     </section>
+    <script>
+        // Handle website field requirement based on user type
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTypeInput = document.querySelector('input[name="user_type"]');
+            const weblinkInput = document.querySelector('input[name="weblink"]');
+            
+            if (weblinkInput) {
+                if (userTypeInput.value === 'direct_advertiser') {
+                    weblinkInput.removeAttribute('required');
+                } else {
+                    weblinkInput.setAttribute('required', 'required');
+                }
+            }
+        });
+    </script>
 </x-guest-layout>

@@ -54,11 +54,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Facebook Page URL</label>
+                    <label class="block text-sm font-medium text-gray-700">Page URL</label>
                     <input type="url" name="facebook_page_url"
                         value="{{ old('facebook_page_url', $adAccount->facebook_page_url) }}"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        placeholder="https://facebook.com/your-page" required>
+                        placeholder="https://your-page" required>
                     @error('facebook_page_url')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

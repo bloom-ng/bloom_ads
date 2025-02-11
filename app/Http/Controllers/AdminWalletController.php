@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\WalletFundedMail;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AdminWalletController extends Controller
@@ -66,6 +69,22 @@ class AdminWalletController extends Controller
                 'reference' => 'ADMIN-' . Str::random(20),
                 'status' => 'completed'
             ]);
+
+            // Send email notification to the wallet owner
+            try {
+                $user = $wallet->organization->users->first();
+                if ($user) {
+                    Mail::to($user->email)
+                        ->send(new WalletFundedMail($wallet, $validated['amount'], $validated['description']));
+                }
+            } catch (\Exception $e) {
+                // Log the error but don't fail the transaction
+                Log::error('Failed to send wallet funded notification', [
+                    'error' => $e->getMessage(),
+                    'wallet_id' => $wallet->id,
+                    'user_id' => $user->id ?? null
+                ]);
+            }
         });
 
         return back()->with('success', 'Wallet credited successfully');

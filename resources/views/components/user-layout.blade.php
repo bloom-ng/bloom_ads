@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{ darkMode: {{ auth()->user()->dark_mode ? 'true' : 'false' }} }" :class="{ 'dark': darkMode }">
 {{-- {{$page == "newsletters" ? "active-nav-link" : ""}} --}}
 
 <head>
@@ -32,7 +32,6 @@
 
     <title>Billiing - User Dashboard</title>
 
-
     <!-- Tailwind -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
@@ -46,6 +45,10 @@
             background: #F0F0F0;
         }
 
+        .dark .bg-sidebar {
+            background: #000019;
+        }
+
         .bg-sidebar-top {
             background: #000031;
         }
@@ -55,8 +58,13 @@
             height: 35px;
         }
 
+        .dark .bg-sidebar-top {
+            background: #000019;
+        }
+
         .active-nav-link {
-            background: #6E6EAD;
+            background: #000031;
+            color: #fff;
         }
 
         .card {
@@ -64,21 +72,45 @@
             border-radius: 20px;
         }
 
+        .dark .active-nav-link {
+            background: #1E293B;
+            color: #fff;
+        }
+
+
+        .inactive-nav-link {
+            color: #000031;
+        }
+
+        .dark .inactive-nav-link {
+            color: #fff;
+        }
         .card-btn {
             background: #000080;
             border-radius: 9999px;
             color: white;
             font-size: 0.75rem;
         }
-
         .card-btn:hover {
             background: #000080;
         }
-
+        
+        .nav-item:hover {
+            background: #000031;
+            color: #fff;
+        }
         .btn {
             background: #000080;
             border-radius: 0.75rem;
             font-size: 18px;
+        }
+
+        .dark .nav-item:hover {
+            background: #1E293B;
+            color: #fff;
+        }
+
+        .dark #darklink {
             color: white;
         }
 
@@ -92,8 +124,7 @@
     </style>
 </head>
 
-<body class="font-family-karla flex">
-
+<body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script>
@@ -151,10 +182,9 @@
                 <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="Billing Logo">
             </a>
             @php
-                use Illuminate\Support\Facades\Auth;
                 use App\Models\Organization;
 
-                $currentOrganizationId = Auth::user()->settings->current_organization_id ?? null;
+                $currentOrganizationId = auth()->user()->settings->current_organization_id ?? null;
                 $currentOrganization = $currentOrganizationId ? Organization::find($currentOrganizationId) : null;
             @endphp
 
@@ -210,11 +240,11 @@
 
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
         <!-- Desktop Header -->
-        <header class="w-full items-center bg-[#F0F0F0] py-4 px-6 hidden sm:flex">
+        <header class="w-full items-center bg-[#F0F0F0] dark:bg-gray-800 py-4 px-6 hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end">
                 <button @click="isOpen = !isOpen"
                     class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ Auth::user()->name }}" />
+                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ auth()->user()->name }}" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
@@ -234,6 +264,26 @@
                 <!-- Other header items -->
             </div>
 
+            <!-- Dark Mode Toggle -->
+            <button @click="darkMode = !darkMode; $dispatch('dark-mode-changed', { darkMode })"
+                class="flex items-center justify-center px-3 py-1 mr-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                <template x-if="!darkMode">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                </template>
+                <template x-if="darkMode">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707">
+                        </path>
+                    </svg>
+                </template>
+            </button>
         </header>
 
         <!-- Mobile Header & Nav -->
@@ -297,14 +347,10 @@
             <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> {{ date('Y') }}. All Rights Reserved</p>
             <div class="flex">
-                <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
-                        alt="X Link" /></a>
-                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img src="/images/facebook.png"
-                        alt="Facebook Link" /></a>
-                <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/linkedin.png" alt="LinkedIn Link" /></a>
+                <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
+                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png" alt="X Link" /></a>
+                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img src="/images/facebook.png" alt="Facebook Link" /></a>
+                <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img src="/images/linkedin.png" alt="LinkedIn Link" /></a>
             </div>
         </footer>
     </div>
@@ -313,7 +359,23 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
-        integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+        integrity="sha256-4+XPsbX96dvkn/hc/4q0sZPYRLQ4/HV7pbwJ3/gQ2d8=" crossorigin="anonymous"></script>
+
+    <script>
+        // Listen for dark mode changes
+        window.addEventListener('dark-mode-changed', function(e) {
+            fetch('{{ route("user.update-dark-mode") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    darkMode: e.detail.darkMode
+                })
+            });
+        });
+    </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 </body>
