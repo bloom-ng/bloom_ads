@@ -187,7 +187,7 @@
         }
 
         .dashboard {
-            background: #F1F1FF;
+            background: #FFFFFF;
         }
 
         .dark .dashboard {
