@@ -15,7 +15,7 @@
             @if ($iconSvg)
                 {!! $iconSvg !!}
             @else
-                <img class=" mb-1.5" src="{{ $iconSrc }}">
+                <img class="mb-1.5 w-6 h-6" src="{{ $iconSrc }}">
             @endif
         </div>
     @endif
