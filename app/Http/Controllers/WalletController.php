@@ -89,7 +89,7 @@ class WalletController extends Controller
     {
         $validated = $request->validate([
             'wallet_id' => 'required|exists:wallets,id',
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|numeric|min:100000',
             'currency' => 'required|in:NGN',
             'wallet_currency' => 'required|in:NGN,USD,GBP'
         ]);

@@ -159,7 +159,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Amount</label>
-                    <input type="number" id="fundAmount" step="0.01" min="0.01"
+                    <input type="number" id="fundAmount" step="1" min="100000"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-4 py-2"
                         placeholder="Enter amount" oninput="updateFundingPreview()">
 
@@ -415,8 +415,8 @@
 
         function submitFlutterwavePayment() {
             const amount = document.getElementById('fundAmount').value;
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid amount');
+            if (!amount || amount <= 100000) {
+                alert('Minimum Amount is 100,000 NGN');
                 return;
             }
             document.getElementById('flutterwaveAmount').value = amount;
@@ -621,11 +621,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                                                                                                                                                                                                                                        <div class="border-b pb-4">
-                                                                                                                                                                                                                                                                                                                                                                                                            <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                                                                                                                                                                                                                            <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                                    ` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                                <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                    <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                            ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
