@@ -194,6 +194,21 @@
             background: #000013;
             color: #FFFFFF;
         }
+
+        .forms{
+            box-shadow: 0 0 4px 0 rgba(0,0,0,0.1);
+            appearance: none;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.25;
+            outline: none;
+            transition: all 0.15s ease-in-out;
+            
+        }
     </style>
 
     <!-- Add Alpine.js -->
