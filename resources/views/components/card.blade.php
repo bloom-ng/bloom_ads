@@ -21,7 +21,7 @@
     @endif
     <div class="flex justify-between items-center">
         @if ($currency)
-            <h3 class="text-xl font-bold">{{ $currency }} Wallet</h3>
+            <h3 class="text-xl font-bold">{{ $currency }}{{ $walletId ? ' Wallet' : '' }}</h3>
         @endif
         @if ($balance !== null)
             <span

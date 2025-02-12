@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
 use App\Http\Controllers\AdminMetaAdAccountsController;
 use App\Http\Controllers\BusinessManagerController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -243,6 +244,7 @@ Route::post('/reset-password', function (Request $request) {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/update-dark-mode', [UsersController::class, 'updateDarkMode'])->name('update-dark-mode');
 
     Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
     Route::get('/organization/{organization}/invites', [OrganizationController::class, 'invites'])

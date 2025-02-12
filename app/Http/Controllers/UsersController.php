@@ -13,8 +13,8 @@ class UsersController extends Controller
     public function index()
     {
         $my_date = Carbon::now()->format('l, F j, Y');
-    $users = User::orderBy('created_at', 'desc')  // Optional: sort by creation date
-        ->paginate(10);  // This will paginate with 1 user per page
+        $users = User::orderBy('created_at', 'desc')  // Optional: sort by creation date
+            ->paginate(10);  // This will paginate with 1 user per page
     
         return view('admin-dashboard.users.index', compact('users', 'my_date'));
     }
@@ -86,5 +86,14 @@ class UsersController extends Controller
 
         return redirect()->route('account')
             ->with('success', 'Profile updated successfully');
+    }
+
+    public function updateDarkMode(Request $request)
+    {
+        $user = Auth::user();
+        $user->dark_mode = $request->dark_mode;
+        $user->save();
+
+        return response()->json(['success' => true]);
     }
 } 
