@@ -43,7 +43,7 @@ class SignupController extends Controller
                 'country_code' => 'required',
                 'phone_number' => 'required',
                 'country' => 'required',
-                'weblink' => $request->user_type === 'direct_advertiser' ? 'nullable|url' : 'required|url',
+                'weblink' => $request->user_type === 'direct_advertiser' ? 'nullable' : 'required|url',
                 'terms_accepted' => 'required|accepted',
             ]);
 
@@ -56,7 +56,7 @@ class SignupController extends Controller
                 'business_name' => $request->business_name,
                 'phone_country_code' => $request->country_code,
                 'phone' => $request->phone_number,
-                'weblink' => $request->weblink,
+                'weblink' => $request->weblink ?? "",
                 'country' => $request->country
             ]);
 
