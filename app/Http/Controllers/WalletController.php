@@ -864,4 +864,22 @@ class WalletController extends Controller
             return response()->json(['error' => 'Failed to verify account'], 500);
         }
     }
+
+    public function calculateWithdrawalFees(Request $request)
+    {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'wallet_id' => 'required|exists:wallets,id'
+        ]);
+
+        $wallet = Wallet::findOrFail($validated['wallet_id']);
+        $fees = $wallet->calculateWithdrawalFees($validated['amount']);
+
+        return response()->json([
+            'processing_fee' => number_format($fees['processing_fee'], 2),
+            'vat' => number_format($fees['vat'], 2),
+            'total_amount' => number_format($fees['total_amount'], 2),
+            'amount' => number_format($validated['amount'], 2)
+        ]);
+    }
 }

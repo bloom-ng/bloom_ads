@@ -329,6 +329,32 @@
                             id="withdrawAvailableBalance">0.00</span></p>
                 </div>
 
+                <!-- Fee Details Section -->
+                <div class="fee-details hidden">
+                    <div class="bg-gray-50 rounded-md p-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-3">Transaction Details</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Amount:</span>
+                                <span id="display_amount" class="font-medium">-</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Processing Fee:</span>
+                                <span id="processing_fee" class="font-medium">-</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">VAT:</span>
+                                <span id="vat_amount" class="font-medium">-</span>
+                            </div>
+                            <div class="border-t border-gray-200 my-2"></div>
+                            <div class="flex justify-between text-sm font-medium">
+                                <span class="text-gray-700">Total Amount:</span>
+                                <span id="total_amount">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex justify-end space-x-3 mt-6">
                     <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 btn-primary rounded-md">
                         Cancel
@@ -621,11 +647,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="border-b pb-4">
-                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                ` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
@@ -860,5 +886,56 @@
             document.getElementById('createWalletModal').classList.remove('flex');
             document.getElementById('createWalletModal').classList.add('hidden');
         }
+
+        // Withdraw Processing Fee
+        function calculateFees() {
+            const withdrawalAmount = document.getElementById("withdrawAmount");
+            const feeDetails = document.querySelector(".fee-details");
+            const walletIdInput = document.getElementById("withdrawWalletId");
+            const amount = withdrawalAmount.value;
+            const walletId = walletIdInput.value;
+
+            if (amount < 1 || !walletId) {
+                feeDetails.classList.add("hidden");
+                return;
+            }
+
+            fetch(
+                    `/api/wallet/calculate-withdrawal-fees?amount=${amount}&wallet_id=${walletId}`, {
+                        headers: {
+                            Accept: "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${document.querySelector(
+                                'meta[name="csrf-token"]'
+                            ).content}`,
+                        },
+                    }
+                )
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById(
+                        "display_amount"
+                    ).textContent = `${data.amount}`;
+                    document.getElementById(
+                        "processing_fee"
+                    ).textContent = `${data.processing_fee}`;
+                    document.getElementById(
+                        "vat_amount"
+                    ).textContent = `${data.vat}`;
+                    document.getElementById(
+                        "total_amount"
+                    ).textContent = `${data.total_amount}`;
+                    feeDetails.classList.remove("hidden");
+                })
+                .catch((error) => {
+                    console.error("Error calculating fees:", error);
+                    feeDetails.classList.add("hidden");
+                });
+        }
+
+        document.getElementById("withdrawAmount").addEventListener("change", function() {
+            calculateFees();
+        });
     </script>
 </x-user-layout>
