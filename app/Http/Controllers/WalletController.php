@@ -621,118 +621,156 @@ class WalletController extends Controller
 
     public function withdraw(Request $request)
     {
+        $validated = $request->validate([
+            'wallet_id' => 'required|exists:wallets,id',
+            'amount' => 'required|numeric|min:1',
+            'account_number' => 'required|string',
+            'bank_code' => 'required|string',
+        ]);
+
+        $wallet = Wallet::findOrFail($validated['wallet_id']);
+
+        // Verify bank account first
+        $flutterwaveService = new FlutterwaveService();
+        $accountVerification = $flutterwaveService->verifyBankAccount(
+            $validated['account_number'],
+            $validated['bank_code']
+        );
+
+        $accountName = $accountVerification['data']['account_name'];
+
+        // Calculate fees
+        $fees = $wallet->calculateWithdrawalFees($validated['amount']);
+        $totalAmount = $fees['total_amount'];
+
+        // Check if user has permission
+        $organization = $wallet->organization;
+        $userRole = $organization->users()->where('user_id', auth()->id())->first()->pivot->role;
+        if (!in_array($userRole, ['owner'])) {
+            throw new \Exception('You do not have permission to withdraw funds.');
+        }
+        // Check if wallet has sufficient balance
+        if ($wallet->getBalance() < $totalAmount) {
+            return back()->with('error', 'Insufficient wallet balance including fees');
+        }
+
+        if ($accountVerification['status'] !== 'success') {
+            throw new \Exception($accountVerification['message']);
+        }
+
+        $reference = 'WD-' . Str::random(20);
+
         try {
-            $validated = $request->validate([
-                'wallet_id' => 'required|exists:wallets,id',
-                'amount' => 'required|numeric|min:0',
-                'bank_code' => 'required|string',
-                'account_number' => 'required|string',
-            ]);
-
-            DB::beginTransaction();
-
-            $wallet = Wallet::findOrFail($validated['wallet_id']);
-
-            // Check if user has permission
-            $organization = $wallet->organization;
-            $userRole = $organization->users()->where('user_id', auth()->id())->first()->pivot->role;
-            if (!in_array($userRole, ['owner'])) {
-                throw new \Exception('You do not have permission to withdraw funds.');
-            }
-
-            $balance = $wallet->getBalance();
-            if ($balance < $validated['amount']) {
-                throw new \Exception("Insufficient wallet balance. Available: {$balance}, Requested: {$validated['amount']}");
-            }
-
-            // Verify bank account first
-            $flutterwaveService = new FlutterwaveService();
-            $accountVerification = $flutterwaveService->verifyBankAccount(
-                $validated['account_number'],
-                $validated['bank_code']
-            );
-
-            if ($accountVerification['status'] !== 'success') {
-                throw new \Exception($accountVerification['message']);
-            }
-
-            $accountName = $accountVerification['data']['account_name'];
-
-            // Create a pending withdrawal transaction
-            $reference = 'WD_' . Str::random(16);
-            $transaction = $wallet->transactions()->create([
-                'amount' => $validated['amount'],
-                'currency' => $wallet->currency,
-                'type' => 'debit',
-                'status' => 'pending',
-                'description' => "Withdrawal to {$accountName}",
-                'reference' => $reference,
-                'rate' => 1.0,
-                'source_currency' => $wallet->currency,
-                // 'meta' => [
-                //     'bank_code' => $validated['bank_code'],
-                //     'account_number' => $validated['account_number'],
-                //     'account_name' => $accountName,
-                //     'withdrawal_type' => 'bank_transfer'
-                // ]
-            ]);
-
-            // Initiate transfer
-            $data = [
-                'account_number' => $validated['account_number'],
-                'bank_code' => $validated['bank_code'],
-                'amount' => $validated['amount'],
-                'currency' => $wallet->currency,
-                'reference' => $reference,
-                'narration' => "Billing Withdrawal to {$accountName}",
-                'callback_url' => route('wallet.withdrawal.callback'),
-                'debit_currency' => 'NGN'
-            ];
-
-            $response = $flutterwaveService->initiateTransfer($data);
-
-            if ($response['status'] == 'success' && $response['data']['status'] == "NEW") {
-                // Update transaction with transfer details
-                $transaction->update([
-                    'status' => 'pending',
-                    // 'provider_reference' => $response['data']['id'] ?? null,
-                    // 'meta' => array_merge($transaction->meta, [
-                    //     'transfer_id' => $response['data']['id'] ?? null,
-                    //     'transfer_status' => $response['data']['status'] ?? 'pending',
-                    //     'bank_name' => $response['data']['bank_name'] ?? null,
-                    //     'fee' => $response['data']['fee'] ?? 0
-                    // ])
-                ]);
-            } elseif ($response['status'] == 'success' && $response['data']['status'] == "SUCCESSFUL") {
-                $transaction->update([
-                    'status' => 'completed',
-                ]);
-            } elseif ($response['status'] == 'success' && $response['data']['status'] == "PENDING") {
-                $transaction->update([
-                    'status' => 'pending',
-                ]);
-            } elseif ($response['status'] == 'success' && $response['data']['status'] == "FAILED") {
-                $transaction->update([
-                    'status' => 'failed',
-                ]);
-            }
-
-            DB::commit();
-            return back()->with('success', 'Withdrawal initiated successfully. The funds will be credited to your account shortly.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Withdrawal failed:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $validated ?? null,
-                'wallet_info' => isset($wallet) ? [
-                    'id' => $wallet->id,
+            DB::transaction(function () use ($wallet, $validated, $accountName, $reference, $fees, $flutterwaveService) {
+                // Create main withdrawal transaction
+                $transaction = $wallet->transactions()->create([
+                    'amount' => $validated['amount'],
                     'currency' => $wallet->currency,
-                    'balance' => $wallet->getBalance()
-                ] : null
+                    'type' => 'debit',
+                    'status' => 'pending',
+                    'description' => "Withdrawal to {$accountName}",
+                    'reference' => $reference,
+                    'rate' => 1.0,
+                    'source_currency' => $wallet->currency,
+                ]);
+
+                // Create processing fee transaction
+                $processing = $wallet->transactions()->create([
+                    'amount' => $fees['processing_fee'],
+                    'currency' => $wallet->currency,
+                    'type' => 'processing_fee',
+                    'status' => 'completed',
+                    'description' => "Processing fee for withdrawal - {$reference}",
+                    'reference' => $reference . '-PROC',
+                    'rate' => 1.0,
+                    'source_currency' => $wallet->currency,
+                ]);
+
+                // Create VAT transaction
+                $vat = $wallet->transactions()->create([
+                    'amount' => $fees['vat'],
+                    'currency' => $wallet->currency,
+                    'type' => 'vat',
+                    'status' => 'completed',
+                    'description' => "VAT for withdrawal processing fee - {$reference}",
+                    'reference' => $reference . '-VAT',
+                    'rate' => 1.0,
+                    'source_currency' => $wallet->currency,
+                ]);
+
+                // Initiate transfer
+                $data = [
+                    'account_number' => $validated['account_number'],
+                    'bank_code' => $validated['bank_code'],
+                    'amount' => $validated['amount'],
+                    'currency' => $wallet->currency,
+                    'reference' => $reference,
+                    'narration' => "Billing Withdrawal to {$accountName}",
+                    'callback_url' => route('wallet.withdrawal.callback'),
+                    'debit_currency' => 'NGN'
+                ];
+
+                $response = $flutterwaveService->initiateTransfer($data);
+
+                if ($response['status'] == 'success' && $response['data']['status'] == "NEW") {
+                    // Update transaction with transfer details
+                    $transaction->update([
+                        'status' => 'pending',
+                        // 'provider_reference' => $response['data']['id'] ?? null,
+                        // 'meta' => array_merge($transaction->meta, [
+                        //     'transfer_id' => $response['data']['id'] ?? null,
+                        //     'transfer_status' => $response['data']['status'] ?? 'pending',
+                        //     'bank_name' => $response['data']['bank_name'] ?? null,
+                        //     'fee' => $response['data']['fee'] ?? 0
+                        // ])
+                    ]);
+                    $processing->update([
+                        'status' => 'pending',
+                    ]);
+                    $vat->update([
+                        'status' => 'pending',
+                    ]);
+                } elseif ($response['status'] == 'success' && $response['data']['status'] == "SUCCESSFUL") {
+                    $transaction->update([
+                        'status' => 'completed',
+                    ]);
+                    $processing->update([
+                        'status' => 'completed',
+                    ]);
+                    $vat->update([
+                        'status' => 'completed',
+                    ]);
+                } elseif ($response['status'] == 'success' && $response['data']['status'] == "PENDING") {
+                    $transaction->update([
+                        'status' => 'pending',
+                    ]);
+                    $processing->update([
+                        'status' => 'pending',
+                    ]);
+                    $vat->update([
+                        'status' => 'pending',
+                    ]);
+                } elseif ($response['status'] == 'success' && $response['data']['status'] == "FAILED") {
+                    $transaction->update([
+                        'status' => 'failed',
+                    ]);
+                    $processing->update([
+                        'status' => 'failed',
+                    ]);
+                    $vat->update([
+                        'status' => 'failed',
+                    ]);
+                }
+            });
+
+            return back()->with('success', 'Withdrawal initiated successfully');
+        } catch (\Exception $e) {
+            Log::error('Withdrawal Error:', [
+                'message' => $e->getMessage(),
+                'wallet_id' => $wallet->id
             ]);
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Error processing withdrawal: ' . $e->getMessage());
         }
     }
 
@@ -753,7 +791,9 @@ class WalletController extends Controller
             $reference = $data['reference'];
 
             $transaction = WalletTransaction::where('reference', $reference)->first();
-            if (!$transaction) {
+            $processingFeeTransaction = WalletTransaction::where('reference', $reference . '-PROC')->where('type', 'processing_fee')->first();
+            $vatTransaction = WalletTransaction::where('reference', $reference . '-VAT')->where('type', 'vat')->first();
+            if (!$transaction && !$processingFeeTransaction && !$vatTransaction) {
                 Log::error('Transaction not found for reference: ' . $reference);
                 return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
             }
@@ -767,17 +807,20 @@ class WalletController extends Controller
 
             // Update transaction status based on transfer status
             $status = strtoupper($data['status']);
-            $transaction->update([
-                'status' => $status === 'SUCCESSFUL' ? 'completed' : ($status === 'FAILED' ? 'failed' : 'pending'),
-                // 'meta' => [
-                //     'transfer_id' => $data['id'],
-                //     'bank_name' => $data['bank_name'],
-                //     'account_number' => $data['account_number'],
-                //     'fee' => $data['fee'],
-                //     'complete_message' => $data['complete_message'],
-                //     'narration' => $data['narration']
-                // ]
-            ]);
+            DB::transaction(function () use ($transaction, $status, $reference, $processingFeeTransaction, $vatTransaction) {
+                $transaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : ($status === 'FAILED' ? 'failed' : 'pending'),
+                ]);
+
+
+                $processingFeeTransaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : 'failed',
+                ]);
+
+                $vatTransaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : 'failed',
+                ]);
+            });
 
             // Notify user about the transfer status
             try {

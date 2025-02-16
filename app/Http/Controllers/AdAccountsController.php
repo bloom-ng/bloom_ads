@@ -313,17 +313,37 @@ class AdAccountsController extends Controller
                 'description' => 'Deposit to ad account'
             ]);
 
-            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager) {
+            DB::transaction(function () use ($wallet, $transaction, $totalAmount, $adAccount, $validated, $businessManager, $fees) {
                 // Save transaction
                 $transaction->save();
 
-                // Create a wallet transaction to deduct the amount
+                // Create a wallet transaction for the base amount
                 $wallet->transactions()->create([
-                    'amount' => $totalAmount, // Negative amount for debit
+                    'amount' => $validated['amount'], // Just the base amount
                     'type' => 'debit',
                     'currency' => $wallet->currency,
                     'description' => 'Ad Account Deposit - ' . $transaction->reference,
                     'reference' => $transaction->reference,
+                    'status' => 'completed'
+                ]);
+
+                // Create a wallet transaction for VAT
+                $wallet->transactions()->create([
+                    'amount' => $fees['vat'],
+                    'type' => 'vat',
+                    'currency' => $wallet->currency,
+                    'description' => 'VAT for Ad Account Deposit - ' . $transaction->reference,
+                    'reference' => $transaction->reference . '-VAT',
+                    'status' => 'completed'
+                ]);
+
+                // Create a wallet transaction for service fee
+                $wallet->transactions()->create([
+                    'amount' => $fees['service_fee'],
+                    'type' => 'service_charge',
+                    'currency' => $wallet->currency,
+                    'description' => 'Service Fee for Ad Account Deposit - ' . $transaction->reference,
+                    'reference' => $transaction->reference . '-FEE',
                     'status' => 'completed'
                 ]);
 
