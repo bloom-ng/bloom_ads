@@ -83,7 +83,7 @@ class Wallet extends Model
                         (SELECT SUM(amount) 
                         FROM wallet_transactions 
                         WHERE wallet_transactions.wallet_id = wallets.id 
-                        AND type = "debit" 
+                        AND type IN ("debit", "processing_fee", "vat", "service_charge") 
                         AND status = "completed"), 
                         0
                     )
@@ -99,10 +99,33 @@ class Wallet extends Model
             ->sum('amount');
 
         $debits = $this->transactions()
-            ->where('type', 'debit')
+            ->whereIn('type', ['debit', 'processing_fee', 'vat', 'service_charge'])
             ->where('status', 'completed')
             ->sum('amount');
 
         return $credits - $debits;
+    }
+
+    public function calculateWithdrawalFees($amount)
+    {
+        $processingFee = 0;
+        $vat = 0;
+
+        if ($amount <= 5000) {
+            $processingFee = 100;
+            $vat = $amount * 0.015; // 1.5% of the amount
+        } elseif ($amount <= 50000) {
+            $processingFee = 150;
+            $vat = $amount * 0.0375; // 3.75% of the amount
+        } else {
+            $processingFee = 200;
+            $vat = $amount * 0.075; // 7.5% of the amount
+        }
+
+        return [
+            'processing_fee' => $processingFee,
+            'vat' => $vat,
+            'total_amount' => $amount + $processingFee + $vat
+        ];
     }
 }

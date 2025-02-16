@@ -318,7 +318,11 @@
         async function updateSpendCapInfo(modalType) {
             try {
 
-                const response = await fetch(`/api/ad-accounts/{{ $adAccount->id }}/spend-cap`);
+                const response = await fetch(`/api/ad-accounts/{{ $adAccount->id }}/spend-cap`, {
+                    headers: {
+                        'Authorization': `Bearer ${document.querySelector('meta[name="csrf-token"]').content}`
+                    }
+                });
                 const data = await response.json();
 
                 const spendCap = parseFloat(data.spend_cap) || 0;
