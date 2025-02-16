@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Include Tailwind CSS -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Include Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,8 +36,7 @@
 
     <title>Billiing - User Dashboard</title>
 
-    <!-- Tailwind -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
 
