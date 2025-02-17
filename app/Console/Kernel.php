@@ -12,9 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Fetch currency rates twice daily at 00:00 and 12:00
+        // Fetch currency rates twice daily at 9am and 3pm WAT
         $schedule->command('currency:fetch-rates')
-                ->twiceDaily(0, 12)
+                ->dailyAt('09:00', 'Africa/Lagos')
+                ->dailyAt('15:00', 'Africa/Lagos')
                 ->withoutOverlapping();
     }
 

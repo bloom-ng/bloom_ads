@@ -196,7 +196,7 @@
                         <p class="text-white font-semibold">Connect via WhatsApp</p>
                     </a>
 
-                    <a href="https://bloomdigitmedia.com/help" class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
+                    <a href="https://bloomdigitmedia.com/" class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="40" height="40" fill="url(#pattern0_999_143)" />

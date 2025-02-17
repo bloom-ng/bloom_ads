@@ -16,39 +16,44 @@ class FetchCurrencyRates extends Command
         $apiKey = config('services.currency_freaks.api_key');
         
         try {
-            // Fetch NGN rate
-            $ngnResponse = Http::get("https://api.currencyfreaks.com/v2.0/rates/latest", [
-                'apikey' => $apiKey,
-                'symbols' => 'NGN'
-            ]);
+            // Get the margin from admin settings (default to 0 if not set)
+            // This will be a fixed amount in NGN to add to the rates
+            $margin = AdminSetting::where('key', 'currency_margin')
+                ->first()?->value ?? 0;
             
-            // Fetch GBP rate
-            $gbpResponse = Http::get("https://api.currencyfreaks.com/v2.0/rates/latest", [
+            // Fetch all three rates in a single API call
+            $response = Http::get("https://api.currencyfreaks.com/v2.0/rates/latest", [
                 'apikey' => $apiKey,
-                'symbols' => 'GBP'
+                'symbols' => 'USD,GBP,NGN'
             ]);
 
-            if ($ngnResponse->successful() && $gbpResponse->successful()) {
-                $ngnData = $ngnResponse->json();
-                $gbpData = $gbpResponse->json();
-
-                // Get the USD/NGN rate first (this is our base for conversion)
-                $ngnRate = $ngnData['rates']['NGN'] ?? '0';
-                $gbpRate = $gbpData['rates']['GBP'] ?? '0';
-
-                // Convert GBP rate to NGN (if GBP/USD is 0.79, and USD/NGN is 1800, then GBP/NGN is 0.79 * 1800)
-                $gbpToNgnRate = $gbpRate * $ngnRate;
-
-                // Store NGN rate
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                // Get the rates (USD is base in API response)
+                $usdRate = $data['rates']['USD'] ?? '1';  // Will be 1 since USD is base
+                $gbpRate = $data['rates']['GBP'] ?? '0';
+                $ngnRate = $data['rates']['NGN'] ?? '0';
+                
+                // Add fixed margin to NGN rates
+                $usdToNgnRate = $ngnRate + $margin;
+                
+                // Calculate GBP rate in NGN using:
+                // If 1 USD = 0.793 GBP and 1 USD = 1530 NGN
+                // Then 1 GBP = 1530/0.793 NGN
+                // Then add margin
+                $gbpToNgnRate = ($ngnRate / $gbpRate) + $margin;
+                
+                // Store USD rate (in NGN)
                 AdminSetting::updateOrCreate(
-                    ['key' => 'ngn_rate'],
+                    ['key' => 'usd_rate'],
                     [
-                        'name' => 'NGN RATE',
-                        'value' => $ngnRate,
+                        'name' => 'USD RATE',
+                        'value' => $usdToNgnRate,
                     ]
                 );
 
-                // Store GBP rate
+                // Store GBP rate (in NGN)
                 AdminSetting::updateOrCreate(
                     ['key' => 'gbp_rate'],
                     [
@@ -58,6 +63,15 @@ class FetchCurrencyRates extends Command
                 );
 
                 $this->info('Currency rates updated successfully.');
+                $this->info("Base Currency: NGN");
+                $this->info("Fixed Margin: {$margin} NGN");
+                $this->info("USD Rate (with margin): 1 USD = {$usdToNgnRate} NGN");
+                $this->info("GBP Rate (with margin): 1 GBP = {$gbpToNgnRate} NGN");
+                
+                // For verification
+                $this->info("\nOriginal API Response Rates (USD base):");
+                $this->info("1 USD = {$ngnRate} NGN");
+                $this->info("1 USD = {$gbpRate} GBP");
             } else {
                 $this->error('Failed to fetch currency rates.');
             }

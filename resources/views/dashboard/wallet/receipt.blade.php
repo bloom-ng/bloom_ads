@@ -78,7 +78,7 @@
                                 <div>
                                     <h3 class="text-sm font-medium text-gray-500">Exchange Rate</h3>
                                     <p class="mt-1 text-lg font-medium text-gray-900">
-                                        1 {{ $transaction->source_currency }} = {{ number_format($transaction->rate, 2) }} {{ $transaction->currency }}
+                                        1 {{ $transaction->source_currency }} = {{ number_format($transaction->rate, 4) }} {{ $transaction->currency }}
                                     </p>
                                 </div>
                             </div>
