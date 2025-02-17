@@ -74,4 +74,8 @@ return [
         'access_token' => env('META_ACCESS_TOKEN'),
     ],
 
+    'currency_freaks' => [
+        'api_key' => env('CURRENCY_FREAKS_API_KEY'),
+    ],
+
 ];

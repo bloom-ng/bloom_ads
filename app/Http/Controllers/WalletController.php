@@ -383,6 +383,8 @@ class WalletController extends Controller
 
             // Calculate conversion rate and converted amount
             $rate = 1;
+            $convertedAmount = $validated['amount'];
+
             if ($sourceWallet->currency === 'NGN') {
                 if ($destinationWallet->currency === 'USD') {
                     $rate = 1 / Wallet::getRate('usd');
@@ -413,7 +415,7 @@ class WalletController extends Controller
                     'reference' => 'TRF-' . uniqid(),
                     'status' => 'completed',
                     'rate' => $rate,
-                    'source_currency' => $sourceWallet->currency
+                    'source_currency' => $destinationWallet->currency
                 ]);
                 // $sourceWallet->decrement('balance', $validated['amount']);
 

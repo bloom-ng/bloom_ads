@@ -24,7 +24,8 @@ class Wallet extends Model
     {
         // Cache the rate for 5 minutes to avoid frequent DB hits
         return Cache::remember("currency_rate_{$currency}", 300, function () use ($currency) {
-            return AdminSetting::where('key', "{$currency}_rate")->value('value') ?? 0;
+            $key = strtolower($currency) . '_rate';
+            return AdminSetting::where('key', $key)->value('value') ?? 0;
         });
     }
 
