@@ -89,8 +89,8 @@ class FlutterwaveService
             return false;
         }
 
-        $computedSignature = hash_hmac('sha256', $payload, $this->secretKey);
-        return hash_equals($signature, $computedSignature);
+        $secretHash = config('services.flutterwave.webhook_hash');
+        return hash_equals($signature, $secretHash);
     }
 
     /**

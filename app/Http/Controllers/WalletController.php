@@ -100,27 +100,45 @@ class WalletController extends Controller
         $conversionRate = $wallet->getConversionRate($validated['currency']);
         $convertedAmount = $validated['amount'] * $conversionRate;
 
+        // Get the conversion rate and calculate converted amount
+        $rate = $wallet->getConversionRate('NGN');
+
+        // Create transaction record with pending status
+        $transaction = $wallet->transactions()->create([
+            'amount' => $convertedAmount,
+            'currency' => $wallet->currency,
+            'type' => 'credit',
+            'description' => 'Wallet funding via Flutterwave',
+            'reference' => 'WALLET-' . uniqid(),
+            'status' => 'pending',
+            'rate' => $rate,
+            'source_currency' => 'NGN'
+        ]);
+
         // Initialize Flutterwave payment
         $flutterwave = new FlutterwaveService();
-        $user = auth()->user();
+        $user = Auth::user();
 
         $response = $flutterwave->initializePayment([
             'amount' => $validated['amount'],
             'currency' => $validated['currency'],
-            'reference' => 'WALLET-' . uniqid(),
+            'reference' => $transaction->reference,
             'callback_url' => route('wallet.fund.flutterwave.callback'),
             'customer_email' => $user->email,
             'customer_name' => $user->name,
             'organization_id' => $wallet->organization_id,
             'wallet_id' => $wallet->id,
             'converted_amount' => $convertedAmount,
-            'wallet_currency' => $validated['wallet_currency']
+            'wallet_currency' => $validated['wallet_currency'],
+            'transaction_id' => $transaction->id
         ]);
 
         if (isset($response['data']['link'])) {
             return redirect($response['data']['link']);
         }
 
+        // If payment initialization fails, mark transaction as failed
+        $transaction->update(['status' => 'failed']);
         return back()->with('error', 'Unable to initialize payment. Please try again.');
     }
 
@@ -215,39 +233,37 @@ class WalletController extends Controller
             if ($response['status'] === 'success' && $response['data']['status'] === 'successful') {
                 $data = $response['data'];
 
-                // Find the wallet
-                $walletId = $data['meta']['wallet_id'] ?? null;
-                $wallet = Wallet::findOrFail($walletId);
+                // Find the transaction by reference
+                $transaction = WalletTransaction::where('reference', $data['tx_ref'])->first();
 
-                // Get the conversion rate and calculate converted amount
-                $rate = $wallet->getConversionRate('NGN');
-                $convertedAmount = $data['amount'] * $rate;
+                if (!$transaction) {
+                    Log::error('Transaction not found for reference: ' . $data['tx_ref']);
+                    return redirect()->route('wallet.index')
+                        ->with('error', 'Transaction not found.');
+                }
 
-                // Create transaction record with rate and source currency
-                $transaction = $wallet->transactions()->create([
-                    'amount' => $convertedAmount,
-                    'currency' => $wallet->currency,
-                    'type' => 'credit',
-                    'description' => 'Wallet funding via Flutterwave',
-                    'reference' => $data['tx_ref'],
-                    'status' => 'completed',
-                    'rate' => $rate,
-                    'source_currency' => 'NGN'
-                ]);
+                // Update transaction if not already completed
+                if ($transaction->status !== 'completed') {
+                    $transaction->update([
+                        'status' => 'completed',
+                        // 'meta' => array_merge($transaction->meta ?? [], [
+                        //     'flutterwave_id' => $data['id'],
+                        //     'flutterwave_reference' => $data['flw_ref']
+                        // ])
+                    ]);
 
-                if ($transaction->status === 'completed') {
-                    // After successful funding
+                    // Send notification
                     try {
-                        $user = auth()->user();
-                        $amount = number_format($convertedAmount, 2);
+                        $user = Auth::user();
+                        $amount = number_format($transaction->amount, 2);
 
                         $user->notify(new WalletNotification([
                             'subject' => 'Wallet Funded Successfully',
-                            'message' => "Your wallet has been funded with {$wallet->currency} {$amount} via Flutterwave",
+                            'message' => "Your wallet has been funded with {$transaction->currency} {$amount} via Flutterwave",
                             'type' => 'wallet_funded',
-                            'amount' => $convertedAmount,
-                            'currency' => $wallet->currency,
-                            'wallet_id' => $wallet->id
+                            'amount' => $transaction->amount,
+                            'currency' => $transaction->currency,
+                            'wallet_id' => $transaction->wallet_id
                         ]));
                     } catch (\Exception $e) {
                         Log::error('Failed to send wallet funding notification: ' . $e->getMessage());
@@ -883,5 +899,117 @@ class WalletController extends Controller
             'total_amount' => number_format($fees['total_amount'], 2),
             'amount' => number_format($validated['amount'], 2)
         ]);
+    }
+
+    // Add new webhook handler method
+    public function handleFlutterwaveWebhook(Request $request)
+    {
+        // Verify webhook signature
+        $flutterwave = new FlutterwaveService();
+        $signature = $request->header('verif-hash');
+
+        if (!$signature || !$flutterwave->verifyWebhookSignature($signature, $request->getContent())) {
+            Log::error('Invalid webhook signature');
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
+        }
+
+        $payload = $request->all();
+        $event = $payload['event'];
+
+        if ($event === 'charge.completed') {
+            $data = $payload['data'];
+
+            // Find transaction by reference
+            $transaction = WalletTransaction::where('reference', $data['tx_ref'])->first();
+
+            if (!$transaction) {
+                Log::error('Transaction not found for reference: ' . $data['tx_ref']);
+                return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+            }
+
+            // Update transaction if not already completed
+            if ($transaction->status !== 'completed') {
+                $transaction->update([
+                    'status' => $data['status'] === 'successful' ? 'completed' : 'failed',
+                    'meta' => array_merge($transaction->meta ?? [], [
+                        'flutterwave_id' => $data['id'],
+                        'flutterwave_reference' => $data['flw_ref']
+                    ])
+                ]);
+
+                // Send notification
+                try {
+                    $user = $transaction->wallet->organization->users()->first();
+                    $amount = number_format($transaction->amount, 2);
+
+                    $user->notify(new WalletNotification([
+                        'subject' => 'Wallet Funded Successfully',
+                        'message' => "Your wallet has been funded with {$transaction->currency} {$amount} via Flutterwave",
+                        'type' => 'wallet_funded',
+                        'amount' => $transaction->amount,
+                        'currency' => $transaction->currency,
+                        'wallet_id' => $transaction->wallet_id
+                    ]));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send wallet funding notification: ' . $e->getMessage());
+                }
+            }
+            return response()->json(['status' => 'success']);
+        } elseif ($event === 'transfer.completed') {
+            $data = $request->input('data');
+            $reference = $data['reference'];
+
+            $transaction = WalletTransaction::where('reference', $reference)->first();
+            $processingFeeTransaction = WalletTransaction::where('reference', $reference . '-PROC')->where('type', 'processing_fee')->first();
+            $vatTransaction = WalletTransaction::where('reference', $reference . '-VAT')->where('type', 'vat')->first();
+            if (!$transaction && !$processingFeeTransaction && !$vatTransaction) {
+                Log::error('Transaction not found for reference: ' . $reference);
+                return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
+            }
+
+            // Check if the transaction has been completed
+            $transaction->refresh(); // Refresh the transaction to get the latest status
+            if ($transaction->status === 'completed') {
+                Log::info('Transaction already completed for reference: ' . $reference);
+                return response()->json(['status' => 'error', 'message' => 'Transaction already completed'], 400);
+            }
+
+            // Update transaction status based on transfer status
+            $status = strtoupper($data['status']);
+            DB::transaction(function () use ($transaction, $status, $reference, $processingFeeTransaction, $vatTransaction) {
+                $transaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : ($status === 'FAILED' ? 'failed' : 'pending'),
+                ]);
+
+
+                $processingFeeTransaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : 'failed',
+                ]);
+
+                $vatTransaction->update([
+                    'status' => $status === 'SUCCESSFUL' ? 'completed' : 'failed',
+                ]);
+            });
+
+            // Notify user about the transfer status
+            try {
+                $user = $transaction->wallet->organization->users()->first();
+                $amount = number_format(abs($transaction->amount), 2);
+
+                $message = $status === 'SUCCESSFUL'
+                    ? "Your withdrawal of {$transaction->currency} {$amount} has been completed successfully."
+                    : "Your withdrawal of {$transaction->currency} {$amount} has failed.";
+
+                $user->notify(new WalletNotification([
+                    'subject' => 'Withdrawal ' . ucfirst(strtolower($status)),
+                    'message' => $message,
+                    'type' => $status === 'SUCCESSFUL' ? 'withdrawal_success' : 'withdrawal_failed'
+                ]));
+            } catch (\Exception $e) {
+                Log::error('Failed to send withdrawal notification: ' . $e->getMessage());
+            }
+
+            return response()->json(['status' => 'success']);
+        }
     }
 }

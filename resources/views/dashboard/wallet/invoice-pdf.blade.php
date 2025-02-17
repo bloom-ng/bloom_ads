@@ -56,7 +56,7 @@
         </div>
 
         <!-- Content Section -->
-        <div class="bg-white rounded-t-3xl p-8 h-[71vh] flex flex-col justify-between">
+        <div class="bg-white rounded-t-3xl p-8 min-h-[65vh] flex flex-col justify-between">
             <!-- Table -->
             <table class="w-full mb-8">
                 <thead>

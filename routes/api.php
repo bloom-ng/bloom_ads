@@ -31,3 +31,5 @@ Route::middleware('auth:admin')->group(function () {
 // Flutterwave Webhooks
 Route::post('/webhooks/flutterwave/transfer', [FlutterwaveWebhookController::class, 'handleTransferWebhook'])
     ->name('webhooks.flutterwave.transfer');
+
+Route::post('webhooks/flutterwave', [WalletController::class, 'handleFlutterwaveWebhook']);

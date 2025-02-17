@@ -121,11 +121,11 @@
                             class="font-semibold">{{ $currencySymbol }}{{ number_format($transaction->amount, 2) }}</span>
                     </div>
 
-                    <p class="text-sm text-gray-600 w-[80%] self-center">
+                    {{-- <p class="text-sm text-gray-600 w-[80%] self-center">
                         Kindly pay to the account number provided in this invoice. If for any reason a refund is
                         requested,
                         administrative charge will be deducted before refund is made
-                    </p>
+                    </p> --}}
                 </div>
             </div>
 
