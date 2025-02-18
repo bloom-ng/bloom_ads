@@ -9,21 +9,37 @@ class UpdateAdminSettingsForCurrencyFreaks extends Migration
 {
     public function up()
     {
-        // Remove any existing manual rate settings
-        DB::table('admin_settings')
-            ->whereIn('key', ['usd_rate', 'gbp_rate', 'ngn_rate'])
-            ->delete();
+        // Add or update the currency rate settings with default values
+        DB::table('admin_settings')->updateOrInsert(
+            ['key' => 'usd_rate'],
+            [
+                'name' => 'USD RATE',
+                'value' => '1800',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        DB::table('admin_settings')->updateOrInsert(
+            ['key' => 'gbp_rate'],
+            [
+                'name' => 'GBP RATE',
+                'value' => '2300',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
 
         // Add the currency margin setting if it doesn't exist
-        if (!DB::table('admin_settings')->where('key', 'currency_margin')->exists()) {
-            DB::table('admin_settings')->insert([
-                'key' => 'currency_margin',
+        DB::table('admin_settings')->updateOrInsert(
+            ['key' => 'currency_margin'],
+            [
                 'name' => 'Currency Conversion Margin (NGN)',
                 'value' => '0',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        }
+            ]
+        );
     }
 
     public function down()
@@ -33,29 +49,25 @@ class UpdateAdminSettingsForCurrencyFreaks extends Migration
             ->where('key', 'currency_margin')
             ->delete();
 
-        // Re-add default rate settings
-        DB::table('admin_settings')->insert([
+        // Reset rate settings to their original values
+        DB::table('admin_settings')->updateOrInsert(
+            ['key' => 'usd_rate'],
             [
-                'key' => 'usd_rate',
                 'name' => 'USD RATE',
-                'value' => '1530',
+                'value' => '1800',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ]
+        );
+
+        DB::table('admin_settings')->updateOrInsert(
+            ['key' => 'gbp_rate'],
             [
-                'key' => 'gbp_rate',
                 'name' => 'GBP RATE',
-                'value' => '1930',
+                'value' => '2300',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            [
-                'key' => 'ngn_rate',
-                'name' => 'NGN RATE',
-                'value' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+            ]
+        );
     }
 }

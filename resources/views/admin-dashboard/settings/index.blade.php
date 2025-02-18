@@ -21,10 +21,12 @@
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
                         @foreach($settings as $setting)
-                            @if(!in_array($setting->key, ['usd_rate', 'gbp_rate']))
-                                <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                    <td class="py-3 px-6 text-left">{{ $setting->name }}</td>
-                                    <td class="py-3 px-6 text-left">
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 text-left">{{ $setting->name }}</td>
+                                <td class="py-3 px-6 text-left">
+                                    @if(in_array($setting->key, ['usd_rate', 'gbp_rate']))
+                                        <span class="text-gray-800">{{ $setting->value }} NGN</span>
+                                    @else
                                         <form method="POST" action="{{ route('admin.adminsettings.update', $setting->id) }}" class="flex items-center">
                                             @csrf
                                             @method('POST')
@@ -46,22 +48,22 @@
                                                 Update
                                             </button>
                                         </form>
-                                    </td>
-                                    <td class="py-3 px-6 text-center">
-                                        @if($setting->key !== 'currency_margin')
-                                            <form method="POST" action="/admin/adminsettings/{{ $setting->id }}" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-                                                        onclick="return confirm('Are you sure you want to delete this setting?')">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endif
+                                    @endif
+                                </td>
+                                <td class="py-3 px-6 text-center">
+                                    @if(!in_array($setting->key, ['usd_rate', 'gbp_rate', 'currency_margin']))
+                                        <form method="POST" action="{{ route('admin.adminsettings.destroy', $setting->id) }}" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                                                    onclick="return confirm('Are you sure you want to delete this setting?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
