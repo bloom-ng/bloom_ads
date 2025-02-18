@@ -13,9 +13,9 @@ class FetchCurrencyRates extends Command
 
     public function handle()
     {
-        $apiKey = config('services.currency_freaks.api_key');
-        
         try {
+            $apiKey = config('services.currency_freaks.api_key');
+            
             // Get the margin from admin settings (default to 0 if not set)
             // This will be a fixed amount in NGN to add to the rates
             $margin = AdminSetting::where('key', 'currency_margin')
@@ -34,6 +34,18 @@ class FetchCurrencyRates extends Command
                 $usdRate = $data['rates']['USD'] ?? '1';  // Will be 1 since USD is base
                 $gbpRate = $data['rates']['GBP'] ?? '0';
                 $ngnRate = $data['rates']['NGN'] ?? '0';
+                
+                // If NGN rate is 0 or not present, use default rate
+                if (empty($ngnRate) || $ngnRate == '0') {
+                    $ngnRate = '1800'; // Default NGN rate when API fails
+                    $this->info('Using default NGN rate: 1800');
+                }
+
+                // If GBP rate is 0 or not present, use a default rate of 1 GBP = 2300 NGN
+                if (empty($gbpRate) || $gbpRate == '0') {
+                    $gbpRate = '0.7826'; // This gives approximately 2300 NGN when NGN is 1800
+                    $this->info('Using default GBP rate: 0.7826 (approx 2300 NGN)');
+                }
                 
                 // Add fixed margin to NGN rates
                 $usdToNgnRate = $ngnRate + $margin;
@@ -73,10 +85,45 @@ class FetchCurrencyRates extends Command
                 $this->info("1 USD = {$ngnRate} NGN");
                 $this->info("1 USD = {$gbpRate} GBP");
             } else {
-                $this->error('Failed to fetch currency rates.');
+                // If API call fails, set default rates
+                $defaultNgnRate = 1800;
+                $defaultGbpNgnRate = 2300;
+                $margin = AdminSetting::where('key', 'currency_margin')->first()?->value ?? 0;
+
+                AdminSetting::updateOrCreate(
+                    ['key' => 'usd_rate'],
+                    ['name' => 'USD RATE', 'value' => $defaultNgnRate + $margin]
+                );
+
+                AdminSetting::updateOrCreate(
+                    ['key' => 'gbp_rate'],
+                    ['name' => 'GBP RATE', 'value' => $defaultGbpNgnRate + $margin]
+                );
+
+                $this->info('API call failed. Using default rates:');
+                $this->info("USD Rate: 1 USD = " . ($defaultNgnRate + $margin) . " NGN");
+                $this->info("GBP Rate: 1 GBP = " . ($defaultGbpNgnRate + $margin) . " NGN");
             }
         } catch (\Exception $e) {
-            $this->error('Error fetching currency rates: ' . $e->getMessage());
+            // If any error occurs, set default rates
+            $defaultNgnRate = 1800;
+            $defaultGbpNgnRate = 2300;
+            $margin = AdminSetting::where('key', 'currency_margin')->first()?->value ?? 0;
+
+            AdminSetting::updateOrCreate(
+                ['key' => 'usd_rate'],
+                ['name' => 'USD RATE', 'value' => $defaultNgnRate + $margin]
+            );
+
+            AdminSetting::updateOrCreate(
+                ['key' => 'gbp_rate'],
+                ['name' => 'GBP RATE', 'value' => $defaultGbpNgnRate + $margin]
+            );
+
+            $this->error('Error fetching rates: ' . $e->getMessage());
+            $this->info('Using default rates:');
+            $this->info("USD Rate: 1 USD = " . ($defaultNgnRate + $margin) . " NGN");
+            $this->info("GBP Rate: 1 GBP = " . ($defaultGbpNgnRate + $margin) . " NGN");
         }
     }
 }

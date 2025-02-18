@@ -21,19 +21,26 @@
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
                         @foreach($settings as $setting)
-                            @if($setting->key === 'currency_margin')
+                            @if(!in_array($setting->key, ['usd_rate', 'gbp_rate']))
                                 <tr class="border-b border-gray-200 hover:bg-gray-100">
                                     <td class="py-3 px-6 text-left">{{ $setting->name }}</td>
                                     <td class="py-3 px-6 text-left">
                                         <form method="POST" action="{{ route('admin.adminsettings.update', $setting->id) }}" class="flex items-center">
                                             @csrf
-                                            @method('PUT')
-                                            <input type="number" 
-                                                   name="value" 
-                                                   value="{{ $setting->value }}" 
-                                                   class="border rounded px-2 py-1 w-full"
-                                                   step="0.01"
-                                                   min="0">
+                                            @method('POST')
+                                            @if($setting->key === 'currency_margin')
+                                                <input type="number" 
+                                                       name="value" 
+                                                       value="{{ $setting->value }}" 
+                                                       class="border rounded px-2 py-1 w-full"
+                                                       step="0.01"
+                                                       min="0">
+                                            @else
+                                                <input type="text" 
+                                                       name="value" 
+                                                       value="{{ $setting->value }}" 
+                                                       class="border rounded px-2 py-1 w-full">
+                                            @endif
                                             <button type="submit" 
                                                     class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
                                                 Update
@@ -41,7 +48,17 @@
                                         </form>
                                     </td>
                                     <td class="py-3 px-6 text-center">
-                                        <!-- No delete button for margin setting -->
+                                        @if($setting->key !== 'currency_margin')
+                                            <form method="POST" action="/admin/adminsettings/{{ $setting->id }}" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                                                        onclick="return confirm('Are you sure you want to delete this setting?')">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endif
@@ -65,8 +82,8 @@
                     <p class="text-xs text-gray-500 mt-2">Rates are automatically updated twice daily. Last update: {{ $settings->where('key', 'usd_rate')->first()?->updated_at?->diffForHumans() ?? 'Never' }}</p>
                 </div>
 
-                 <!-- Add New Setting Form -->
-                 <div class="mt-6 pt-6 border-t">
+                <!-- Add New Setting Form -->
+                <div class="mt-6 pt-6 border-t">
                     <h2 class="text-xl text-black pb-4">Add New Setting</h2>
                     <form method="POST" action="{{ route('admin.adminsettings.store') }}" class="flex gap-4">
                         @csrf
@@ -85,10 +102,11 @@
                                    required>
                         </div>
                         <button type="submit" 
-                            class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">
-                        Add Setting
-                    </button>
+                                class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">
+                            Add Setting
+                        </button>
                     </form>
+                </div>
             </div>
         </main>
     </div>

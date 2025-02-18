@@ -18,7 +18,6 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
 use App\Http\Controllers\AdminMetaAdAccountsController;
 use App\Http\Controllers\BusinessManagerController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -88,7 +87,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
 
     Route::resource('adminsettings', AdminSettingsController::class);
-    Route::post('adminsettings/{adminSetting}/update-value', [AdminSettingsController::class, 'updateValue'])->name('adminsettings.update-value');
+    Route::post('adminsettings/{adminSetting}/update', [AdminSettingsController::class, 'update'])->name('adminsettings.update');
 
     // Add this new route for RockAds accounts
     Route::get('/rockads-accounts', [AdminRockAdsAccountsController::class, 'index'])->name('rockads.accounts.index');
@@ -333,10 +332,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return response()->json(['success' => true]);
         })->name('user.update-dark-mode');
     });
-
-    Route::get('/api/ad-accounts/{adAccount}/spend-cap', [ApiAdAccountController::class, 'getSpendCap'])->name('api.ad-accounts.spend-cap');
-    Route::get('/api/wallet/calculate-withdrawal-fees', [WalletController::class, 'calculateWithdrawalFees'])
-        ->name('api.wallet.calculate-withdrawal-fees');
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])

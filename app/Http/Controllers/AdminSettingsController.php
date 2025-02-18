@@ -47,8 +47,20 @@ class AdminSettingsController extends Controller
 
     public function destroy(AdminSetting $adminSetting)
     {
-        $adminSetting->delete();
-        return redirect()->route('admin.adminsettings.index')
-            ->with('success', 'Setting deleted successfully');
+        try {
+            // Don't allow deletion of currency-related settings
+            if (in_array($adminSetting->key, ['currency_margin', 'usd_rate', 'gbp_rate'])) {
+                return redirect()->route('admin.adminsettings.index')
+                    ->with('error', 'Cannot delete currency-related settings');
+            }
+
+            $adminSetting->delete();
+            
+            return redirect()->route('admin.adminsettings.index')
+                ->with('success', 'Setting deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.adminsettings.index')
+                ->with('error', 'Failed to delete setting: ' . $e->getMessage());
+        }
     }
 }
