@@ -42,7 +42,7 @@
                 </svg>
 
                 <p class="text-sm font-light">Email Us</p>
-                <p class="text-xs font-semibold">adssupport@bloomdigitmedia.com</p>
+                <p class="text-xs font-semibold">support@billing.ad</p>
             </div>
 
             <div class="bg-[#000031] p-5 px-6 rounded-xl">
@@ -66,7 +66,13 @@
 
         <section
             class="flex flex-col bg-gradient-to-r from-[#E6E6F366] to-[#6666B366] justify-center items-center lg:px-20 p-10 mx-8 md:mx-5 lg:mx-52 rounded-3xl mb-20">
-            <form class="space-y-6 w-full lg:px-20">
+            <form action="{{ route('contact.submit') }}" method="POST" class="space-y-6 w-full lg:px-20">
+                @csrf
+                @if(session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                @endif
                 <div class="mb-3">
                     <label for="name"></label>
                     <input type="text" id="name" name="name"
