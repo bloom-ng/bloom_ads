@@ -334,6 +334,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return response()->json(['success' => true]);
         })->name('user.update-dark-mode');
     });
+
+    Route::get('/api/ad-accounts/{adAccount}/spend-cap', [ApiAdAccountController::class, 'getSpendCap'])->name('api.ad-accounts.spend-cap');
+    Route::get('/api/wallet/calculate-withdrawal-fees', [WalletController::class, 'calculateWithdrawalFees'])
+        ->name('api.wallet.calculate-withdrawal-fees');
 });
 
 Route::get('/wallet/transaction/{transaction}/receipt/view', [WalletController::class, 'viewTransactionReceipt'])
