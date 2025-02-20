@@ -1,20 +1,20 @@
 <x-user-layout page="organizations">
-    <div class="w-full overflow-x-hidden border-t flex flex-col">
-        <main class="w-full flex-grow p-6">
+    <div class="dashboard text w-full overflow-x-hidden border-t flex flex-col">
+        <main class="dashboard text w-full flex-grow p-6">
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl text-black">Create Business</h1>
+                <h1 class="text-3xl">Create Business</h1>
                 <a href="{{ route('organizations.index') }}"
                     class="px-4 py-2 btn-primary rounded-mdfont-bold rounded focus:outline-none focus:shadow-outline">
                     Back
                 </a>
             </div>
 
-            <div class="w-full mt-6">
-                <div class="bg-white overflow-auto p-6 rounded-lg shadow-sm">
+            <div class="dashboard text w-full mt-6">
+                <div class="overflow-auto p-6 rounded-lg shadow-sm">
                     <form method="POST" action="{{ route('organizations.store') }}" class="space-y-6">
                         @csrf
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">
+                            <label for="name" class="block text-sm font-medium">
                                 Business Name
                             </label>
                             <input type="text" name="name" id="name" required

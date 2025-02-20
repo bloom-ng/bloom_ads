@@ -1,13 +1,13 @@
 <x-user-layout page="adaccounts">
-    <div class="container mx-auto px-6 py-8 h-full overflow-y-auto">
-        <h3 class="text-gray-700 text-3xl font-medium">Create Ad Account</h3>
+    <div class="dashboard text container mx-auto px-6 py-8 h-full overflow-y-auto">
+        <h3 class="text text text-3xl font-medium">Create Ad Account</h3>
 
-        <div class="mt-8 mb-8 bg-white rounded-lg shadow">
+        <div class="dashboard mt-8 mb-8 bg-white rounded-lg shadow">
             <form action="{{ route('adaccounts.store') }}" method="POST" class="p-6 space-y-6">
                 @csrf
 
                 <div>
-                    <label class="text-gray-700" for="name">Account Name</label>
+                    <label class="text" for="name">Account Name</label>
                     <input type="text" name="name" id="name" value="{{ old('name') }}"
                         class="form-input forms mt-1 block w-full rounded-md " required>
                     @error('name')
@@ -16,7 +16,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="type">Platform Type</label>
+                    <label class="text" for="type">Platform Type</label>
                     <select name="type" id="type"
                         class="form-select forms mt-1 block w-full rounded-md" required>
                         <option value="">Select Platform</option>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="timezone">Timezone</label>
+                    <label class="text" for="timezone">Timezone</label>
                     <select name="timezone" id="timezone"
                         class="form-select mt-1 block w-full rounded-md forms" required>
                         <option value="">Select Timezone</option>
@@ -50,7 +50,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="facebook_page_url">Page URL</label>
+                    <label class="text" for="facebook_page_url">Page URL</label>
                     <input type="url" name="facebook_page_url" id="facebook_page_url" value="{{ old('facebook_page_url') }}"
                         class="form-input mt-1 block w-full rounded-md forms" required
                         placeholder="https://your-page"> 
@@ -60,7 +60,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="currency">Currency</label>
+                    <label class="text" for="currency">Currency</label>
                     <select name="currency" id="currency"
                         class="form-select mt-1 block w-full rounded-md forms" required>  
                         <option value="">Select Currency</option>
@@ -76,7 +76,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="business_manager_id">Business Manager ID</label>
+                    <label class="text" for="business_manager_id">Business Manager ID</label>
                     <input type="text" name="business_manager_id" id="business_manager_id"
                         value="{{ old('business_manager_id') }}"
                         class="form-input mt-1 block w-full rounded-md forms" pattern="[A-Za-z0-9]{1,16}"
@@ -87,7 +87,7 @@
                 </div>
 
                 <div>
-                    <label class="text-gray-700" for="landing_page">Landing Page</label>
+                    <label class="text" for="landing_page">Landing Page</label>
                     <input type="url" name="landing_page" id="landing_page" value="{{ old('landing_page') }}"
                         class="form-input mt-1 block w-full rounded-md forms">
                     @error('landing_page')

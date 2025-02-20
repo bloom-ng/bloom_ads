@@ -27,6 +27,8 @@
         rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <link rel="icon" href="{{ asset('/images/fav-icon.png') }}" type="image/png">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -40,6 +42,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
 
+        /* Disable dark mode on mobile */
+        @media (max-width: 640px) {
+            html.dark {
+                /* Override dark mode styles */
+                background-color: white !important;
+                color: black !important;
+            }
+            html.dark * {
+                /* Force light mode colors for all elements */
+                background-color: inherit !important;
+                color: inherit !important;
+            }
+        }
 
         .font-family-karla {
             font-family: karla;
@@ -269,14 +284,22 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script>
+        // Check if device is mobile
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Remove dark mode class on mobile
+            if (isMobile) {
+                document.documentElement.classList.remove('dark');
+            }
+            
             // Initialize dark mode from user preference
             document.documentElement.classList.toggle('dark', {{ auth()->user()->dark_mode ? 'true' : 'false' }});
         });
     </script>
 </head>
 
-<body class="font-family-karla flex bg-white  transition-colors duration-200">
+<body class="dashboard font-family-karla flex transition-colors duration-200">
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script>
@@ -547,7 +570,7 @@
             </div>
 
             <!-- Dropdown Nav -->
-            <nav :class="isOpen ? 'flex' : 'hidden'" class="flex flex-col pt-4">
+            <nav x-show="isOpen" class="flex flex-col pt-4">
                 <a href="/dashboard"
                     class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link text-white font-semibold' : 'text-black font-medium' }} opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
                     <img src="{{ $page == 'dashboard' ? asset('images/dashboardIcon.png') : asset('images/dashboardIconInactive.png') }}"
@@ -629,9 +652,6 @@
     <!-- AlpineJS -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
-        integrity="sha256-4+XPsbX96dvkn/hc/4q0sZPYRLQ4/HV7pbwJ3/gQ2d8=" crossorigin="anonymous"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 </body>

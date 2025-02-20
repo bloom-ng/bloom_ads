@@ -1,15 +1,15 @@
 <x-user-layout page="organizations">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
-        <main class="w-full flex-grow p-6">
+        <main class="dashboard text w-full flex-grow p-6">
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl text-black">My Businesses</h1>
+                <h1 class="text-3xl">My Businesses</h1>
                 <a href="{{ route('organizations.create') }}" class="px-4 py-2 btn rounded-md">
                     Create Business
                 </a>
             </div>
 
-            <div class="w-full mt-6">
-                <div class="bg-white overflow-auto p-6">
+            <div class="dashboard text w-full mt-6">
+                <div class="overflow-auto p-6">
                     @if ($organizations->isEmpty())
                         <p class="text-gray-600 text-center py-4">You are not a member of any businesses yet.</p>
                     @else

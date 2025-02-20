@@ -1,5 +1,5 @@
 <x-user-layout page="adaccounts">
-    <div class="container mx-auto px-6 py-8">
+    <div class="container dashboard -mx-auto px-6 py-8">
         <!-- Flash Messages -->
         @if (session('info'))
             <div class="bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500 text-blue-700 dark:text-blue-300 p-4 mb-4"
@@ -21,7 +21,7 @@
         @endif
 
         <div class="flex justify-between items-center">
-            <h3 class="text-black text-3xl font-medium">Ad Accounts</h3>
+            <h3 class="text-black text-3xl text font-medium">Ad Accounts</h3>
             <a href="{{ route('adaccounts.create') }}" class="px-4 py-2 btn rounded-md">
                 Create Ad Account
             </a>
@@ -29,8 +29,8 @@
 
         <div class="mt-8">
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white shadow-md rounded my-6">
-                    <thead>
+                <table class="min-w-full shadow-md rounded my-6">
+                    <thead class="table-header">
                         <tr>
                             <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm leading-4 tracking-wider">
                                 Name</th>
@@ -46,7 +46,7 @@
                                 Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-body">
                         @foreach ($adAccounts as $account)
                             <tr>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-500">

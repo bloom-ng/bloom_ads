@@ -235,7 +235,7 @@
                     <label class="block text-sm font-medium mb-2">From Currency</label>
                     <div class="relative">
                         <select name="source_currency" id="transferSourceCurrency" required
-                            class="inverse-text w-full pl-12 pr-20 py-2 border rounded appearance-none"
+                            class=" text-black w-full pl-12 pr-20 py-2 border rounded appearance-none"
                             onchange="updateConversionPreview()">
                             @foreach ($organization->wallets as $wallet)
                                 <option value="{{ $wallet->currency }}" data-wallet-id="{{ $wallet->id }}"
@@ -257,7 +257,7 @@
                     <label class="block text-sm font-medium mb-2">To Currency</label>
                     <div class="relative">
                         <select name="destination_currency" id="transferDestinationCurrency" required
-                            class="inverse-text w-full pl-12 py-2 border rounded appearance-none"
+                            class="text-black w-full pl-12 py-2 border rounded appearance-none"
                             onchange="updateConversionPreview()">
                             <option value="NGN">NGN</option>
                             <option value="USD">USD</option>
@@ -272,7 +272,7 @@
                 <div>
                     <label class="block text-sm font-medium mb-2">Amount</label>
                     <input type="number" name="amount" id="transferAmount" required
-                        class="w-full p-2 border rounded inverse-text" step="0.01" min="0"
+                        class="w-full p-2 border rounded text-black" step="0.01" min="0"
                         oninput="updateConversionPreview()">
                 </div>
 
@@ -286,7 +286,7 @@
                 </button>
             </form>
 
-            <button onclick="closeTransferModal()" class="w-full mt-4 px-4 py-2 bg-[#000080] rounded-md">
+            <button onclick="closeTransferModal()" class="w-full mt-4 px-4 py-2 bg-[#000080] text-white rounded-md">
                 Cancel
             </button>
         </div>
@@ -408,7 +408,7 @@
                         Select Currency
                     </label>
                     <select name="currency" id="currency" required
-                        class="inverse-text w-full rounded-md border border-[#000080] shadow-sm sm:text-sm px-3 py-3">
+                        class="text-black rounded-md border border-[#000080] shadow-sm sm:text-sm px-3 py-3">
                         <option value="NGN">NGN</option>
                         <option value="USD">USD</option>
                         <option value="GBP">GBP</option>

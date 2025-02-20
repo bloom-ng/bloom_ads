@@ -2,7 +2,7 @@
     <div class="mt-2 space-y-6 overflow-y-scroll">
         <!-- Action Buttons -->
         <div class="flex space-x-4 pl-3">
-            <button onclick="openDepositModal()" class="btn-primary px-6 py-3 rounded-md ">
+            <button onclick="openDepositModal()" class="button px-6 py-3 rounded-md ">
                 Deposit Funds
             </button>
             <button onclick="openWithdrawModal()" class="btn px-6 py-3 rounded-md">
@@ -13,7 +13,7 @@
         <!-- Deposit Modal -->
         <div id="depositModal"
             class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 overflow-auto py-6">
-            <div class="bg-white p-8 rounded-lg w-full max-w-md">
+            <div class="dashboard text p-8 rounded-lg w-full max-w-md">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-medium">Deposit Funds</h3>
                     <button onclick="closeDepositModal()" class="text-gray-500 hover:text-gray-700">
@@ -28,9 +28,9 @@
                     @csrf
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
+                            <label class="block text-sm font-medium">Select Wallet</label>
                             <select name="wallet_id" id="depositWalletId" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                class="text-gray-900 mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                 onchange="updateDepositPreview()">
                                 @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
                                     <option value="{{ $wallet->id }}">
@@ -42,15 +42,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Amount</label>
+                            <label class="block text-sm font-medium">Amount</label>
                             <input type="number" name="amount" id="depositAmount" min="1" step="0.01"
                                 required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                 oninput="updateDepositPreview()">
                         </div>
 
                         <!-- Fee Preview -->
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction Preview</h4>
+                        <div class="p-4 rounded-md">
+                            <h4 class="text-sm font-medium mb-2">Transaction Preview</h4>
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span>Amount:</span>
@@ -72,13 +72,13 @@
                         </div>
 
                         <!-- Spend Cap Progress Bar -->
-                        <div class="bg-gray-50 p-4 rounded-md mt-4">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
+                        <div class="p-4 rounded-md mt-4">
+                            <h4 class="text-sm font-medium mb-2">Spend Cap Progress</h4>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
                                 <div id="depositSpendCapProgress" class="bg-[#000080] h-2.5 rounded-full"
                                     style="width: 0%"></div>
                             </div>
-                            <div class="flex justify-between text-sm text-gray-600">
+                            <div class="flex justify-between text-sm text-gray-400">
                                 <span id="depositCurrentBalance">Current: 0.00</span>
                                 <span id="depositSpendCap">Spend Cap: 0.00</span>
                             </div>
@@ -95,7 +95,7 @@
         <!-- Withdraw Modal -->
         <div id="withdrawModal"
             class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 overflow-auto py-6">
-            <div class="bg-white p-8 rounded-lg w-full max-w-md">
+            <div class="dashboard text p-8 rounded-lg w-full max-w-md">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-medium">Withdraw Funds</h3>
                     <button onclick="closeWithdrawModal()" class="text-gray-500 hover:text-gray-700">
@@ -110,9 +110,9 @@
                     @csrf
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Select Wallet</label>
+                            <label class="block text-sm font-medium">Select Wallet</label>
                             <select name="wallet_id" id="withdrawWalletId" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                class="text-gray-900 mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                 onchange="updateWithdrawPreview()">
                                 @foreach ($wallets->where('currency', $adAccount->currency) as $wallet)
                                     <option value="{{ $wallet->id }}">
@@ -124,15 +124,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Amount</label>
+                            <label class="block text-sm font-medium">Amount</label>
                             <input type="number" name="amount" id="withdrawAmount" min="1" step="0.01"
                                 required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                 oninput="updateWithdrawPreview()">
                         </div>
 
                         <!-- Fee Preview -->
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">Transaction Preview</h4>
+                        <div class="p-4 rounded-md">
+                            <h4 class="text-sm font-medium mb-2">Transaction Preview</h4>
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span>Amount:</span>
@@ -153,13 +153,13 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 p-4 rounded-md mt-4">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">Spend Cap Progress</h4>
+                        <div class="p-4 rounded-md mt-4">
+                            <h4 class="text-sm font-medium mb-2">Spend Cap Progress</h4>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
                                 <div id="withdrawSpendCapProgress" class="bg-[#000080] h-2.5 rounded-full"
                                     style="width: 0%"></div>
                             </div>
-                            <div class="flex justify-between text-sm text-gray-600">
+                            <div class="flex justify-between text-sm text-gray-400">
                                 <span id="withdrawCurrentBalance">Current: 0.00</span>
                                 <span id="withdrawSpendCap">Spend Cap: 0.00</span>
                             </div>
@@ -174,7 +174,7 @@
         </div>
 
         <!-- Account Balance -->
-        <div class="bg-white p-6 rounded-lg shadow">
+        <div class="dashboard text p-6 rounded-lg shadow">
             <h3 class="text-lg font-medium mb-4">Account Balance</h3>
             <p class="text-2xl font-bold">{{ number_format($adAccount->getBalance(), 2) }} {{ $adAccount->currency }}
             </p>
@@ -214,11 +214,11 @@
             </div>
         @endif
         <!-- Transactions History -->
-        <div class="bg-white p-6 rounded-lg shadow">
+        <div class="dashboard text p-6 rounded-lg shadow">
             <h3 class="text-lg font-medium mb-4">Transaction History</h3>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
+                    <thead class="table-header">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
@@ -230,7 +230,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody class="table-body divide-y divide-gray-200">
                         @foreach ($adAccount->transactions()->latest()->get() as $transaction)
                             <tr>
                                 <td class="px-6 py-4">{{ ucfirst($transaction->type) }}</td>

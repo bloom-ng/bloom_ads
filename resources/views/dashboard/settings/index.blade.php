@@ -1,10 +1,10 @@
 <x-user-layout page="settings">
-    <div class="w-full overflow-x-hidden border-t flex flex-col">
+    <div class="dashboard text w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Settings</h1>
+            <h1 class="text-3xl  pb-6">Settings</h1>
 
             <div class="w-full mt-6">
-                <div class="bg-white overflow-auto p-6 rounded-lg shadow-sm">
+                <div class="overflow-auto p-6 rounded-lg shadow-sm">
                     <!-- Current Organization Selection -->
                     <div class="mb-8">
                         <h2 class="text-xl font-semibold mb-4">Current Organization</h2>
@@ -13,7 +13,7 @@
                                 @foreach ($organizations as $org)
                                     <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                         <div>
-                                            <h3 class="font-medium">{{ $org->name }}</h3>
+                                            <h3 class="text-black font-medium">{{ $org->name }}</h3>
                                             <p class="text-sm text-gray-500">
                                                 Role:
                                                 {{ ucfirst($org->users->where('id', auth()->id())->first()?->pivot->role) }}
