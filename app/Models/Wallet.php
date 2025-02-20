@@ -10,6 +10,10 @@ class Wallet extends Model
 {
     protected $fillable = ['organization_id', 'currency'];
 
+    const WITHDRAW_VAT_0_TO_5_000 = 0.75;
+    const WITHDRAW_VAT_5_001_TO_50_000 = 1.875;
+    const WITHDRAW_VAT_50_001_ABOVE = 3.75;
+
     public function organization()
     {
         return $this->belongsTo(Organization::class);
@@ -114,13 +118,13 @@ class Wallet extends Model
 
         if ($amount <= 5000) {
             $processingFee = 100;
-            $vat = $amount * 0.015; // 1.5% of the amount
+            $vat = self::WITHDRAW_VAT_0_TO_5_000;
         } elseif ($amount <= 50000) {
             $processingFee = 150;
-            $vat = $amount * 0.0375; // 3.75% of the amount
+            $vat = self::WITHDRAW_VAT_5_001_TO_50_000;
         } else {
             $processingFee = 200;
-            $vat = $amount * 0.075; // 7.5% of the amount
+            $vat = self::WITHDRAW_VAT_50_001_ABOVE;
         }
 
         return [
