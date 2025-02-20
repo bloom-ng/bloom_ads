@@ -85,11 +85,13 @@ class Wallet extends Model
                         0
                     ) - 
                     COALESCE(
-                        (SELECT SUM(amount) 
-                        FROM wallet_transactions 
-                        WHERE wallet_transactions.wallet_id = wallets.id 
-                        AND type IN ("debit", "processing_fee", "vat", "service_charge") 
-                        AND status IN ("completed", "pending"), 
+                        (
+                            SELECT SUM(amount) 
+                            FROM wallet_transactions 
+                            WHERE wallet_transactions.wallet_id = wallets.id 
+                            AND type IN ("debit", "processing_fee", "vat", "service_charge") 
+                            AND status IN ("completed", "pending")
+                        ), 
                         0
                     )
                 ) as calculated_balance
