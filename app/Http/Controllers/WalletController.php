@@ -724,7 +724,7 @@ class WalletController extends Controller
                     'currency' => $wallet->currency,
                     'reference' => $reference,
                     'narration' => "Billing Withdrawal to {$accountName}",
-                    'callback_url' => route('wallet.withdrawal.callback'),
+                    // 'callback_url' => route('wallet.withdrawal.callback'),
                     'debit_currency' => 'NGN'
                 ];
 
@@ -904,6 +904,7 @@ class WalletController extends Controller
     // Add new webhook handler method
     public function handleFlutterwaveWebhook(Request $request)
     {
+        Log::info('Webhook received:', $request->all());
         // Verify webhook signature
         $flutterwave = new FlutterwaveService();
         $signature = $request->header('verif-hash');
@@ -931,10 +932,10 @@ class WalletController extends Controller
             if ($transaction->status !== 'completed') {
                 $transaction->update([
                     'status' => $data['status'] === 'successful' ? 'completed' : 'failed',
-                    'meta' => array_merge($transaction->meta ?? [], [
-                        'flutterwave_id' => $data['id'],
-                        'flutterwave_reference' => $data['flw_ref']
-                    ])
+                    // 'meta' => array_merge($transaction->meta ?? [], [
+                    //     'flutterwave_id' => $data['id'],
+                    //     'flutterwave_reference' => $data['flw_ref']
+                    // ])
                 ]);
 
                 // Send notification

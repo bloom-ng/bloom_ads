@@ -89,7 +89,7 @@ class Wallet extends Model
                         FROM wallet_transactions 
                         WHERE wallet_transactions.wallet_id = wallets.id 
                         AND type IN ("debit", "processing_fee", "vat", "service_charge") 
-                        AND status = "completed"), 
+                        AND status IN ("completed", "pending"), 
                         0
                     )
                 ) as calculated_balance
@@ -105,7 +105,7 @@ class Wallet extends Model
 
         $debits = $this->transactions()
             ->whereIn('type', ['debit', 'processing_fee', 'vat', 'service_charge'])
-            ->where('status', 'completed')
+            ->where('status', ['completed', 'pending'])
             ->sum('amount');
 
         return $credits - $debits;
