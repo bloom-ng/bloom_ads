@@ -724,7 +724,7 @@ class WalletController extends Controller
                     'currency' => $wallet->currency,
                     'reference' => $reference,
                     'narration' => "Billing Withdrawal to {$accountName}",
-                    'callback_url' => route('wallet.withdrawal.callback'),
+                    // 'callback_url' => route('wallet.withdrawal.callback'),
                     'debit_currency' => 'NGN'
                 ];
 
