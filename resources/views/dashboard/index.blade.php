@@ -1,8 +1,8 @@
 <x-user-layout page="dashboard">
     <div class="dashboard w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Dashboard</h1>
-            <div class="mb-6">
+            <h1 class="text-3xl text-black pb-6 font-semibold">Dashboard</h1>
+            <div class="mb-6 text">
                 @php
                     $hour = date('G');
                     $greeting = '';
@@ -17,7 +17,7 @@
                 <h2 class="text-2xl font-semibold">{{ $greeting }} {{ auth()->user()->name }}! 👋</h2>
                 <p class="text-lg font-medium">Welcome to Billing</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 text gap-6">
                 <!-- Total Organizations -->
                 <x-card 
                     iconSvg='<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,8 +50,8 @@
             </div>
 
             <!-- Action Cards -->
-            <div class="mt-8">
-                <h2 class="text-2xl font-semibold mb-6">Quick Actions</h2>
+            <div class="mt-8 inverse-text">
+                <h2 class="text-2xl font-semibold mb-6 text">Quick Actions</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Make a deposit -->
                     <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">

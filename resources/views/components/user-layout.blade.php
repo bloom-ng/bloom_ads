@@ -40,8 +40,53 @@
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
 
+
         .font-family-karla {
             font-family: karla;
+        }
+
+        .footer {
+            background: #FFFFFF;
+            color: black;
+        }
+
+        .dark .footer {
+            background: #000013;
+            color: white;
+        }
+
+        .table-header {
+            background: #F7F7F7;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .dark .table-header {
+            background: #000013;
+            color: #e5e7eb;
+            border-top: 1px solid #6b7280;
+        }
+
+        .table-body {
+            background: #FFFFFF;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .dark .table-body {
+            background: #000013;
+            color: #d1d5db;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        button {
+            border: 1px solid #000080;
+            color: #000080;            
+        }
+
+        .dark button {
+            border: 1px solid #FFFFFF;
+            color: #FFFFFF;    
         }
 
         .bg-sidebar {
@@ -116,8 +161,20 @@
             color: white; /* White text for dark mode inactive links */
         }        
 
+        .inverse-text {
+            color: #f0f0f0;
+        }
+
+        .dark .inverse-text {
+            color: #000000;
+        }
+
+        .text {
+            color: #000000;
+        }
+
         .dark .text {
-            color: #F0F0F0;
+            color: #f0f0f0;
         }
 
         .dark .bg-body {
@@ -129,7 +186,6 @@
         }
 
         .btn{
-            background: #000080;
             border-radius: 0.75rem;
             font-size: 18px;
             color: white;
@@ -137,6 +193,13 @@
 
         .btn-primary{
             background: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #000080;
+            font-size: 18px;
+            color: #000080;
+        }
+
+        .dark .btn-primary{
             border-radius: 0.75rem;
             border: 1px solid #000080;
             font-size: 18px;
@@ -177,14 +240,6 @@
             color: white;
         }
 
-        .btn-primary {
-            background: #ffffff;
-            border-radius: 0.75rem;
-            border: 1px solid #000080;
-            font-size: 18px;
-            color: #000080;
-        }
-
         .dashboard {
             background: #FFFFFF;
         }
@@ -221,7 +276,7 @@
     </script>
 </head>
 
-<body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body class="font-family-karla flex bg-white  transition-colors duration-200">
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script>
@@ -273,7 +328,7 @@
         @endforeach
     @endif
 
-    <aside class="bg-sidebar overflow-y-auto relative h-screen w-64 hidden sm:block dark:bg-gray-800 transition-colors duration-200">
+    <aside class="bg-sidebar overflow-y-auto relative h-screen w-64 hidden sm:block transition-colors duration-200">
         <div class="p-6 bg-sidebar-top">
             <a href="/dashboard" class="flex justify-center">
                 <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="Billing Logo">
@@ -462,11 +517,11 @@
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
-                <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
-                    <a href="{{ route('account') }}" class="block px-4 py-2 account-link hover:text-white">Account</a>
+                <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg bg-sidebar shadow-lg py-2 mt-16">
+                    <a href="{{ route('account') }}" class="block px-4 py-2 account-link dark:hover:opacity-50">Account</a>
                     <form method="POST" action="{{ route('user.logout') }}" class="block">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 account-link hover:text-white">
+                        <button type="submit" class="block w-full text-left px-4 py-2 account-link dark:hover:opacity-50">
                             Logout
                         </button>
                     </form>
@@ -536,14 +591,37 @@
 
         {{ $slot }}
         <div class="flex-grow"></div>
-        <footer class="flex bg-white justify-between items-center w-full max-w-screen bg-[#F0F0F0] text-right p-4">
-            <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text-black">BLOOM
+        <footer class="flex bg-white footer justify-between items-center w-full max-w-screen text-right p-4">
+            <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> {{ date('Y') }}. All Rights Reserved</p>
             <div class="flex">
-                <a href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
-                <a href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png" alt="X Link" /></a>
-                <a href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img src="/images/facebook.png" alt="Facebook Link" /></a>
-                <a href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img src="/images/linkedin.png" alt="LinkedIn Link" /></a>
+                <a class="dark-hidden" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                    <img src="/images/instagram.png" alt="Instagram Link" />
+                </a>
+                <a class="dark-block" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                    <img src="/images/darkInstagram.png" alt="Instagram Link" />
+                </a>
+
+                <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank">
+                    <img src="/images/twitter.png" alt="X Link" />
+                </a>
+                <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank">
+                    <img src="/images/darkTwitter.png" alt="X Link" />
+                </a>
+
+                <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank">
+                    <img src="/images/facebook.png" alt="Facebook Link" />
+                </a>
+                <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank">
+                    <img src="/images/darkFacebook.png" alt="Facebook Link" />
+                </a>
+
+                <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank">
+                    <img src="/images/linkedin.png" alt="LinkedIn Link" />
+                </a>
+                <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank">
+                    <img src="/images/darkLinkedin.png" alt="LinkedIn Link" />
+                </a>
             </div>
         </footer>
     </div>

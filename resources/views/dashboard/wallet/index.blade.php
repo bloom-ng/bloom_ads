@@ -1,10 +1,10 @@
 <x-user-layout page="wallet">
-    <div class="w-full overflow-x-hidden border-t flex flex-col">
+    <div class="dashboard w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-2 lg:pb-6">Organization Wallets</h1>
+            <h1 class="text-3xl text pb-2 lg:pb-6">Organization Wallets</h1>
 
             <div class="w-full mt-6">
-                <div class="bg-white overflow-auto p-2 lg:p-6 rounded-lg shadow-sm">
+                <div class=" overflow-auto p-2 lg:p-6 rounded-lg shadow-sm">
                     @if (!$organization)
                         <div class="text-center py-8">
                             <p class="text-gray-500 mb-4">Please select a current organization to manage wallets.</p>
@@ -20,21 +20,21 @@
                                 <!-- Add Global Convert Button -->
                                 <div class="">
                                     <button onclick="openCreateWalletModal()"
-                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
                                         Create New Wallet
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openTransferModal()"
-                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
                                         Convert Currency
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openWithdrawModal()"
-                                        class="w-full md:w-auto text-[#000080] font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border border-[#000080]">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
                                         Withdraw To Bank Account
                                     </button>
                                 </div>
@@ -56,30 +56,30 @@
                         <!-- Transaction History Section -->
                         <div class="mt-8">
                             <h2 class="text-2xl font-semibold mb-4">Transaction History</h2>
-                            <div class="bg-white border rounded-lg shadow-sm overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                            <div class=" text border rounded-lg shadow-sm overflow-x-auto">
+                                <table class="min-w-full divide-y">
+                                    <thead class="table-header">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Date</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Type</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Description</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Amount</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Currency</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Status</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            <th class="px-6 py-3 text-left text-xs font-medium uppercase">
                                                 Receipt</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tbody class=" divide-y divide-gray-200 table-body">
                                         @forelse ($transactions as $transaction)
                                             <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     {{ $transaction->created_at->format('M d, Y H:i') }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -89,13 +89,13 @@
                                                         {{ ucfirst($transaction->type) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     {{ $transaction->description }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     {{ number_format($transaction->amount, 2) }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     {{ $transaction->currency }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -105,7 +105,7 @@
                                                         {{ ucfirst($transaction->status) }}
                                                     </span>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     @if ($transaction->status === 'completed')
                                                         <a href="{{ route('wallet.transaction.receipt', $transaction) }}"
                                                             class="text-gray-600 hover:text-gray-900">
@@ -122,7 +122,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="7"
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center">
                                                     No transactions found
                                                 </td>
                                             </tr>
@@ -226,16 +226,16 @@
 
     <!-- Transfer Modal -->
     <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+        <div class="dashboard text p-8 rounded-lg max-w-md w-full">
             <h2 class="text-2xl font-bold mb-4">Convert Funds</h2>
             <form action="{{ route('wallet.transfer') }}" method="POST" class="space-y-4">
                 @csrf
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">From Currency</label>
+                    <label class="block text-sm font-medium mb-2">From Currency</label>
                     <div class="relative">
                         <select name="source_currency" id="transferSourceCurrency" required
-                            class="w-full pl-12 pr-20 py-2 border rounded appearance-none"
+                            class="inverse-text w-full pl-12 pr-20 py-2 border rounded appearance-none"
                             onchange="updateConversionPreview()">
                             @foreach ($organization->wallets as $wallet)
                                 <option value="{{ $wallet->currency }}" data-wallet-id="{{ $wallet->id }}"
@@ -254,10 +254,10 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">To Currency</label>
+                    <label class="block text-sm font-medium mb-2">To Currency</label>
                     <div class="relative">
                         <select name="destination_currency" id="transferDestinationCurrency" required
-                            class="w-full pl-12 py-2 border rounded appearance-none"
+                            class="inverse-text w-full pl-12 py-2 border rounded appearance-none"
                             onchange="updateConversionPreview()">
                             <option value="NGN">NGN</option>
                             <option value="USD">USD</option>
@@ -270,9 +270,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <label class="block text-sm font-medium mb-2">Amount</label>
                     <input type="number" name="amount" id="transferAmount" required
-                        class="w-full p-2 border rounded" step="0.01" min="0"
+                        class="w-full p-2 border rounded inverse-text" step="0.01" min="0"
                         oninput="updateConversionPreview()">
                 </div>
 
@@ -281,12 +281,12 @@
                     <p id="convertedAmountDisplay"></p>
                 </div>
 
-                <button type="submit" class="w-full px-4 py-2 btn-primary rounded-md">
+                <button type="submit" class="w-full px-4 py-2 rounded-md">
                     Convert
                 </button>
             </form>
 
-            <button onclick="closeTransferModal()" class="w-full mt-4 px-4 py-2 btn rounded-md">
+            <button onclick="closeTransferModal()" class="w-full mt-4 px-4 py-2 bg-[#000080] rounded-md">
                 Cancel
             </button>
         </div>
@@ -295,14 +295,14 @@
     <!-- Withdraw Modal -->
     <div id="withdrawModal"
         class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 overflow-auto">
-        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+        <div class="dashboard text p-8 rounded-lg max-w-md w-full">
             <h2 class="text-2xl font-bold mb-4">Withdraw Funds</h2>
             <form action="{{ route('wallet.withdraw') }}" method="POST" class="space-y-4" id="withdrawForm">
                 @csrf
                 <input type="hidden" name="wallet_id" id="withdrawWalletId">
 
                 <div class="w-full">
-                    <label for="bank_code" class="block text-sm font-medium text-gray-700 mb-2">Select Bank</label>
+                    <label for="bank_code" class="block text-sm font-medium mb-2">Select Bank</label>
                     <select name="bank_code" id="bank_code" required
                         class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
                         <option value="">Loading banks...</option>
@@ -310,7 +310,7 @@
                 </div>
 
                 <div>
-                    <label for="account_number" class="block text-sm font-medium text-gray-700 mb-2">Account
+                    <label for="account_number" class="block text-sm font-medium mb-2">Account
                         Number</label>
                     <input type="text" name="account_number" id="account_number" required
                         class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
@@ -319,36 +319,36 @@
                 </div>
 
                 <div>
-                    <label for="withdrawAmount" class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <label for="withdrawAmount" class="block text-sm font-medium mb-2">Amount</label>
                     <div class="relative rounded-md shadow-sm">
                         <input type="number" name="amount" id="withdrawAmount" required min="100"
                             step="0.01" class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
                             placeholder="Enter amount">
                     </div>
-                    <p class="mt-1 text-sm text-gray-500">Available balance: <span
+                    <p class="mt-1 text-sm text-gray-300">Available balance: <span
                             id="withdrawAvailableBalance">0.00</span></p>
                 </div>
 
                 <!-- Fee Details Section -->
                 <div class="fee-details hidden">
-                    <div class="bg-gray-50 rounded-md p-4">
+                    <div class="dashboard rounded-md p-4">
                         <h3 class="text-sm font-medium text-gray-700 mb-3">Transaction Details</h3>
                         <div class="space-y-2">
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Amount:</span>
+                                <span class="text-gray-400">Amount:</span>
                                 <span id="display_amount" class="font-medium">-</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Processing Fee:</span>
+                                <span class="text-gray-400">Processing Fee:</span>
                                 <span id="processing_fee" class="font-medium">-</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">VAT:</span>
+                                <span class="text-gray-400">VAT:</span>
                                 <span id="vat_amount" class="font-medium">-</span>
                             </div>
                             <div class="border-t border-gray-200 my-2"></div>
                             <div class="flex justify-between text-sm font-medium">
-                                <span class="text-gray-700">Total Amount:</span>
+                                <span class="text-gray-500">Total Amount:</span>
                                 <span id="total_amount">-</span>
                             </div>
                         </div>
@@ -356,10 +356,10 @@
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 btn-primary rounded-md">
+                    <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 text-[#000080] border border-[#000080] rounded-md">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 btn rounded-md">
+                    <button type="submit" class="px-4 py-2 bg-[#000080] text-white rounded-md">
                         Withdraw
                     </button>
                 </div>
@@ -387,8 +387,8 @@
     </div>
 
     <!-- Create Wallet Modal -->
-    <div id="createWalletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+    <div id="createWalletModal" class=" fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="dashboard text p-8 rounded-lg max-w-md w-full">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-medium">Create New Wallet</h3>
                 <button onclick="closeCreateWalletModal()" class="text-gray-500 hover:text-gray-700">
@@ -403,12 +403,12 @@
                 @csrf
                 <input type="hidden" name="organization_id" value="{{ $organization->id }}">
 
-                <div>
-                    <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
+                <div class="">
+                    <label for="currency" class="block text-sm font-medium mb-2">
                         Select Currency
                     </label>
                     <select name="currency" id="currency" required
-                        class="w-full rounded-md border border-[#000080] shadow-sm sm:text-sm px-3 py-3">
+                        class="inverse-text w-full rounded-md border border-[#000080] shadow-sm sm:text-sm px-3 py-3">
                         <option value="NGN">NGN</option>
                         <option value="USD">USD</option>
                         <option value="GBP">GBP</option>
