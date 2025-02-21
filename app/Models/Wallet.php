@@ -107,7 +107,7 @@ class Wallet extends Model
 
         $debits = $this->transactions()
             ->whereIn('type', ['debit', 'processing_fee', 'vat', 'service_charge'])
-            ->where('status', ['completed', 'pending'])
+            ->whereIn('status', ['completed', 'pending'])
             ->sum('amount');
 
         return $credits - $debits;
