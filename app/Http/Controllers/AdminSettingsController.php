@@ -41,6 +41,30 @@ class AdminSettingsController extends Controller
             'value' => $request->input('value')
         ]);
 
+        // If currency margin was updated, recalculate rates
+        if ($adminSetting->key === 'currency_margin') {
+            $margin = $request->input('value');
+            
+            // Get current API rates
+            $usdApiRate = AdminSetting::where('key', 'usd_api_rate')->first()?->value ?? 1800;
+            $gbpApiRate = AdminSetting::where('key', 'gbp_api_rate')->first()?->value ?? 2300;
+
+            // Calculate new Bloom rates with updated margin
+            $usdBloomRate = $usdApiRate + $margin;
+            $gbpBloomRate = $gbpApiRate + $margin;
+
+            // Update Bloom rates
+            AdminSetting::updateOrCreate(
+                ['key' => 'usd_rate'],
+                ['name' => 'USD RATE', 'value' => $usdBloomRate]
+            );
+
+            AdminSetting::updateOrCreate(
+                ['key' => 'gbp_rate'],
+                ['name' => 'GBP RATE', 'value' => $gbpBloomRate]
+            );
+        }
+
         return redirect()->route('admin.adminsettings.index')
             ->with('success', 'Setting updated successfully');
     }

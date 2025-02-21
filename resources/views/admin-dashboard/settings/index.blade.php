@@ -70,8 +70,8 @@
 
                 <!-- Current Rates Display -->
                 <div class="mt-8 p-4 bg-gray-50 rounded">
-                    <h2 class="text-lg font-semibold mb-4">Current Exchange Rates</h2>
-                    <div class="grid grid-cols-2 gap-4">
+                    <h2 class="text-lg font-semibold mb-4">Bloom Rates (with margin)</h2>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
                         <div>
                             <p class="text-sm text-gray-600">USD to NGN Rate:</p>
                             <p class="font-medium">{{ number_format($settings->where('key', 'usd_rate')->first()?->value ?? 0, 2) }} NGN</p>
@@ -81,7 +81,19 @@
                             <p class="font-medium">{{ number_format($settings->where('key', 'gbp_rate')->first()?->value ?? 0, 2) }} NGN</p>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-2">Rates are automatically updated twice daily. Last update: {{ $settings->where('key', 'usd_rate')->first()?->updated_at?->diffForHumans() ?? 'Never' }}</p>
+
+                    <h2 class="text-lg font-semibold mb-4">API Rates (CurrencyFreaks)</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">USD to NGN Rate:</p>
+                            <p class="font-medium">{{ number_format(($settings->where('key', 'usd_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">GBP to NGN Rate:</p>
+                            <p class="font-medium">{{ number_format(($settings->where('key', 'gbp_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4">Rates are automatically updated twice daily. Last update: {{ $settings->where('key', 'usd_rate')->first()?->updated_at?->diffForHumans() ?? 'Never' }}</p>
                 </div>
 
                 <!-- Add New Setting Form -->
