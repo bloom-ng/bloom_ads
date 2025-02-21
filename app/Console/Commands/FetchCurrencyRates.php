@@ -48,16 +48,30 @@ class FetchCurrencyRates extends Command
                     $gbpRate = $data['rates']['GBP'] ?? '0';
                     $ngnRate = $data['rates']['NGN'] ?? '0';
                     
-                    // If NGN rate is 0 or not present, use default rate
+                    // Get current API rates as fallback
+                    $currentUsdApiRate = AdminSetting::where('key', 'usd_api_rate')->first()?->value;
+                    $currentGbpApiRate = AdminSetting::where('key', 'gbp_api_rate')->first()?->value;
+                    
+                    // If NGN rate is 0 or not present, keep using current rate
                     if (empty($ngnRate) || $ngnRate == '0') {
-                        $ngnRate = '1800';
-                        $this->log('Using default NGN rate: 1800');
+                        if ($currentUsdApiRate) {
+                            $ngnRate = $currentUsdApiRate;
+                            $this->log('API returned 0 for NGN. Using current USD API rate: ' . $currentUsdApiRate);
+                        } else {
+                            $ngnRate = '1800';
+                            $this->log('No current rate available. Using default NGN rate: 1800');
+                        }
                     }
 
-                    // If GBP rate is 0 or not present, use default rate
+                    // If GBP rate is 0 or not present, calculate from current GBP API rate
                     if (empty($gbpRate) || $gbpRate == '0') {
-                        $gbpRate = '0.7826';
-                        $this->log('Using default GBP rate: 0.7826 (approx 2300 NGN)');
+                        if ($currentGbpApiRate && $currentUsdApiRate) {
+                            $gbpRate = $currentUsdApiRate / $currentGbpApiRate;
+                            $this->log('API returned 0 for GBP. Using rate calculated from current rates: ' . $gbpRate);
+                        } else {
+                            $gbpRate = '0.7826';
+                            $this->log('No current rate available. Using default GBP rate: 0.7826');
+                        }
                     }
 
                     // Calculate raw API rates in NGN
