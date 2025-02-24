@@ -15,7 +15,8 @@
                 </div>
 
                 <div class="lg:w-3/5 md:w-[500px] justify-end items-end">
-                    <img src="/images/Screenshot.png" alt="" class="lg:-mb-64 md:inline-block hidden">
+                    <img src="/images/image.png" alt=""
+                        class="lg:-mb-64 md:inline-block hidden rounded-l-[40px]">
                 </div>
             </div>
         </section>
@@ -29,7 +30,7 @@
         </section>
 
         <section class="flex flex-col md:flex-row w-full lg:px-24">
-            <img src="/images/iphone.png" alt=""
+            <img src="/images/90iphone.png" alt=""
                 class="md:w-[70%] md:h-[70%] w-[100%] h-[100%] md:-mr-20 md:-mb-40">
 
             <div class="flex flex-col justify-center items-start lg:-ml-60 md:-ml-40 lg:mt-32 mt-5 mx-8">
@@ -163,8 +164,6 @@
                         <strong>Billing is dedicated to supporting your success.</strong>
                     </p>
                 </div>
-
-
                 <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-xl mb-20 font-bold text-white">Get Started
                     Now</a>
             </div>
@@ -196,7 +195,8 @@
                         <p class="text-white font-semibold">Connect via WhatsApp</p>
                     </a>
 
-                    <a href="https://bloomdigitmedia.com/" class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
+                    <a href="https://bloomdigitmedia.com/"
+                        class="bg-[#000080] rounded-2xl p-2 px-5 flex flex-row gap-2 items-center">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="40" height="40" fill="url(#pattern0_999_143)" />
@@ -214,12 +214,12 @@
                     </a>
                 </div>
             </div>
-            <div class="md:w-1/2 lg:-mt-48 lg:-mb-40 md:-mt-28 md:-mb-20">
-                <img src="/images/man.png" alt="">
+            <div class="md:w-1/2 lg:-mt-28 md:-mt-20">
+                <img src="/images/maan.png" alt="">
             </div>
         </section>
 
-        <section
+        {{-- <section
             class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 lg:gap-10 gap-5 bg-white space-y-5 py-5 px-10 lg:py-20 lg:px-32">
             <div class="flex flex-col rounded-3xl md:mt-16 lg:mt-16">
                 <svg width="90" height="90" viewBox="0 0 90 90" fill="none"
@@ -379,6 +379,109 @@
 
                 <a href="/signup" class="bg-[#000080] p-2 px-5 rounded-2xl text-white">Get Started Now</a>
             </div>
+        </section> --}}
+
+        <section class="flex flex-col lg:px-32 lg:py-10 px-5 py-5">
+            <h1 class="text-[#04080F] text-4xl font-bold mb-10">FAQ</h1>
+            <div class="flex flex-col mb-10 space-y-4">
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="1">
+                        <span class="faq-icon mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl"> What is Billing?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Billing is an all in one Digital adverting solution platform, we provide ready to use
+                            advertising accounts
+                            with payment solutions. You manage your campaigns, we handle the rest of the advertising
+                            logistics.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="2">
+                        <span class="faq-icon mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl">How long does it take to request for an
+                            Account?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p> You will need to request/ Apply for an ad account via the platform, it takes between 24-48
+                            hours for your account request to be approved.</p>
+                    </div>
+                </div>
+
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="3">
+                        <span class="text-2xl font-bold mr-10 text-white">+</span>
+                        <span class="faq-question text-white text-xl"> What type of product can i advertise?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Currently we support only white hat campaigns, if you however need to run grey or black hat,
+                            please contact support.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="4">
+                        <span class="mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl">Do you charge a Service Fee?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p> Yes, we charge a service fee and VAT on all funds sent from your budget to your ad accounts.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="5">
+                        <span class="mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl">How do i fund my wallet?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Your wallet can be funded Via All payment options and Methods available Via Flutterwave Eg:
+                            debit card, bank transfer, USSD, etc.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="6">
+                        <span class="mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl"> Do i have a minimum and maximum top up
+                            limit?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Yes, our minimum top up limit is 100,000 Naira while our Maximum is 500,000 Naira. If you
+                            need to pay above these limit, please request for an invoice from your wallet dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="7">
+                        <span class="mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl">Can i get a refunds?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Yes, you can transfer your available funds from your advertising accounts back to your wallet
+                            and from your wallet back to your Bank account using the Withdraw to bank button on your
+                            wallet dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="8">
+                        <span class="mr-10 text-white text-2xl font-bold">+</span>
+                        <span class="faq-question text-white text-xl">Do you offer prepaid or postpaid services?</span>
+                    </div>
+                    <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
+                        <p>Currently, we only support Prepaid services.</p>
+                        <br />
+                        <p>For Further Inquiries, Kindly contact Support.</p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <section
@@ -484,3 +587,97 @@
         </section>
     </section>
 </x-guest-layout>
+
+
+{{-- <script>
+    /// Function to toggle the dropdown
+    function toggleDropdown(contentId, iconId) {
+    // Get all dropdown contents and icons
+    const allContents = document.querySelectorAll('.faq-item > div:nth-child(2)');
+    const allIcons = document.querySelectorAll('.faq-item button svg');
+
+    // Get the current dropdown content and icon
+    const currentContent = document.getElementById(contentId);
+    const currentIcon = document.getElementById(iconId);
+
+    // Check if the current dropdown is already open
+    const isCurrentlyOpen = currentContent && !currentContent.classList.contains('hidden');
+
+    // Close all dropdowns and reset icons
+    allContents.forEach(content => {
+        content.classList.add('hidden'); // Hide all contents
+    });
+    allIcons.forEach(icon => {
+        icon.classList.remove('rotate-180'); // Reset all icons
+    });
+
+    // If the current dropdown was not open, show it and rotate the icon
+    if (!isCurrentlyOpen) {
+        currentContent.classList.remove('hidden'); // Show the current content
+        currentIcon.classList.add('rotate-180'); // Rotate the icon
+    } else {
+        // If it was open, just hide it and reset the icon
+        currentContent.classList.add('hidden'); // Hide the current content
+        currentIcon.classList.remove('rotate-180'); // Reset the icon
+    }
+    }
+</script> --}}
+
+{{-- <script>
+    function toggleButton(selectedButton) {
+        // Get all buttons with the class 'faq-button'
+        const buttons = document.querySelectorAll('.faq-button');
+        
+        // Reset all buttons to orange
+        buttons.forEach(button => {
+            button.classList.remove('bg-white', 'text-black');
+            button.classList.add('bg-[#ffffff]', 'text-[#000031]');
+        });
+        
+        // Set the clicked button to white
+        selectedButton.classList.remove('bg-[#000031]', 'text-white');
+        selectedButton.classList.add('bg-white', 'text-[#000031]');
+    }
+</script> --}}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const faqHeaders = document.querySelectorAll('.faq-header');
+
+        faqHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                // Check if any other FAQ is open and close it
+                const currentlyActive = document.querySelector('.faq-header.active');
+                if (currentlyActive && currentlyActive !== this) {
+                    currentlyActive.classList.remove('active');
+                    // Change header background back to default
+                    currentlyActive.classList.replace('bg-[#bcbcdc]', 'bg-[#000031]');
+                    // Change the icon back to +
+                    const activeIcon = currentlyActive.querySelector('.faq-icon');
+                    if (activeIcon) activeIcon.textContent = '+';
+                    // Hide the answer section
+                    const activeAnswer = currentlyActive.nextElementSibling;
+                    if (activeAnswer) activeAnswer.classList.add('hidden');
+                }
+
+                // Toggle the clicked FAQ
+                const answer = this.nextElementSibling;
+                if (this.classList.contains('active')) {
+                    // Close the FAQ if it is already open
+                    this.classList.remove('active');
+                    this.classList.replace('bg-[#bcbcdc]', 'bg-[#000031]');
+                    const icon = this.querySelector('.faq-icon');
+                    if (icon) icon.textContent = '+';
+                    if (answer) answer.classList.add('hidden');
+                } else {
+                    // Open the FAQ
+                    this.classList.add('active');
+                    this.classList.replace('bg-[#000031]', 'bg-[#bcbcdc]');
+                    const icon = this.querySelector('.faq-icon');
+                    if (icon) icon.textContent = '-';
+                    if (answer) answer.classList.remove('hidden');
+                }
+            });
+        });
+    });
+</script>
