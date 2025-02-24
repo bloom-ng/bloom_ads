@@ -1,7 +1,7 @@
 <x-user-layout page="wallet">
     <div class="dashboard w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text pb-2 lg:pb-6">Organization Wallets</h1>
+            <h1 class="text-3xl text pb-2 lg:pb-6">Business Wallets</h1>
 
             <div class="w-full mt-6">
                 <div class=" overflow-auto p-2 lg:p-6 rounded-lg shadow-sm">
@@ -20,21 +20,21 @@
                                 <!-- Add Global Convert Button -->
                                 <div class="">
                                     <button onclick="openCreateWalletModal()"
-                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline wallet-button">
                                         Create New Wallet
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openTransferModal()"
-                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline wallet-button">
                                         Convert Currency
                                     </button>
                                 </div>
 
                                 <div class="">
                                     <button onclick="openWithdrawModal()"
-                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline button">
+                                        class="w-full md:w-auto font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline wallet-button">
                                         Withdraw To Bank Account
                                     </button>
                                 </div>

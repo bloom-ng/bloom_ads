@@ -94,12 +94,34 @@
             border-top: 1px solid #e5e7eb;
         }
 
+        .wallet-button {
+            border: 1px solid #000080;
+            color: #000080;
+        }
+        .wallet-button:hover {
+            background-color: #000080;
+            color: white;
+            border-color: white;
+        }
+
+
+        .dark .wallet-button {
+            border: 1px solid #FFFFFF;
+            color: #FFFFFF;
+        }
+        .dark .wallet-button:hover {
+            background-color: white;
+            color: #000080;
+            border-color: #000080;
+        }
+
+
         button {
             border: 1px solid #000080;
             color: #000080;            
         }
 
-        .dark button {
+        .dark .button {
             border: 1px solid #FFFFFF;
             color: #FFFFFF;    
         }
@@ -492,50 +514,62 @@
         <!-- Desktop Header -->
         <header class="w-full items-center bg-white py-4 px-6 header hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
-                <!-- Dark Mode Toggle -->
-                <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
-                    <!-- Sun Icon -->
-                    <svg id="sunIcon" class="w-6 h-6 dark:hidden" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
+            <!-- Dark Mode Toggle -->
+            <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 ">
+            <!-- Sun Icon -->
+                    <svg id="sunIcon" class="w-6 h-6" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
                     </svg>
                     <!-- Moon Icon -->
-                    <svg id="moonIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="#000000" viewBox="0 0 24 24">
+                    <svg id="moonIcon" class="w-6 h-6 hidden" fill="none" stroke="#000000" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                         </path>
                     </svg>
                 </button>
                 <script>
-                    document.querySelector('#darkModeToggle').addEventListener('click', function() {
-                        let darkMode = document.documentElement.classList.contains('dark') ? 0 : 1;
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const darkModeToggle = document.querySelector('#darkModeToggle');
+                        const sunIcon = document.querySelector('#moonIcon');
+                        const moonIcon = document.querySelector('#sunIcon');
+                        const isDarkMode = document.documentElement.classList.contains('dark');
 
-                        fetch('/update-dark-mode', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                dark_mode: darkMode
+                        // Set initial state of icons
+                        sunIcon.classList.toggle('hidden', isDarkMode);
+                        moonIcon.classList.toggle('hidden', !isDarkMode);
+
+                        darkModeToggle.addEventListener('click', function() {
+                            let darkMode = document.documentElement.classList.contains('dark') ? 0 : 1;
+
+                            fetch('/update-dark-mode', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    dark_mode: darkMode
+                                })
                             })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Apply the dark class based on the toggle state
-                                document.documentElement.classList.toggle('dark', darkMode === 1);
-                                // Toggle icon visibility
-                                document.querySelector('#sunIcon').classList.toggle('hidden');
-                                document.querySelector('#moonIcon').classList.toggle('hidden');
-                            }
-                        })
-                        .catch(error => console.log(error));
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Toggle dark mode class
+                                    document.documentElement.classList.toggle('dark', darkMode === 1);
+
+                                    // Manually toggle icon visibility
+                                    sunIcon.classList.toggle('hidden', darkMode === 1);
+                                    moonIcon.classList.toggle('hidden', darkMode === 0);
+                                }
+                            })
+                            .catch(error => console.log(error));
+                        });
                     });
                 </script>
                 <button @click="isOpen = !isOpen"
-                    class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
+                    class="realtive mr-2 z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                     <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ auth()->user()->name }}" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
