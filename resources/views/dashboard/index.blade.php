@@ -50,7 +50,7 @@
             </div>
 
             <!-- Action Cards -->
-            <div class="mt-8 inverse-text">
+            <div class="mt-8 text-gray-600">
                 <h2 class="text-2xl font-semibold mb-6 text">Quick Actions</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Make a deposit -->

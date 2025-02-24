@@ -551,7 +551,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center">
+            <div class="flex text-gray-800 items-center">
                 <x-notification-dropdown />
                 <!-- Other header items -->
             </div>
