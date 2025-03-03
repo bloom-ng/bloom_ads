@@ -16,6 +16,9 @@ use Illuminate\Support\FacadesLog;
 use App\Notifications\AdAccountNotification;
 use App\Models\BusinessManager;
 use App\Services\Meta\AdAccountService as MetaAdAccountService;
+use App\Models\Admin;
+use App\Mail\AdAccountRequestMail;
+use Illuminate\Support\Facades\Mail;
 
 class AdAccountsController extends Controller
 {
@@ -175,7 +178,33 @@ class AdAccountsController extends Controller
             $validated['organization_id'] = $user->settings?->current_organization_id;
             $validated['status'] = AdAccount::STATUS_PROCESSING;
 
-            AdAccount::create($validated);
+            $adAccount = AdAccount::create($validated);
+
+            // Notify all admins about the new ad account request
+            $admins = Admin::getAllAdmins();
+            foreach ($admins as $admin) {
+                try {
+                    Mail::to($admin->email)->send(new AdAccountRequestMail($user, [
+                        'account_name' => $validated['name'],
+                        'account_type' => $validated['type'],
+                        'timezone' => $validated['timezone'],
+                        'currency' => $validated['currency'],
+                        'business_manager_id' => $validated['business_manager_id'] ?? 'Not provided',
+                        'landing_page' => $validated['landing_page'] ?? 'Not provided',
+                        'facebook_page_url' => $validated['facebook_page_url'],
+                    ]));
+                    Log::info('Ad account request notification sent to admin', [
+                        'admin_id' => $admin->id,
+                        'admin_email' => $admin->email
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send ad account request notification to admin', [
+                        'admin_id' => $admin->id,
+                        'admin_email' => $admin->email,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
 
             return redirect()->route('adaccounts.index')
                 ->with('success', 'Ad Account created successfully');
