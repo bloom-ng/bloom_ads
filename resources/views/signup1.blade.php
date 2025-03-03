@@ -25,10 +25,10 @@
                 </a>
             </div> -->
 
-            <div class="relative flex items-center justify-center mb-8">
+            <!-- <div class="relative flex items-center justify-center mb-8">
                 <hr class="w-full border-gray-300">
                 <span class="absolute px-3 bg-gradient-to-r from-[#E6E6F366] to-[#6666B366]">or</span>
-            </div>
+            </div> -->
 
             <form action="{{ route('signup.register') }}" method="POST" class="space-y-6">
                 @csrf
