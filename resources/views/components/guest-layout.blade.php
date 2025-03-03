@@ -140,16 +140,16 @@
         <div class="flex flex-row lg:space-x-3 mb-10">
             <span>
                 {{-- <a class="dark-hidden"
-                    href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a> --}}
                 <a class="dark-block"
-                    href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
             </span>
             <span>
-                {{-- <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img
+                {{-- <a class="dark-hidden" href="https://x.com/billing_ad?s=21" target="_blank"><img
                         src="/images/twitter.png" alt="X Link" /></a> --}}
-                <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img
+                <a class="dark-block" href="https://x.com/billing_ad?s=21" target="_blank"><img
                         src="/images/darkModeX.png" alt="X Link" /></a>
             </span>
             <span>

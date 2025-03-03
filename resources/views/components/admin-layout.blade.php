@@ -551,9 +551,9 @@
                     DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
             <div class="flex">
                 <span>
-                    <a class="dark-hidden" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    <a class="dark-hidden" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
-                    <a class="dark-block" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
                 </span>
                 <span>

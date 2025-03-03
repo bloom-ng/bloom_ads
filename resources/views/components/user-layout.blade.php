@@ -652,24 +652,24 @@
             <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text text-black">BLOOM
                     DIGITAL MEDIA LTD.</a> {{ date('Y') }}. All Rights Reserved</p>
             <div class="flex">
-                <a class="dark-hidden" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                <a class="dark-hidden" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg==" target="_blank">
                     <img src="/images/instagram.png" alt="Instagram Link" />
                 </a>
-                <a class="dark-block" href="https://www.instagram.com/bloom_digitalmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg==" target="_blank">
                     <img src="/images/darkInstagram.png" alt="Instagram Link" />
                 </a>
 
-                <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank">
+                <a class="dark-hidden" href="https://x.com/billing_ad?s=21" target="_blank">
                     <img src="/images/twitter.png" alt="X Link" />
                 </a>
-                <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank">
+                <a class="dark-block" href="https://x.com/billing_ad?s=21" target="_blank">
                     <img src="/images/darkTwitter.png" alt="X Link" />
                 </a>
 
-                <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank">
+                <a class="dark-hidden" href="https://www.facebook.com/profile.php?id=61572286652674&mibextid=wwXIfr&mibextid=wwXIfr" target="_blank">
                     <img src="/images/facebook.png" alt="Facebook Link" />
                 </a>
-                <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank">
+                <a class="dark-block" href="https://www.facebook.com/profile.php?id=61572286652674&mibextid=wwXIfr&mibextid=wwXIfr" target="_blank">
                     <img src="/images/darkFacebook.png" alt="Facebook Link" />
                 </a>
 

@@ -122,8 +122,8 @@
                 <div class="mb-3 flex items-start space-x-2">
                     <input type="checkbox" name="terms_accepted" id="terms_accepted" class="mt-1" required>
                     <label for="terms_accepted" class="text-sm text-gray-700">
-                        I agree to the <a href="#" class="text-[#000080] hover:underline">Terms and Conditions</a> and 
-                        <a href="#" class="text-[#000080] hover:underline">Privacy Policy</a>
+                        I agree to the <a href="/service" class="text-[#000080] hover:underline">Terms and Conditions</a> and 
+                        <a href="/privacy" class="text-[#000080] hover:underline">Privacy Policy</a>
                     </label>
                 </div>
                 @error('terms_accepted')
