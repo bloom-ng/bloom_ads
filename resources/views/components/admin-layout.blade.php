@@ -557,15 +557,15 @@
                     target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
                 </span>
                 <span>
-                    <a class="dark-hidden" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/twitter.png"
+                    <a class="dark-hidden" href="https://x.com/billing_ad?s=21" target="_blank"><img src="/images/twitter.png"
                         alt="X Link" /></a>
-                    <a class="dark-block" href="https://x.com/bloomdigitmedia?s=20" target="_blank"><img src="/images/darkModeX.png"
+                    <a class="dark-block" href="https://x.com/billing_ad?s=21" target="_blank"><img src="/images/darkModeX.png"
                         alt="X Link" /></a>
                 </span>
                     <span>
-                    <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                    <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
                         src="/images/facebook.png" alt="Facebook Link" /></a>
-                    <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                    <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
                         src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
                 </span>
                 <span>

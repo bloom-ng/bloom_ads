@@ -666,10 +666,10 @@
                     <img src="/images/darkTwitter.png" alt="X Link" />
                 </a>
 
-                <a class="dark-hidden" href="https://www.facebook.com/profile.php?id=61572286652674&mibextid=wwXIfr&mibextid=wwXIfr" target="_blank">
+                <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank">
                     <img src="/images/facebook.png" alt="Facebook Link" />
                 </a>
-                <a class="dark-block" href="https://www.facebook.com/profile.php?id=61572286652674&mibextid=wwXIfr&mibextid=wwXIfr" target="_blank">
+                <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank">
                     <img src="/images/darkFacebook.png" alt="Facebook Link" />
                 </a>
 

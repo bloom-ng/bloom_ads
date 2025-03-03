@@ -153,9 +153,9 @@
                         src="/images/darkModeX.png" alt="X Link" /></a>
             </span>
             <span>
-                {{-- <a class="dark-hidden" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                {{-- <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
                         src="/images/facebook.png" alt="Facebook Link" /></a> --}}
-                <a class="dark-block" href="https://www.facebook.com/bloomdigitmedia/" target="_blank"><img
+                <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
                         src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
             </span>
             <span>
