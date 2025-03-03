@@ -6,7 +6,7 @@
             <p class="text-2xl font-light mb-10">Please enter a valid & active email address</p>
 
             <!-- OAuth Buttons -->
-            <div class="flex flex-col gap-4 mb-8">
+            <!-- <div class="flex flex-col gap-4 mb-8">
                 <a href="/auth/google?user_type=agency"
                     class="flex flex-row space-x-3 text-sm font-semibold text-center items-center justify-center text-white bg-[#181818] rounded-xl px-8 p-2">
                     <img src="/images/google.svg" alt="google logo">
@@ -17,7 +17,7 @@
                     <img src="/images/facebook.svg" alt="facebook logo">
                     <span>Continue with Facebook</span>
                 </a>
-            </div>
+            </div> -->
 
             <div class="relative flex items-center justify-center mb-8">
                 <hr class="w-full border-gray-300">
