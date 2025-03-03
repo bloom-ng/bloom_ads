@@ -24,7 +24,7 @@
                 </a>
             </div>
             
-            <div class="w-full mt-6">
+            <div class="w-full mt-6 overflow-y-hidden">
                 <div class="bg-white shadow-md rounded my-6">
                     <table class="min-w-max w-full table-auto">
                         <thead>
@@ -33,6 +33,9 @@
                                 <th class="py-3 px-6 text-left">Email</th>
                                 <th class="py-3 px-6 text-left">User Type</th>
                                 <th class="py-3 px-6 text-center">Role</th>
+                                <th class="py-3 px-6 text-center">Phone</th>
+                                <th class="py-3 px-6 text-center">Weblink</th>
+                                <th class="py-3 px-6 text-center">Country</th>
                                 <th class="py-3 px-6 text-center">Joined At</th>
                             </tr>
                         </thead>
@@ -47,6 +50,9 @@
                                         {{ ucfirst($member->pivot->role) }}
                                     </span>
                                 </td>
+                                <td class="py-3 px-6 text-left">{{ $member->phone }}</td>
+                                <td class="py-3 px-6 text-left">{{ $member->weblink }}</td>
+                                <td class="py-3 px-6 text-left">{{ $member->country }}</td>
                                 <td class="py-3 px-6 text-center">{{ $member->pivot->created_at->format('Y-m-d') }}</td>
                             </tr>
                             @endforeach
