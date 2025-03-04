@@ -460,7 +460,7 @@
                 <div class="faq-item">
                     <div class="faq-header cursor-pointer flex items-center bg-[#000031] p-6" data-index="7">
                         <span class="mr-10 text-white text-2xl font-bold">+</span>
-                        <span class="faq-question text-white text-xl">Can i get a refunds?</span>
+                        <span class="faq-question text-white text-xl">Can i get a refund?</span>
                     </div>
                     <div class="faq-answer hidden bg-[#f0f0f8] p-6 text-lg">
                         <p>Yes, you can transfer your available funds from your advertising accounts back to your wallet

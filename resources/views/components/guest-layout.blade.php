@@ -10,22 +10,51 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://unpkg.com/alpinejs" defer></script>
 
+    <meta name="description"
+        content="Effortlessly manage your Google, Meta and TikTok ads in Nigeria with our premier platform, designed to streamline your billing process.">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://billing.ad">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Billing | The Premier Platform for Google and Meta Ads in Nigeria">
+    <meta property="og:description"
+        content="Effortlessly manage your Google, Meta and TikTok ads in Nigeria with our premier platform, designed to streamline your billing process.">
+    <meta property="og:image" content="{{ asset('/images/graph_image.png') }}">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="billing.ad">
+    <meta property="twitter:url" content="https://billing.ad">
+    <meta name="twitter:title" content="Billing | The Premier Platform for Google and Meta Ads in Nigeria">
+    <meta name="twitter:description"
+        content="Effortlessly manage your Google, Meta and TikTok ads in Nigeria with our premier platform, designed to streamline your billing process.">
+    <meta name="twitter:image" content="{{ asset('/images/graph_image.png') }}">
+
     <!-- Meta Pixel Code -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1070616598420924');
-    fbq('track', 'PageView');
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1070616598420924');
+        fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1070616598420924&ev=PageView&noscript=1"
-    /></noscript>
+            src="https://www.facebook.com/tr?id=1070616598420924&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 </head>
 
@@ -142,8 +171,7 @@
                 {{-- <a class="dark-hidden"
                     href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a> --}}
-                <a class="dark-block"
-                    href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
+                <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
                     target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
             </span>
             <span>
@@ -155,8 +183,8 @@
             <span>
                 {{-- <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
                         src="/images/facebook.png" alt="Facebook Link" /></a> --}}
-                <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
-                        src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
+                <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr"
+                    target="_blank"><img src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
             </span>
             <span>
                 {{-- <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
@@ -167,8 +195,8 @@
         </div>
 
         <div class="flex flex-row mb-5 space-x-2">
-            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink" class="mt-1a">
+            <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="mt-1a">
                 <rect width="25" height="25" fill="url(#pattern0_561_390)" />
                 <defs>
                     <pattern id="pattern0_561_390" patternContentUnits="objectBoundingBox" width="1"
