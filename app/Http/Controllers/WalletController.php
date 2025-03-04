@@ -16,6 +16,8 @@ use App\Notifications\WalletNotification;
 use App\Models\WalletTransaction;
 use PDF;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewWalletCreationMail;
 
 class WalletController extends Controller
 {
@@ -77,10 +79,16 @@ class WalletController extends Controller
             return back()->with('error', 'A wallet with this currency already exists.');
         }
 
-        $organization->wallets()->create([
+        $wallet = $organization->wallets()->create([
             'currency' => $validated['currency'],
             'balance' => 0
         ]);
+
+        // Send email notification to all admins
+        $admins = \App\Models\Admin::all();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new NewWalletCreationMail($wallet));
+        }
 
         return back()->with('success', 'Wallet created successfully.');
     }
