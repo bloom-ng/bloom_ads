@@ -648,14 +648,48 @@ class WalletController extends Controller
 
         $wallet = Wallet::findOrFail($validated['wallet_id']);
 
-        // Verify bank account first
+        // Check for pending withdrawals and calculate total for today
+        $todayWithdrawals = $wallet->transactions()
+        ->where('type', 'debit')
+        ->whereIn('status', ['pending', 'completed'])
+        ->where('description', 'like', 'Withdrawal to%')
+        ->whereDate('created_at', Carbon::now()->toDateString())
+        ->sum('amount');
+
+        // Check if new withdrawal + today's withdrawals exceed 500k
+        if (($todayWithdrawals + $validated['amount']) > 500000) {
+        return back()->with('error', 'Total daily withdrawals cannot exceed NGN 500,000');
+        }
+
+        // Get authenticated user
+        $user = Auth::user();
+        $userName = strtolower(trim($user->name)); // Normalize user name
+
+        // Verify bank account first via Flutterwave
         $flutterwaveService = new FlutterwaveService();
         $accountVerification = $flutterwaveService->verifyBankAccount(
             $validated['account_number'],
             $validated['bank_code']
         );
 
-        $accountName = $accountVerification['data']['account_name'];
+        // Check if verification was successful
+        if ($accountVerification['status'] !== 'success') {
+            throw new \Exception($accountVerification['message']);
+        }
+
+        $accountName = strtolower(trim($accountVerification['data']['account_name'])); // Normalize account name
+
+        // Clean and split names into arrays
+        $userNameParts = collect(preg_split('/\s+/', $userName));
+        $accountNameParts = collect(preg_split('/\s+/', $accountName));
+
+        // Ensure all parts of the user's name exist in the account name
+        $nameMatches = $userNameParts->every(fn($namePart) => $accountNameParts->contains($namePart));
+
+        if (!$nameMatches) {
+            return back()->with('error', 'Bank account name must match your registered name.');
+        }
+
 
         // Calculate fees
         $fees = $wallet->calculateWithdrawalFees($validated['amount']);
