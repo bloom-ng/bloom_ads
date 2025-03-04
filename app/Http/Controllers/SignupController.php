@@ -180,40 +180,41 @@ class SignupController extends Controller
             $user = User::where('email', $socialUser->getEmail())->first();
 
             if (!$user) {
-                DB::beginTransaction();
-                try {
-                    // Create user with the specific user type
-                    $user = User::create([
-                        'name' => $socialUser->getName(),
-                        'email' => $socialUser->getEmail(),
-                        'user_type' => $userType,
-                        'password' => Hash::make(Str::random(24)),
-                        'email_verified_at' => now(),
-                        'oauth_id' => $socialUser->getId(),
-                        'oauth_provider' => $provider,
-                    ]);
+                return redirect('/login')->with('error', 'User not found, please signup');
+                // DB::beginTransaction();
+                // try {
+                //     // Create user with the specific user type
+                //     $user = User::create([
+                //         'name' => $socialUser->getName(),
+                //         'email' => $socialUser->getEmail(),
+                //         'user_type' => $userType,
+                //         'password' => Hash::make(Str::random(24)),
+                //         'email_verified_at' => now(),
+                //         'oauth_id' => $socialUser->getId(),
+                //         'oauth_provider' => $provider,
+                //     ]);
 
-                    // Create organization
-                    $organization = Organization::create([
-                        'name' => $user->name . "'s Organization",
-                        'user_id' => $user->id
-                    ]);
+                //     // Create organization
+                //     $organization = Organization::create([
+                //         'name' => $user->name . "'s Organization",
+                //         'user_id' => $user->id
+                //     ]);
 
-                    // Create user settings
-                    UserSettings::create([
-                        'user_id' => $user->id,
-                        'current_organization_id' => $organization->id,
-                        'preferences' => UserSettings::getPreferences()
-                    ]);
+                //     // Create user settings
+                //     UserSettings::create([
+                //         'user_id' => $user->id,
+                //         'current_organization_id' => $organization->id,
+                //         'preferences' => UserSettings::getPreferences()
+                //     ]);
 
-                    // Attach user to organization with 'owner' role
-                    $user->organizations()->attach($organization->id, ['role' => 'owner']);
+                //     // Attach user to organization with 'owner' role
+                //     $user->organizations()->attach($organization->id, ['role' => 'owner']);
 
-                    DB::commit();
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    throw $e;
-                }
+                //     DB::commit();
+                // } catch (\Exception $e) {
+                //     DB::rollBack();
+                //     throw $e;
+                // }
             }
 
             Auth::login($user);
