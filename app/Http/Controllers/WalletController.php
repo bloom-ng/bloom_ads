@@ -18,6 +18,7 @@ use PDF;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewWalletCreationMail;
+use App\Mail\InvoiceRequestMail;
 
 class WalletController extends Controller
 {
@@ -575,6 +576,12 @@ class WalletController extends Controller
 
         // Generate unique invoice number
         $invoiceNumber = 'INV-' . strtoupper(Str::random(8));
+
+        // Send email notification to all admins
+        $admins = \App\Models\Admin::all();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new InvoiceRequestMail(auth()->user(), $validated['amount'], $validated['currency'], "Invoice request for wallet funding"));
+        }
 
         return view('dashboard.wallet.invoice', [
             'organization' => $organization,
