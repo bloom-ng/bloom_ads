@@ -510,6 +510,13 @@
         </nav>
     </aside>
 
+    <div class="bg-[#f0f0f0] fixed bottom-14 right-8 opacity-75 p-3 rounded-lg shadow-lg">
+        <a class="flex flex-col items-center " href="https://wa.me/+2347086278644">
+            <img class="w-8 h-8" src="/images/messages-icon.png" alt="">
+            <p class="text-gray-900 text-xs">Contact Support</p>
+        </a>
+    </div>
+
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
         <!-- Desktop Header -->
         <header class="w-full items-center bg-white py-4 px-6 header hidden sm:flex">
