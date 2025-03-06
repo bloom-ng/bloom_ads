@@ -359,7 +359,7 @@
                     <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 text-[#000080] border border-[#000080] rounded-md">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-[#000080] text-white rounded-md">
+                    <button type="submit" id="withdrawSubmitBtn" class="px-4 py-2 bg-[#000080] text-white rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-100">
                         Withdraw
                     </button>
                 </div>
@@ -812,6 +812,9 @@
             const accountNumber = document.getElementById('account_number').value;
             const bankCode = document.getElementById('bank_code').value;
             const accountNameDisplay = document.getElementById('account_name_display');
+            const submitButton = document.getElementById('withdrawSubmitBtn');
+            const userName = @json(auth()->user()->name);
+            const supportUrl = 'https://wa.me/+2347086278644';
 
             if (!accountNumber || !bankCode || accountNumber.length < 10) {
                 accountNameDisplay.textContent = '';
@@ -819,7 +822,12 @@
             }
 
             try {
+                // Enable button by default
+                submitButton.disabled = false;
+                
                 accountNameDisplay.textContent = 'Verifying account...';
+                accountNameDisplay.classList.remove('text-red-500', 'text-green-500');
+                accountNameDisplay.classList.add('text-gray-500');
 
                 const response = await fetch('{{ route('wallet.verify.account') }}', {
                     method: 'POST',
@@ -837,18 +845,36 @@
                 console.log('Verification response:', data);
 
                 if (data.status === 'success' && data.data) {
-                    accountNameDisplay.textContent = data.data.account_name;
-                    accountNameDisplay.classList.remove('text-red-500');
-                    accountNameDisplay.classList.add('text-green-500');
+                    const accountName = data.data.account_name;
+                    accountNameDisplay.textContent = accountName;
+
+                    // Check if names match (case-insensitive and order-independent)
+                    const userNameParts = userName.toLowerCase().split(/\s+/).filter(Boolean);
+                    const accountNameParts = accountName.toLowerCase().split(/\s+/).filter(Boolean);
+                    
+                    const nameMatches = userNameParts.every(part => accountNameParts.includes(part));
+                    
+                    if (nameMatches) {
+                        accountNameDisplay.classList.remove('text-red-500', 'text-gray-500');
+                        accountNameDisplay.classList.add('text-green-500');
+                        submitButton.disabled = false;
+                    } else {
+                        accountNameDisplay.innerHTML = `${accountName}<br><span class="text-red-500">Account name does not match your name. Please <a href="${supportUrl}" target="_blank" class="underline hover:text-red-700">contact support</a> if this is incorrect.</span>`;
+                        accountNameDisplay.classList.remove('text-green-500', 'text-gray-500');
+                        accountNameDisplay.classList.add('text-red-500');
+                        
+                        // Only disable the button after we confirm names don't match
+                        submitButton.disabled = true;
+                    }
                 } else {
                     accountNameDisplay.textContent = data.message || 'Could not verify account';
-                    accountNameDisplay.classList.remove('text-green-500');
+                    accountNameDisplay.classList.remove('text-green-500', 'text-gray-500');
                     accountNameDisplay.classList.add('text-red-500');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 accountNameDisplay.textContent = 'Error verifying account';
-                accountNameDisplay.classList.remove('text-green-500');
+                accountNameDisplay.classList.remove('text-green-500', 'text-gray-500');
                 accountNameDisplay.classList.add('text-red-500');
             }
         }
