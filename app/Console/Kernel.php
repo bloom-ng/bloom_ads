@@ -12,12 +12,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Fetch currency rates twice daily at 9am and 3pm WAT
         $schedule->command('currency:fetch-rates')
-                ->dailyAt('09:00', 'Africa/Lagos')
-                ->dailyAt('15:00', 'Africa/Lagos')
-                ->withoutOverlapping();
+            ->timezone('Africa/Lagos') // Set the correct timezone
+            ->dailyAt('09:00');
+
+        $schedule->command('currency:fetch-rates')
+            ->timezone('Africa/Lagos')
+            ->dailyAt('15:00')
+            ->withoutOverlapping();
     }
+
 
     /**
      * Register the commands for the application.
