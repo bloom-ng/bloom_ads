@@ -13,13 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('currency:fetch-rates')
-            ->timezone('Africa/Lagos')
-            ->dailyAt('09:00');
-
-        $schedule->command('currency:fetch-rates')
-            ->timezone('Africa/Lagos')
-            ->dailyAt('15:00')
-            ->withoutOverlapping();
+    ->timezone('Africa/Lagos')
+    ->everyMinute(); 
 
     }
 
