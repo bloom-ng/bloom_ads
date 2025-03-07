@@ -32,6 +32,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,17 @@ Route::middleware('guest:admin')->group(function () {
     Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.authenticate');
 });
 
+Route::get('/fetch-currency-rates', function (Request $request) {
+    $password = $request->query('password');
+    $validPassword = env('CURRENCY_FETCH_PASSWORD');
+
+    if (!$validPassword || $password !== $validPassword) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    Artisan::call('currency:fetch-rates');
+    return response()->json(['message' => 'Currency rates fetched successfully!']);
+});
 
 // Admin protected routes
 Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
