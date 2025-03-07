@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>New Ad Account Request</title>
-</head>
-<body>
+@extends('layouts.email')
+
+@section('content')
     <h1>New Ad Account Request</h1>
     <p>A new ad account request has been submitted by {{ $userName }}.</p>
 
@@ -17,5 +14,4 @@
         <li>Landing Page: {{ $adAccountDetails['landing_page'] }}</li>
         <li>Facebook Page URL: {{ $adAccountDetails['facebook_page_url'] }}</li>
     </ul>
-</body>
-</html>
+@endsection

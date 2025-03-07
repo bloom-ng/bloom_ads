@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>New User Registration</title>
-</head>
-<body>
+@extends('layouts.email')
+
+@section('content')
     <h2>New User Registration Notification</h2>
-    
+
     <p>A new user has registered on the platform.</p>
 
     <h3>User Details:</h3>
@@ -18,5 +15,4 @@
     </ul>
 
     <p>Please review this registration at your earliest convenience.</p>
-</body>
-</html>
+@endsection

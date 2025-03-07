@@ -1,23 +1,25 @@
-@component('mail::message')
-# Wallet Funded
+@extends('layouts.email')
 
-Dear {{ $wallet->organization->users->first()->name }},
+@section('content')
+    <h1>Wallet Funded</h1>
 
-Your wallet has been credited with {{ $wallet->currency }} {{ number_format($amount, 2) }} by the administrator.
+    <p>Dear {{ $wallet->organization->users->first()->name }},</p>
 
-**Transaction Details:**
-- Amount: {{ $wallet->currency }} {{ number_format($amount, 2) }}
-- Description: {{ $description }}
-- Wallet ID: {{ $wallet->id }}
+    <p>Your wallet has been credited with {{ $wallet->currency }} {{ number_format($amount, 2) }} by the administrator.</p>
 
-You can view your updated wallet balance by logging into your account.
+    <h2>Transaction Details:</h2>
+    <ul>
+        <li>Amount: {{ $wallet->currency }} {{ number_format($amount, 2) }}</li>
+        <li>Description: {{ $description }}</li>
+        <li>Wallet ID: {{ $wallet->id }}</li>
+    </ul>
 
-@component('mail::button', ['url' => route('wallet.index')])
-View Wallet
-@endcomponent
+    <p>You can view your updated wallet balance by logging into your account.</p>
 
-Thank you for using our service.
+    <a href="{{ route('wallet.index') }}" class="button">View Wallet</a>
 
-Best regards,<br>
-{{ config('app.name') }}
-@endcomponent
+    <p>Thank you for using our service.</p>
+
+    <p>Best regards,<br>
+        {{ config('app.name') }}</p>
+@endsection
