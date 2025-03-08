@@ -18,7 +18,4 @@
     <p style="word-break: break-all;">{{ $verificationUrl }}</p>
 
     <p>This verification link will expire in 60 minutes.</p>
-
-    <p>Best regards,<br>
-        {{ config('app.name') }}</p>
 @endsection
