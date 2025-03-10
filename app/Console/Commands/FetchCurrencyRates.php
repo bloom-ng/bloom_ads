@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\AdminSetting;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -82,12 +83,16 @@ class FetchCurrencyRates extends Command
                     $usdRate = AdminSetting::firstOrNew(['key' => 'usd_api_rate']);
                     $usdRate->name = 'USD API RATE';
                     $usdRate->value = $usdToNgnApiRate;
+                    $usdRate->updated_at = now();  // Force timestamp update
                     $usdRate->save();
+                    Cache::forget("admin_setting_usd_api_rate");
 
                     $gbpRate = AdminSetting::firstOrNew(['key' => 'gbp_api_rate']);
                     $gbpRate->name = 'GBP API RATE';
                     $gbpRate->value = $gbpToNgnApiRate;
+                    $gbpRate->updated_at = now();  // Force timestamp update
                     $gbpRate->save();
+                    Cache::forget("admin_setting_gbp_api_rate");
 
                     $this->log('New API rates fetched successfully!');
                 } else {
@@ -107,12 +112,16 @@ class FetchCurrencyRates extends Command
             $usdBloom = AdminSetting::firstOrNew(['key' => 'usd_rate']);
             $usdBloom->name = 'USD RATE';
             $usdBloom->value = $usdBloomRate;
+            $usdBloom->updated_at = now();  // Force timestamp update
             $usdBloom->save();
+            Cache::forget("admin_setting_usd_rate");
 
             $gbpBloom = AdminSetting::firstOrNew(['key' => 'gbp_rate']);
             $gbpBloom->name = 'GBP RATE';
             $gbpBloom->value = $gbpBloomRate;
+            $gbpBloom->updated_at = now();  // Force timestamp update
             $gbpBloom->save();
+            Cache::forget("admin_setting_gbp_rate");
 
             $this->log("\nCurrent Settings:");
             $this->log("Base Currency: NGN");
