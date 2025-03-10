@@ -79,23 +79,15 @@ class FetchCurrencyRates extends Command
                     $gbpToNgnApiRate = $ngnRate / $gbpRate;
 
                     // Store raw API rates (without margin)
-                    AdminSetting::updateOrCreate(
-                        ['key' => 'usd_api_rate'],
-                        ['name' => 'USD API RATE', 'value' => $usdToNgnApiRate]
-                    );
-                    $usdRate = AdminSetting::where('key', 'usd_api_rate')->first();
-                    if ($usdRate instanceof \Illuminate\Database\Eloquent\Model) {
-                        $usdRate->touch();
-                    }
+                    $usdRate = AdminSetting::firstOrNew(['key' => 'usd_api_rate']);
+                    $usdRate->name = 'USD API RATE';
+                    $usdRate->value = $usdToNgnApiRate;
+                    $usdRate->save();
 
-                    AdminSetting::updateOrCreate(
-                        ['key' => 'gbp_api_rate'],
-                        ['name' => 'GBP API RATE', 'value' => $gbpToNgnApiRate]
-                    );
-                    $gbpRate = AdminSetting::where('key', 'gbp_api_rate')->first();
-                    if ($gbpRate instanceof \Illuminate\Database\Eloquent\Model) {
-                        $gbpRate->touch();
-                    }
+                    $gbpRate = AdminSetting::firstOrNew(['key' => 'gbp_api_rate']);
+                    $gbpRate->name = 'GBP API RATE';
+                    $gbpRate->value = $gbpToNgnApiRate;
+                    $gbpRate->save();
 
                     $this->log('New API rates fetched successfully!');
                 } else {
@@ -112,15 +104,15 @@ class FetchCurrencyRates extends Command
             $gbpBloomRate = $gbpApiRate + $margin;
 
             // Store Bloom rates (API rate + margin)
-            AdminSetting::updateOrCreate(
-                ['key' => 'usd_rate'],
-                ['name' => 'USD RATE', 'value' => $usdBloomRate]
-            );
+            $usdBloom = AdminSetting::firstOrNew(['key' => 'usd_rate']);
+            $usdBloom->name = 'USD RATE';
+            $usdBloom->value = $usdBloomRate;
+            $usdBloom->save();
 
-            AdminSetting::updateOrCreate(
-                ['key' => 'gbp_rate'],
-                ['name' => 'GBP RATE', 'value' => $gbpBloomRate]
-            );
+            $gbpBloom = AdminSetting::firstOrNew(['key' => 'gbp_rate']);
+            $gbpBloom->name = 'GBP RATE';
+            $gbpBloom->value = $gbpBloomRate;
+            $gbpBloom->save();
 
             $this->log("\nCurrent Settings:");
             $this->log("Base Currency: NGN");
