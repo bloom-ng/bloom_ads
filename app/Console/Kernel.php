@@ -10,19 +10,13 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule)
     {
         $schedule->command('currency:fetch-rates')
-            ->timezone('UTC') // Change to UTC
-            ->dailyAt('08:00'); // 9 AM WAT is 8 AM UTC
-    
-        $schedule->command('currency:fetch-rates')
-            ->timezone('UTC') // Change to UTC
-            ->dailyAt('14:00') // 3 PM WAT is 2 PM UTC
-            ->withoutOverlapping();
-    
-
+                ->twiceDaily(0, 12)
+                ->appendOutputTo(storage_path('logs/currency_fetch.log'));
     }
+
 
 
     /**
