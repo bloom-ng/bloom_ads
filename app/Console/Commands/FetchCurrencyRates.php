@@ -83,11 +83,13 @@ class FetchCurrencyRates extends Command
                         ['key' => 'usd_api_rate'],
                         ['name' => 'USD API RATE', 'value' => $usdToNgnApiRate]
                     );
+                    $usdRate->touch();
 
                     AdminSetting::updateOrCreate(
                         ['key' => 'gbp_api_rate'],
                         ['name' => 'GBP API RATE', 'value' => $gbpToNgnApiRate]
                     );
+                    $gbpRate->touch();
 
                     $this->log('New API rates fetched successfully!');
                 } else {
