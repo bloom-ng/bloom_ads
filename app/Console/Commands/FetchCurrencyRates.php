@@ -83,13 +83,19 @@ class FetchCurrencyRates extends Command
                         ['key' => 'usd_api_rate'],
                         ['name' => 'USD API RATE', 'value' => $usdToNgnApiRate]
                     );
-                    $usdRate->touch();
+                    $usdRate = AdminSetting::where('key', 'usd_api_rate')->first();
+                    if ($usdRate instanceof \Illuminate\Database\Eloquent\Model) {
+                        $usdRate->touch();
+                    }
 
                     AdminSetting::updateOrCreate(
                         ['key' => 'gbp_api_rate'],
                         ['name' => 'GBP API RATE', 'value' => $gbpToNgnApiRate]
                     );
-                    $gbpRate->touch();
+                    $gbpRate = AdminSetting::where('key', 'gbp_api_rate')->first();
+                    if ($gbpRate instanceof \Illuminate\Database\Eloquent\Model) {
+                        $gbpRate->touch();
+                    }
 
                     $this->log('New API rates fetched successfully!');
                 } else {
