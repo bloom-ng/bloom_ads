@@ -35,30 +35,30 @@
                     </div>
                     <div>
                         <p class="text-gray-600">Status</p>
-                        @if($providerInfo["_provider"] == "meta")
-                        <p class="font-medium">
-                            <span
-                                class="px-2 py-1 rounded-full text-sm
+                        @if ($providerInfo['_provider'] == 'meta')
+                            <p class="font-medium">
+                                <span
+                                    class="px-2 py-1 rounded-full text-sm
                                 {{ $adAccount->status === 'approved'
                                     ? 'bg-green-100 text-green-800'
                                     : ($adAccount->status === 'processing'
                                         ? 'bg-yellow-100 text-yellow-800'
                                         : 'bg-red-100 text-red-800') }}">
-                                {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo["_meta_ad_account"]["account_status"]] }}
-                            </span>
-                        </p>
+                                    {{ \App\Services\Meta\Data\AdAccountMapping::accountStatusMapping()[$providerInfo['_meta_ad_account']['account_status']] }}
+                                </span>
+                            </p>
                         @else
-                        <p class="font-medium">
-                            <span
-                                class="px-2 py-1 rounded-full text-sm
+                            <p class="font-medium">
+                                <span
+                                    class="px-2 py-1 rounded-full text-sm
                                 {{ $adAccount->status === 'approved'
                                     ? 'bg-green-100 text-green-800'
                                     : ($adAccount->status === 'processing'
                                         ? 'bg-yellow-100 text-yellow-800'
                                         : 'bg-red-100 text-red-800') }}">
-                                {{ ucfirst($adAccount->status) }}
-                            </span>
-                        </p>
+                                    {{ ucfirst($adAccount->status) }}
+                                </span>
+                            </p>
                         @endif
                     </div>
                     <div>
@@ -73,20 +73,21 @@
                         <p class="text-gray-600">Organization</p>
                         <p class="font-medium">{{ $adAccount->organization->name }}</p>
                     </div>
-                    @if($providerInfo["_provider"] == "meta")
+                    @if ($providerInfo['_provider'] == 'meta')
                         <div>
                             <p class="text-gray-600">Meta Account</p>
-                            <p class="font-medium">  {{ $providerInfo["_meta_ad_account"]["name"] }}</p>
+                            <p class="font-medium"> {{ $providerInfo['_meta_ad_account']['name'] }}</p>
                         </div>
                         <div>
                             <p class="text-gray-600">Amount Spent</p>
-                            <p class="font-medium"> {{$providerInfo["_meta_ad_account"]["currency"]}} {{ $providerInfo["_meta_ad_account"]["amount_spent"] }}</p>
+                            <p class="font-medium"> {{ $providerInfo['_meta_ad_account']['currency'] }}
+                                {{ $providerInfo['_meta_ad_account']['amount_spent'] }}</p>
                         </div>
                         <div>
                             <p class="text-gray-600">Remaining Balance</p>
-                            <p class="font-medium"> {{
-                            $providerInfo["_meta_ad_account"]["currency"]}} 
-                            {{ abs( round( ( $providerInfo["_meta_ad_account"]["spend_cap"] - $providerInfo["_meta_ad_account"]["amount_spent"] ) / 100, 2 ) ) }}</p>
+                            <p class="font-medium"> {{ $providerInfo['_meta_ad_account']['currency'] }}
+                                {{ abs(round(($providerInfo['_meta_ad_account']['spend_cap'] - $providerInfo['_meta_ad_account']['amount_spent']) / 100, 2)) }}
+                            </p>
                         </div>
                     @endif
                     <div>
@@ -200,8 +201,8 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Amount</label>
-                                <input type="number" name="amount" id="withdrawAmount" step="0.01" min="0.01"
-                                    max="{{ $adAccount->getBalance() }}" required
+                                <input type="number" name="amount" id="withdrawAmount" step="0.01"
+                                    min="0.01" max="{{ $adAccount->getBalance() }}" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                                     onchange="updateWithdrawPreview()">
                             </div>

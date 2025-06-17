@@ -356,10 +356,12 @@
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2 text-[#000080] border border-[#000080] rounded-md">
+                    <button type="button" onclick="closeWithdrawModal()"
+                        class="px-4 py-2 text-[#000080] border border-[#000080] rounded-md">
                         Cancel
                     </button>
-                    <button type="submit" id="withdrawSubmitBtn" class="px-4 py-2 bg-[#000080] text-white rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-100">
+                    <button type="submit" id="withdrawSubmitBtn"
+                        class="px-4 py-2 bg-[#000080] text-white rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-100">
                         Withdraw
                     </button>
                 </div>
@@ -647,11 +649,11 @@
                             <p class="font-medium">${data.amount} ${data.currency}</p>
                         </div>
                         ${data.rate ? `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="border-b pb-4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ` : ''}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="border-b pb-4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="text-sm text-gray-600">Exchange Rate</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="font-medium">1 ${data.source_currency} = ${data.rate} ${data.currency}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ` : ''}
                         <div class="border-b pb-4">
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-medium">${data.status}</p>
@@ -824,7 +826,7 @@
             try {
                 // Enable button by default
                 submitButton.disabled = false;
-                
+
                 accountNameDisplay.textContent = 'Verifying account...';
                 accountNameDisplay.classList.remove('text-red-500', 'text-green-500');
                 accountNameDisplay.classList.add('text-gray-500');
@@ -851,18 +853,19 @@
                     // Check if names match (case-insensitive and order-independent)
                     const userNameParts = userName.toLowerCase().split(/\s+/).filter(Boolean);
                     const accountNameParts = accountName.toLowerCase().split(/\s+/).filter(Boolean);
-                    
+
                     const nameMatches = userNameParts.every(part => accountNameParts.includes(part));
-                    
+
                     if (nameMatches) {
                         accountNameDisplay.classList.remove('text-red-500', 'text-gray-500');
                         accountNameDisplay.classList.add('text-green-500');
                         submitButton.disabled = false;
                     } else {
-                        accountNameDisplay.innerHTML = `${accountName}<br><span class="text-red-500">Account name does not match your name. Please <a href="${supportUrl}" target="_blank" class="underline hover:text-red-700">contact support</a> if this is incorrect.</span>`;
+                        accountNameDisplay.innerHTML =
+                            `${accountName}<br><span class="text-red-500">Account name does not match your name. Please <a href="${supportUrl}" target="_blank" class="underline hover:text-red-700">contact support</a> if this is incorrect.</span>`;
                         accountNameDisplay.classList.remove('text-green-500', 'text-gray-500');
                         accountNameDisplay.classList.add('text-red-500');
-                        
+
                         // Only disable the button after we confirm names don't match
                         submitButton.disabled = true;
                     }
@@ -912,6 +915,14 @@
             document.getElementById('createWalletModal').classList.remove('flex');
             document.getElementById('createWalletModal').classList.add('hidden');
         }
+
+        // Add event listener for fund amount input
+        document.addEventListener('DOMContentLoaded', function() {
+            const fundAmountInput = document.getElementById('fundAmount');
+            if (fundAmountInput) {
+                fundAmountInput.addEventListener('input', updateFundingPreview);
+            }
+        });
 
         // Withdraw Processing Fee
         function calculateFees() {
