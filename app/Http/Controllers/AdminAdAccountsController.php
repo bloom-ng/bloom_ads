@@ -78,7 +78,7 @@ class AdminAdAccountsController extends Controller
             'status' => 'required|in:processing,pending,approved,banned,deleted,rejected',
             'provider' => 'nullable|string',
             'provider_id' => 'nullable|string',
-            'business_manager_id' => 'nullable|string|size:32',
+            'business_manager_id' => 'nullable|string|max:35',
             'landing_page' => 'nullable|url',
         ]);
 
