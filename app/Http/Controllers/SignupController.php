@@ -124,11 +124,11 @@ class SignupController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->with('error', 'Invalid Credentials');
+            return back()->with('error', 'User not found');
         }
 
         if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Invalid Credentials');
+            return back()->with('error', 'Incorrect password');
         }
 
         session(['user_id' => $user->id]);
