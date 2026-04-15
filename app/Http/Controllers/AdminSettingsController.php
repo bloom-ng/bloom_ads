@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\AdminSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 
 class AdminSettingsController extends Controller
 {
@@ -85,6 +87,45 @@ class AdminSettingsController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.adminsettings.index')
                 ->with('error', 'Failed to delete setting: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Manually refresh currency rates.
+     * Limited to 2 refreshes per calendar day per admin.
+     */
+    public function refreshRates(Request $request)
+    {
+        $cacheKey = 'currency_refresh_count_' . now()->format('Y-m-d');
+        $count = (int) Cache::get($cacheKey, 0);
+        $maxPerDay = 2;
+
+        if ($count >= $maxPerDay) {
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Daily limit reached. Rates can only be manually refreshed ' . $maxPerDay . ' times per day.',
+                'remaining' => 0,
+            ], 429);
+        }
+
+        try {
+            Artisan::call('currency:fetch-rates');
+
+            // Increment counter; expires at end of today
+            Cache::put($cacheKey, $count + 1, now()->endOfDay());
+
+            $remaining = $maxPerDay - ($count + 1);
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Currency rates refreshed successfully.',
+                'remaining' => $remaining,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to refresh rates: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }

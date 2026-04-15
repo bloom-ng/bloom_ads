@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
@@ -22,6 +24,14 @@ class AdminController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
+
+            // Silently refresh currency rates on each admin login.
+            // Runs in a try/catch so a rate-fetch failure never blocks login.
+            try {
+                Artisan::call('currency:fetch-rates');
+            } catch (\Exception $e) {
+                Log::warning('Currency rate refresh on admin login failed: ' . $e->getMessage());
+            }
 
             return redirect()->intended(route('admin.dashboard'));
         }

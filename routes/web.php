@@ -100,6 +100,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
 
     Route::resource('adminsettings', AdminSettingsController::class);
     Route::post('adminsettings/{adminSetting}/update', [AdminSettingsController::class, 'update'])->name('adminsettings.update');
+    Route::post('adminsettings/refresh-rates', [AdminSettingsController::class, 'refreshRates'])->name('adminsettings.refresh-rates');
 
     // Add this new route for RockAds accounts
     Route::get('/rockads-accounts', [AdminRockAdsAccountsController::class, 'index'])->name('rockads.accounts.index');
