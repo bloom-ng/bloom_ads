@@ -17,7 +17,7 @@ class ImportRockAdsAdPlatforms extends Command
         try {
             $this->info('Checking RockAds API configuration...');
             Log::info('Starting RockAds ad platforms import');
-            
+
             // Verify API credentials are configured
             if (empty(config('services.rockads.api_key')) || empty(config('services.rockads.api_secret'))) {
                 $error = 'RockAds API credentials are not configured. Please check your .env file.';
@@ -28,7 +28,7 @@ class ImportRockAdsAdPlatforms extends Command
 
             $this->info('Fetching ad platforms from RockAds API...');
             $response = $rockAds->getAdPlatformsFromApi();
-            
+
             if (empty($response->platforms)) {
                 $this->warn('No ad platforms returned from API');
                 Log::warning('RockAds API returned empty platforms list');
@@ -46,7 +46,7 @@ class ImportRockAdsAdPlatforms extends Command
                     'id' => $platform->id,
                     'name' => $platform->name
                 ]);
-                
+
                 RockAdsAdPlatform::updateOrCreate(
                     ['platform_id' => $platform->id],
                     [
@@ -59,7 +59,7 @@ class ImportRockAdsAdPlatforms extends Command
 
             $this->info("Successfully imported {$count} ad platforms");
             Log::info('Ad platforms import completed', ['count' => $count]);
-            
+
         } catch (\Exception $e) {
             Log::error('Failed to import RockAds ad platforms', [
                 'error' => $e->getMessage(),

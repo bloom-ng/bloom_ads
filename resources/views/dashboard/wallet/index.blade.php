@@ -44,8 +44,10 @@
                         <!-- Existing Wallets -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @forelse ($organization->wallets as $wallet)
-                                <x-card :wallet-id="$wallet->id" :icon-src="asset($wallet->currency === 'NGN' ? 'images/naira_icon.svg' : ($wallet->currency === 'USD' ? 'images/usd_icon.svg' : 'images/gbp_icon.svg'))" :currency="$wallet->currency" :balance="$wallet->getBalance()"
-                                    :button-text="'Fund Wallet'" :button-action="'openFundModal'" />
+                                <x-card :wallet-id="$wallet->id"
+                                    :icon-src="asset($wallet->currency === 'NGN' ? 'images/naira_icon.svg' : ($wallet->currency === 'USD' ? 'images/usd_icon.svg' : 'images/gbp_icon.svg'))"
+                                    :currency="$wallet->currency" :balance="$wallet->getBalance()" :button-text="'Fund Wallet'"
+                                    :button-action="'openFundModal'" />
                             @empty
                                 <p class="text-gray-500">No wallets found.</p>
                             @endforelse
@@ -85,7 +87,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                                    {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                         {{ ucfirst($transaction->type) }}
                                                     </span>
                                                 </td>
@@ -101,7 +103,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                    {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                                    {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                         {{ ucfirst($transaction->status) }}
                                                     </span>
                                                 </td>
@@ -121,8 +123,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7"
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-center">
                                                     No transactions found
                                                 </td>
                                             </tr>
@@ -321,8 +322,8 @@
                 <div>
                     <label for="withdrawAmount" class="block text-sm font-medium mb-2">Amount</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="number" name="amount" id="withdrawAmount" required min="100"
-                            step="0.01" class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
+                        <input type="number" name="amount" id="withdrawAmount" required min="100" step="0.01"
+                            class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
                             placeholder="Enter amount">
                     </div>
                     <p class="mt-1 text-sm text-gray-300">Available balance: <span
@@ -395,8 +396,8 @@
                 <h3 class="text-xl font-medium">Create New Wallet</h3>
                 <button onclick="closeCreateWalletModal()" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -432,7 +433,7 @@
 
     <script>
         // In your Javascript (external .js resource or <script> tag)
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#bank_code').select2({
                 width: '100%'
             });
@@ -790,7 +791,7 @@
             // Set the wallet ID and display the balance
             document.getElementById('withdrawWalletId').value = ngnWallet.id;
             document.getElementById('withdrawAvailableBalance').textContent =
-                `NGN ${parseFloat(ngnWallet.calculated_balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                `NGN ${parseFloat(ngnWallet.calculated_balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
             // Show the modal
             const modal = document.getElementById('withdrawModal');
@@ -883,19 +884,19 @@
         }
 
         // Add event listeners for account verification
-        document.getElementById('account_number').addEventListener('input', function() {
+        document.getElementById('account_number').addEventListener('input', function () {
             clearTimeout(verifyAccountTimeout);
             verifyAccountTimeout = setTimeout(verifyBankAccount, 500);
         });
 
-        document.getElementById('bank_code').addEventListener('change', function() {
+        document.getElementById('bank_code').addEventListener('change', function () {
             const accountNumber = document.getElementById('account_number').value;
             if (accountNumber) {
                 verifyBankAccount();
             }
         });
 
-        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        document.getElementById('withdrawForm').addEventListener('submit', function (e) {
             const amount = parseFloat(document.getElementById('withdrawAmount').value);
             const balance = parseFloat(document.getElementById('withdrawAvailableBalance').textContent.replace(/,/g,
                 ''));
@@ -917,7 +918,7 @@
         }
 
         // Add event listener for fund amount input
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const fundAmountInput = document.getElementById('fundAmount');
             if (fundAmountInput) {
                 fundAmountInput.addEventListener('input', updateFundingPreview);
@@ -938,17 +939,17 @@
             }
 
             fetch(
-                    `/api/wallet/calculate-withdrawal-fees?amount=${amount}&wallet_id=${walletId}`, {
-                        headers: {
-                            Accept: "application/json",
-                            "X-Requested-With": "XMLHttpRequest",
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${document.querySelector(
-                                'meta[name="csrf-token"]'
-                            ).content}`,
-                        },
-                    }
-                )
+                `/api/wallet/calculate-withdrawal-fees?amount=${amount}&wallet_id=${walletId}`, {
+                headers: {
+                    Accept: "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content}`,
+                },
+            }
+            )
                 .then((response) => response.json())
                 .then((data) => {
                     document.getElementById(
@@ -971,7 +972,7 @@
                 });
         }
 
-        document.getElementById("withdrawAmount").addEventListener("change", function() {
+        document.getElementById("withdrawAmount").addEventListener("change", function () {
             calculateFees();
         });
     </script>
