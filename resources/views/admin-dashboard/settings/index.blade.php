@@ -1,7 +1,7 @@
 <x-admin-layout page="settings">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <h1 class="text-3xl text-black pb-6">Admin Settings</h1>
+            <h1 class="text-3xl text-black dark:text-white pb-6">Admin Settings</h1>
 
             {{-- Toast notification --}}
             <div id="rateRefreshToast"
@@ -9,7 +9,7 @@
                  class="flex items-center gap-3 px-5 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-all">
             </div>
 
-            <div class="bg-white shadow-md rounded my-6 p-6">
+            <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6 p-6">
                 <div class="mb-6">
                     <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
                         <p class="font-bold">Currency Rates Information</p>
@@ -19,19 +19,19 @@
 
                 <table class="min-w-max w-full table-auto">
                     <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <tr class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Name</th>
                             <th class="py-3 px-6 text-left">Value</th>
                             <th class="py-3 px-6 text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-600 text-sm font-light">
+                    <tbody class="text-gray-600 dark:text-gray-300 text-sm font-light">
                         @foreach($settings as $setting)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="py-3 px-6 text-left">{{ $setting->name }}</td>
                                 <td class="py-3 px-6 text-left">
                                     @if(in_array($setting->key, ['usd_rate', 'gbp_rate']))
-                                        <span class="text-gray-800">{{ $setting->value }} NGN</span>
+                                        <span class="text-gray-800 dark:text-gray-200">{{ $setting->value }} NGN</span>
                                     @else
                                         <form method="POST" action="{{ route('admin.adminsettings.update', $setting->id) }}" class="flex items-center">
                                             @csrf
@@ -40,14 +40,14 @@
                                                 <input type="number"
                                                        name="value"
                                                        value="{{ $setting->value }}"
-                                                       class="border rounded px-2 py-1 w-full"
+                                                       class="border rounded px-2 py-1 w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                                        step="0.01"
                                                        min="0">
                                             @else
                                                 <input type="text"
                                                        name="value"
                                                        value="{{ $setting->value }}"
-                                                       class="border rounded px-2 py-1 w-full">
+                                                       class="border rounded px-2 py-1 w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                             @endif
                                             <button type="submit"
                                                     class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
@@ -75,34 +75,34 @@
                 </table>
 
                 <!-- Current Rates Display -->
-                <div class="mt-8 p-4 bg-gray-50 rounded">
-                    <h2 class="text-lg font-semibold mb-4">Bloom Rates (with margin)</h2>
+                <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded">
+                    <h2 class="text-lg font-semibold mb-4 dark:text-white">Bloom Rates (with margin)</h2>
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div>
-                            <p class="text-sm text-gray-600">USD to NGN Rate:</p>
-                            <p class="font-medium">{{ number_format($settings->where('key', 'usd_rate')->first()?->value ?? 0, 2) }} NGN</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">USD to NGN Rate:</p>
+                            <p class="font-medium dark:text-gray-200">{{ number_format($settings->where('key', 'usd_rate')->first()?->value ?? 0, 2) }} NGN</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">GBP to NGN Rate:</p>
-                            <p class="font-medium">{{ number_format($settings->where('key', 'gbp_rate')->first()?->value ?? 0, 2) }} NGN</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">GBP to NGN Rate:</p>
+                            <p class="font-medium dark:text-gray-200">{{ number_format($settings->where('key', 'gbp_rate')->first()?->value ?? 0, 2) }} NGN</p>
                         </div>
                     </div>
 
-                    <h2 class="text-lg font-semibold mb-4">API Rates (CurrencyFreaks)</h2>
+                    <h2 class="text-lg font-semibold mb-4 dark:text-white">API Rates (CurrencyFreaks)</h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="text-sm text-gray-600">USD to NGN Rate:</p>
-                            <p class="font-medium">{{ number_format(($settings->where('key', 'usd_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">USD to NGN Rate:</p>
+                            <p class="font-medium dark:text-gray-200">{{ number_format(($settings->where('key', 'usd_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">GBP to NGN Rate:</p>
-                            <p class="font-medium">{{ number_format(($settings->where('key', 'gbp_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">GBP to NGN Rate:</p>
+                            <p class="font-medium dark:text-gray-200">{{ number_format(($settings->where('key', 'gbp_rate')->first()?->value ?? 0) - ($settings->where('key', 'currency_margin')->first()?->value ?? 0), 2) }} NGN</p>
                         </div>
                     </div>
 
                     <!-- Last update + Manual Refresh Button -->
                     <div class="flex items-center justify-between mt-4">
-                        <p class="text-xs text-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
                             Rates are automatically updated twice daily. Last update:
                             {{ $settings->where('key', 'usd_rate')->first()?->updated_at?->diffForHumans() ?? 'Never' }}
                         </p>
@@ -121,7 +121,7 @@
                                 class="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border transition
                                        {{ $remaining === 0
                                             ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                            : 'bg-white text-blue-600 border-blue-300 hover:bg-blue-50 cursor-pointer' }}">
+                                            : 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border-blue-300 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer' }}">
                             {{-- Refresh SVG icon --}}
                             <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -137,21 +137,21 @@
 
                 <!-- Add New Setting Form -->
                 <div class="mt-6 pt-6 border-t">
-                    <h2 class="text-xl text-black pb-4">Add New Setting</h2>
+                    <h2 class="text-xl text-black dark:text-white pb-4">Add New Setting</h2>
                     <form method="POST" action="{{ route('admin.adminsettings.store') }}" class="flex gap-4">
                         @csrf
                         <div class="flex-1">
                             <input type="text"
                                    name="name"
                                    placeholder="Setting Name"
-                                   class="border rounded px-2 py-1 w-full"
+                                   class="border rounded px-2 py-1 w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                    required>
                         </div>
                         <div class="flex-1">
                             <input type="text"
                                    name="value"
                                    placeholder="Setting Value"
-                                   class="border rounded px-2 py-1 w-full"
+                                   class="border rounded px-2 py-1 w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                    required>
                         </div>
                         <button type="submit"

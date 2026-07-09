@@ -3,7 +3,8 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: {{ Auth::guard('admin')->user()->dark_mode ? 'true' : 'false' }} }" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="{ darkMode: {{ Auth::guard('admin')->user()->dark_mode ? 'true' : 'false' }} }"
+    :class="{ 'dark': darkMode }">
 {{-- {{$page == "newsletters" ? "active-nav-link" : ""}} --}}
 
 <head>
@@ -11,7 +12,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Include Tailwind CSS -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    {{--
+    <script src="https://cdn.tailwindcss.com"></script> --}}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // This tells the CDN to respect your .dark class!
+        }
+    </script>
 
 
     <!-- Include Poppins Font -->
@@ -33,7 +42,7 @@
 
 
     <!-- Tailwind -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet"> -->
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
 
@@ -47,7 +56,7 @@
 
         .dark .bg-sidebar {
             background: #000019;
-        }       
+        }
 
         .dark .active-nav-link {
             background: #CECEFF;
@@ -56,16 +65,17 @@
         }
 
         .dark .dark-hidden {
-            display: none;            
+            display: none;
         }
 
         .dark .dark-block {
             display: block;
         }
-        
+
         /* Ensures elements with dark-block are hidden in light mode */
         .dark-block {
-            display: none; /* Default behavior in light mode */
+            display: none;
+            /* Default behavior in light mode */
         }
 
         .dark .active-nav-link:hover {
@@ -100,13 +110,15 @@
         }
 
         .inactive-nav-link {
-            color: black; /* Black text for light mode inactive links */
+            color: black;
+            /* Black text for light mode inactive links */
         }
 
         /* For inactive nav link in dark mode */
         .dark .inactive-nav-link {
-            color: white; /* White text for dark mode inactive links */
-        }        
+            color: white;
+            /* White text for dark mode inactive links */
+        }
 
         .dark .text {
             color: #F0F0F0;
@@ -120,14 +132,14 @@
             color: #F0F0F0;
         }
 
-        .btn{
+        .btn {
             background: #000080;
             border-radius: 0.75rem;
             font-size: 18px;
             color: white;
         }
 
-        .btn-primary{
+        .btn-primary {
             background: #ffffff;
             border-radius: 0.75rem;
             border: 1px solid #000080;
@@ -135,36 +147,36 @@
             color: #000080;
         }
 
-        .btn-search{
+        .btn-search {
             background: #000080;
             font-size: 18px;
             color: white;
         }
-        </style>
+    </style>
 
-   <!-- Add Alpine.js -->
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Add Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-<!-- Initialize Alpine.js store -->
-<script>
-    // Check localStorage and apply the appropriate theme on page load
-    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+    <!-- Initialize Alpine.js store -->
+    <script>
+        // Check localStorage and apply the appropriate theme on page load
+        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
 
-    // Apply the correct mode on load
-    document.documentElement.classList.toggle('dark', darkModeEnabled);
+        // Apply the correct mode on load
+        document.documentElement.classList.toggle('dark', darkModeEnabled);
 
-    // Initialize Alpine.js store for dark mode
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('darkMode', {
-            on: darkModeEnabled,
-            toggle() {
-                this.on = !this.on;
-                localStorage.setItem('darkMode', this.on);
-                document.documentElement.classList.toggle('dark', this.on);
-            }
+        // Initialize Alpine.js store for dark mode
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('darkMode', {
+                on: darkModeEnabled,
+                toggle() {
+                    this.on = !this.on;
+                    localStorage.setItem('darkMode', this.on);
+                    document.documentElement.classList.toggle('dark', this.on);
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 
 
@@ -172,7 +184,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body
+    class="font-family-karla flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -186,7 +199,7 @@
                 backgroundColor: "green",
                 stopOnFocus: true,
                 ariaLive: "polite",
-                onClick: function() {}
+                onClick: function () { }
             }).showToast();
         </script>
     @endif
@@ -202,7 +215,7 @@
                 backgroundColor: "red",
                 stopOnFocus: true,
                 ariaLive: "polite",
-                onClick: function() {}
+                onClick: function () { }
             }).showToast();
         </script>
     @endif
@@ -219,39 +232,35 @@
                     backgroundColor: "red",
                     stopOnFocus: true,
                     ariaLive: "polite",
-                    onClick: function() {}
+                    onClick: function () { }
                 }).showToast();
             </script>
         @endforeach
     @endif
 
-    <aside class="bg-sidebar overflow-y-auto relative h-screen w-64 hidden sm:block dark:bg-gray-800 transition-colors duration-200">
+    <aside
+        class="bg-sidebar overflow-y-auto relative h-screen w-64 hidden sm:block dark:bg-gray-800 transition-colors duration-200">
         <div class="p-6 bg-sidebar-top">
             <a href="/dashboard" class="flex justify-center">
                 <img class="billings-icon" src="{{ asset('images/billingsIcon.png') }}" alt="">
             </a>
         </div>
         <nav class="text-base font-semibold">
-            <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <!-- Image switching based on active class and dark mode -->
                     @if($page == 'dashboard')
                         <!-- Active State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/dashboardIcon.png') }}"
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/darkDashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/darkDashboardIcon.png') }}"
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/dashboardIconInactive.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/dashboardIconInactive.png') }}"
                             alt="Inactive Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/dashboardIcon.png') }}"
                             alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
@@ -295,20 +304,15 @@
                 </span>
                 Wallet
             </a> -->
-            <a href="{{ route('admin.organizations.index') }}"
-                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.organizations.index') }}" class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'organizations')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/organizationIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkUserIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/organizationIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/darkUserIcon.png') }}" alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/organizationIconInactive.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/organizationIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/organizationIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/organizationIcon.png') }}" alt="">
                     @endif
                 </span>
                 Business
@@ -331,74 +335,60 @@
                 </span>
                 Ad Accounts
             </a> -->
-            <a href="{{ route('admin.rockads.accounts.index') }}"
-                class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.rockads.accounts.index') }}" class="flex items-center {{ $page == 'rockads' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item hidden">
                 <span class="mr-3">
                     @if($page == 'rockads')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/rockAdaccountIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkRockAdaccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/rockAdaccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/darkRockAdaccountIcon.png') }}"
+                            alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/rockAdaccountIconInactive.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden"  
-                            src="{{ asset('images/rockAdaccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/rockAdaccountIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/rockAdaccountIcon.png') }}"
+                            alt="">
                     @endif
                 </span>
                 RockAds Accounts
             </a>
-            <a href="{{ route('admin.meta.accounts.index') }}"
-                class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.meta.accounts.index') }}" class="flex items-center {{ $page == 'meta-accounts' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item hidden">
                 <span class="mr-3">
                     @if($page == 'meta-accounts')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/metaAccountIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkMetaAccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/metaAccountIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/darkMetaAccountIcon.png') }}"
+                            alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/metaAccountIconInactive.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/metaAccountIcon.png') }}" alt="">
-                    @endif  
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/metaAccountIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/metaAccountIcon.png') }}" alt="">
+                    @endif
                 </span>
                 Meta Accounts
             </a>
-            <a href="{{ route('admin.business-managers.index') }}"
-                class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.business-managers.index') }}" class="flex items-center {{ $page == 'business-managers' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'business-managers')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/businessManagerIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/darkBusinessManagerIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/businessManagerIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/darkBusinessManagerIcon.png') }}"
+                            alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/businessManagerIconInactive.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/businessManagerIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/businessManagerIconInactive.png') }}"
+                            alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/businessManagerIcon.png') }}"
+                            alt="">
                     @endif
                 </span>
                 Business Managers
             </a>
-            <a href="{{ route('admin.adminsettings.index') }}"
-                class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('admin.adminsettings.index') }}" class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'settings')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/settingsIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkSettingsIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/settingsIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/darkSettingsIcon.png') }}" alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/settingsIconInactive.png') }}" alt="">    
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/settingsIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/settingsIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/settingsIcon.png') }}" alt="">
                     @endif
                 </span>
                 Settings
@@ -417,40 +407,41 @@
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
                 <!-- Dark Mode Toggle -->
                 <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 hover:bg-gray-200">
-                <script>
-                    document.querySelector('.darkModeToggle').addEventListener('click', function() {
-                        let darkMode = document.documentElement.classList.contains('dark') ? 1 : 0;
+                    <script>
+                        document.querySelector('.darkModeToggle').addEventListener('click', function () {
+                            let darkMode = document.documentElement.classList.contains('dark') ? 1 : 0;
 
-                        fetch('/admin/update-dark-mode', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                dark_mode: darkMode
+                            fetch('/admin/update-dark-mode', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    dark_mode: darkMode
+                                })
                             })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Apply the dark class based on the toggle state
-                                document.documentElement.classList.toggle('dark', darkMode === 1);
-                            }
-                        })
-                        .catch(error => console.log(error));
-                    });
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Apply the dark class based on the toggle state
+                                        document.documentElement.classList.toggle('dark', darkMode === 1);
+                                    }
+                                })
+                                .catch(error => console.log(error));
+                        });
 
-                </script>
+                    </script>
                     <!-- Sun Icon -->
                     <svg id="sunIcon" class="w-6 h-6 dark:hidden" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
                     </svg>
                     <!-- Moon Icon -->
-                    <svg id="moonIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="#000000" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    <svg id="moonIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="#000000"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                         </path>
                     </svg>
@@ -536,7 +527,8 @@
                 </a>
                 <form method="POST" action="{{ route('admin.logout') }}" class="block">
                     @csrf
-                    <button type="submit" class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item w-full">
+                    <button type="submit"
+                        class="flex items-center opacity-75 hover:opacity-100 py-2 pl-4 nav-item w-full">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Sign Out
                     </button>
@@ -546,66 +538,67 @@
 
         {{ $slot }}
         <div class="flex-grow bg-body"></div>
-        <footer class="flex bg-white bg-body text justify-between items-center w-full max-w-screen bg-white dark:bg-gray-800 text-right p-4">
-            <p>Billing is developed by <a href="https://bloomdigitmedia.com" class="underline text-black" id="darklink">BLOOM
-                    DIGITAL MEDIA LTD.</a> 2024. All Rights Reserved</p>
+        <footer
+            class="flex bg-white bg-body text justify-between items-center w-full max-w-screen bg-white dark:bg-gray-800 text-right p-4">
+            <p><a href="https://bloomdigitmedia.com" class="underline text-black" id="darklink">BLOOM
+                    DIGITAL MEDIA LTD.</a> 2026.</p>
             <div class="flex">
                 <span>
                     <a class="dark-hidden" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
-                    target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
+                        target="_blank"><img src="/images/instagram.png" alt="Instagram Link" /></a>
                     <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
-                    target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
+                        target="_blank"><img src="/images/darkModeInstagram.png" alt="Instagram Link" /></a>
                 </span>
                 <span>
-                    <a class="dark-hidden" href="https://x.com/billing_ad?s=21" target="_blank"><img src="/images/twitter.png"
-                        alt="X Link" /></a>
-                    <a class="dark-block" href="https://x.com/billing_ad?s=21" target="_blank"><img src="/images/darkModeX.png"
-                        alt="X Link" /></a>
-                </span>
-                    <span>
-                    <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
-                        src="/images/facebook.png" alt="Facebook Link" /></a>
-                    <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank"><img
-                        src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
+                    <a class="dark-hidden" href="https://x.com/billing_ad?s=21" target="_blank"><img
+                            src="/images/twitter.png" alt="X Link" /></a>
+                    <a class="dark-block" href="https://x.com/billing_ad?s=21" target="_blank"><img
+                            src="/images/darkModeX.png" alt="X Link" /></a>
                 </span>
                 <span>
-                    <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/linkedin.png" alt="LinkedIn Link" /></a>
-                    <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank"><img
-                        src="/images/darkModeLinkedin.png" alt="LinkedIn Link" /></a>
+                    <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr"
+                        target="_blank"><img src="/images/facebook.png" alt="Facebook Link" /></a>
+                    <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr"
+                        target="_blank"><img src="/images/darkModeFacebook.png" alt="Facebook Link" /></a>
+                </span>
+                <span>
+                    <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                        target="_blank"><img src="/images/linkedin.png" alt="LinkedIn Link" /></a>
+                    <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                        target="_blank"><img src="/images/darkModeLinkedin.png" alt="LinkedIn Link" /></a>
                 </span>
             </div>
         </footer>
     </div>
 
- 
+
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
         integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleButton = document.getElementById('darkModeToggle');
-        const htmlElement = document.documentElement;
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.getElementById('darkModeToggle');
+            const htmlElement = document.documentElement;
 
-        // Load user's preference from localStorage
-        if (localStorage.getItem('theme') === 'dark') {
-            htmlElement.classList.add('dark');
-        }
-
-        // Toggle dark mode on button click
-        toggleButton.addEventListener('click', function () {
-            if (htmlElement.classList.contains('dark')) {
-                htmlElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light'); // Save preference
-            } else {
+            // Load user's preference from localStorage
+            if (localStorage.getItem('theme') === 'dark') {
                 htmlElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark'); // Save preference
             }
+
+            // Toggle dark mode on button click
+            toggleButton.addEventListener('click', function () {
+                if (htmlElement.classList.contains('dark')) {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light'); // Save preference
+                } else {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark'); // Save preference
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 
 </body>

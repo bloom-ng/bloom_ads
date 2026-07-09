@@ -16,13 +16,13 @@
                     Fund Ad Account
                 </button>
                 <button onclick="openWithdrawModal()"
-                    class="bg-white text-black border border-[#F48857] px-6 py-3 rounded-md hover:bg-gray-50 font-medium">
+                    class="bg-white dark:bg-gray-700 text-black dark:text-white border border-[#F48857] px-6 py-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 font-medium">
                     Withdraw Funds
                 </button>
             </div>
 
             <!-- Ad Account Details -->
-            <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-gray-600">Balance</p>
@@ -99,7 +99,7 @@
 
             <!-- Fund Modal -->
             <div id="fundModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-                <div class="bg-white p-8 rounded-lg w-full max-w-md">
+                <div class="dashboard text p-8 rounded-lg w-full max-w-md">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-medium">Fund Ad Account</h3>
                         <button onclick="closeFundModal()" class="text-gray-500 hover:text-gray-700">
@@ -114,10 +114,10 @@
                         @csrf
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Select Organization
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Organization
                                     Wallet</label>
                                 <select name="wallet_id" id="fundWalletId" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                                     onchange="updateFundPreview()">
                                     @foreach ($adAccount->organization->wallets->where('currency', $adAccount->currency) as $wallet)
                                         <option value="{{ $wallet->id }}">
@@ -129,14 +129,14 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Amount</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
                                 <input type="number" name="amount" id="fundAmount" step="0.01" min="0.01"
-                                    required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                                     onchange="updateFundPreview()">
                             </div>
 
                             <!-- Preview Section -->
-                            <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <h4 class="font-medium mb-2">Transaction Preview</h4>
                                 <div class="space-y-2 text-sm">
                                     <div class="flex justify-between">
@@ -170,7 +170,7 @@
             <!-- Withdraw Modal -->
             <div id="withdrawModal"
                 class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-                <div class="bg-white p-8 rounded-lg w-full max-w-md">
+                <div class="dashboard text p-8 rounded-lg w-full max-w-md">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-medium">Withdraw from Ad Account</h3>
                         <button onclick="closeWithdrawModal()" class="text-gray-500 hover:text-gray-700">
@@ -185,10 +185,10 @@
                         @csrf
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Select Organization
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Organization
                                     Wallet</label>
                                 <select name="wallet_id" id="withdrawWalletId" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                                     onchange="updateWithdrawPreview()">
                                     @foreach ($adAccount->organization->wallets->where('currency', $adAccount->currency) as $wallet)
                                         <option value="{{ $wallet->id }}">
@@ -200,15 +200,15 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Amount</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
                                 <input type="number" name="amount" id="withdrawAmount" step="0.01"
                                     min="0.01" max="{{ $adAccount->getBalance() }}" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                                     onchange="updateWithdrawPreview()">
                             </div>
 
                             <!-- Preview Section -->
-                            <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                                 <h4 class="font-medium mb-2">Transaction Preview</h4>
                                 <div class="space-y-2 text-sm">
                                     <div class="flex justify-between">

@@ -25,10 +25,10 @@
             </div>
             
             <div class="w-full mt-6 overflow-y-hidden">
-                <div class="bg-white shadow-md rounded my-6">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6">
                     <table class="min-w-max w-full table-auto">
                         <thead>
-                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase text-sm leading-normal">
                                 <th class="py-3 px-6 text-left">Name</th>
                                 <th class="py-3 px-6 text-left">Email</th>
                                 <th class="py-3 px-6 text-left">User Type</th>
@@ -39,9 +39,9 @@
                                 <th class="py-3 px-6 text-center">Joined At</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600 text-sm font-light">
+                        <tbody class="text-gray-600 dark:text-gray-300 text-sm font-light">
                             @foreach($members as $member)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td class="py-3 px-6 text-left">{{ $member->name }}</td>
                                 <td class="py-3 px-6 text-left">{{ $member->email }}</td>
                                 <td class="py-3 px-6 text-left">{{ ucwords(str_replace('_', ' ', $member->user_type)) }}</td>

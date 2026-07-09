@@ -2,26 +2,26 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl text-black">Create Admin Setting</h1>
+                <h1 class="text-3xl text-black dark:text-white">Create Admin Setting</h1>
                 <a href="{{ route('admin.adminsettings.index') }}" 
                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Back to Settings
                 </a>
             </div>
 
-            <div class="bg-white shadow-md rounded my-6 p-6">
+            <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6 p-6">
                 <form method="POST" action="{{ route('admin.adminsettings.store') }}">
                     @csrf
 
                     <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="name">
                             Name
                         </label>
                         <input type="text" 
                                name="name" 
                                id="name"
                                value="{{ old('name') }}"
-                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('name') border-red-500 @enderror"
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline @error('name') border-red-500 @enderror"
                                required>
                         @error('name')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -29,12 +29,12 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="value">
+                        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="value">
                             Value
                         </label>
                         <textarea name="value" 
                                   id="value"
-                                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('value') border-red-500 @enderror"
+                                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline @error('value') border-red-500 @enderror"
                                   rows="4"
                                   required>{{ old('value') }}</textarea>
                         @error('value')

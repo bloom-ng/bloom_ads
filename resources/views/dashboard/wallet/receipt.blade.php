@@ -1,13 +1,13 @@
 <x-user-layout page="wallet">
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
-            <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-y-scroll">
+            <div class="max-w-3xl mx-auto dashboard text shadow-lg rounded-lg overflow-y-scroll">
                 <!-- Receipt Header -->
                 <div class="p-6 border-b">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-800">Transaction Receipt</h1>
-                            <p class="text-gray-600">{{ $organization->name }}</p>
+                            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Transaction Receipt</h1>
+                            <p class="text-gray-600 dark:text-gray-300">{{ $organization->name }}</p>
                         </div>
                         <div class="text-right">
                             <a href="{{ route('wallet.transaction.receipt.download', $transaction) }}"
@@ -27,11 +27,11 @@
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <h3 class="text-sm font-medium text-gray-500">Transaction Reference</h3>
-                            <p class="mt-1 text-lg font-medium text-gray-900">{{ $transaction->reference }}</p>
+                            <p class="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">{{ $transaction->reference }}</p>
                         </div>
                         <div>
                             <h3 class="text-sm font-medium text-gray-500">Date</h3>
-                            <p class="mt-1 text-lg font-medium text-gray-900">
+                            <p class="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">
                                 {{ $transaction->created_at->format('M d, Y H:i') }}
                             </p>
                         </div>
@@ -61,11 +61,11 @@
                         <div class="grid grid-cols-2 gap-6">
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Description</h3>
-                                <p class="mt-1 text-lg font-medium text-gray-900">{{ $transaction->description }}</p>
+                                <p class="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">{{ $transaction->description }}</p>
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Amount</h3>
-                                <p class="mt-1 text-lg font-medium text-gray-900">
+                                <p class="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">
                                     {{ number_format($transaction->amount, 2) }} {{ $transaction->currency }}
                                 </p>
                             </div>
@@ -77,7 +77,7 @@
                             <div class="grid grid-cols-2 gap-6">
                                 <div>
                                     <h3 class="text-sm font-medium text-gray-500">Exchange Rate</h3>
-                                    <p class="mt-1 text-lg font-medium text-gray-900">
+                                    <p class="mt-1 text-lg font-medium text-gray-900 dark:text-gray-100">
                                         1 {{ $transaction->source_currency }} = {{ number_format($transaction->rate, 4) }} {{ $transaction->currency }}
                                     </p>
                                 </div>

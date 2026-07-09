@@ -182,7 +182,7 @@
 
         <!-- Meta Account -->
         @if ($providerInfo['_provider'] == 'meta')
-            <div class="bg-white p-6 rounded-lg shadow">
+            <div class="dashboard text p-6 rounded-lg shadow">
                 <h3 class="text-lg font-medium mb-4">Meta Account</h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div>

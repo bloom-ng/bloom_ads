@@ -135,14 +135,14 @@
     <!-- Meta Account Linking Modal -->
     <div id="linkMetaModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <input type="hidden" id="selectedAdAccountId">
-        <div class="relative top-20 mx-auto p-5 border w-[90%] max-w-6xl shadow-lg rounded-md bg-white">
+        <div class="relative top-20 mx-auto p-5 border dark:border-gray-700 w-[90%] max-w-6xl shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Link Meta Ad Account</h3>
-                <button onclick="hideModal()" class="text-gray-600 hover:text-gray-800">&times;</button>
+                <h3 class="text-lg font-bold dark:text-white">Link Meta Ad Account</h3>
+                <button onclick="hideModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">&times;</button>
             </div>
 
             <!-- Tabs -->
-            <div class="mb-4 border-b border-gray-200">
+            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
                     <li class="mr-2" role="presentation">
                         <button class="inline-block p-4 border-b-2 rounded-t-lg tab-button active" id="owned-tab"
@@ -172,11 +172,11 @@
             <!-- Pagination -->
             <div class="mt-4 flex justify-between items-center border-t pt-4">
                 <button id="prevButton" onclick="changePage('prev')"
-                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 hidden">
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700 hidden">
                     Previous
                 </button>
                 <button id="nextButton" onclick="changePage('next')"
-                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 hidden">
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700 hidden">
                     Next
                 </button>
             </div>
@@ -232,11 +232,11 @@
         function updateActiveTab(tab) {
             document.querySelectorAll('.tab-button').forEach(button => {
                 if (button.dataset.tab === tab) {
-                    button.classList.add('active', 'border-blue-600', 'text-blue-600');
-                    button.classList.remove('border-transparent', 'text-gray-500');
+                    button.classList.add('active', 'border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                    button.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
                 } else {
-                    button.classList.remove('active', 'border-blue-600', 'text-blue-600');
-                    button.classList.add('border-transparent', 'text-gray-500');
+                    button.classList.remove('active', 'border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                    button.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
                 }
             });
         }

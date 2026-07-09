@@ -19,7 +19,7 @@
             @endif
 
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl text-black">Meta Ad Accounts</h1>
+                <h1 class="text-3xl text-black dark:text-white">Meta Ad Accounts</h1>
             </div>
 
             <div class="mb-4 border-b border-gray-200">
@@ -40,7 +40,7 @@
             </div>
 
             <div class="w-full mt-6">
-                <div class="bg-white shadow-md rounded my-6">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6">
                     @if(empty($adAccounts) || $adAccounts->isEmpty())
                         <div class="p-6 text-center text-gray-500">
                             No Meta ad accounts found.
@@ -50,47 +50,47 @@
                             <div class="inline-block min-w-full">
                                 <div class="overflow-hidden">
                                     <table class="min-w-full">
-                                        <thead class="bg-gray-200">
+                                        <thead class="bg-gray-200 dark:bg-gray-700">
                                             <tr>
-                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Account ID
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Name
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Currency
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Amount Spent
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Balance
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Status
                                                 </th>
-                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                                                     Actions
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody class="bg-white divide-y divide-gray-200">
+                                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                             @foreach($adAccounts as $account)
-                                            <tr class="hover:bg-gray-50">
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                                                     {{ $account['id'] ?? 'N/A' }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                                                     {{ $account['name'] ?? 'N/A' }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 text-center">
                                                     {{ $account['currency'] ?? 'N/A' }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 text-right">
                                                     {{ number_format($account['amount_spent']) }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300 text-right">
                                                     {{ number_format($account['balance']) }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-center">

@@ -1,16 +1,16 @@
 <x-user-layout page="wallet">
-    <div class="max-w-4xl mx-auto my-8 bg-white shadow-lg rounded-lg overflow-y-scroll">
+    <div class="max-w-4xl mx-auto my-8 dashboard text shadow-lg rounded-lg overflow-y-scroll">
         <!-- Invoice Header -->
         <div class="p-6 border-b">
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-gray-600">Billing</p>
-                    <h1 class="text-2xl font-bold text-gray-800">INVOICE</h1>
-                    <p class="text-gray-600">{{ $organization->name }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">Billing</p>
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">INVOICE</h1>
+                    <p class="text-gray-600 dark:text-gray-300">{{ $organization->name }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-gray-600">Invoice #: {{ $invoiceNumber }}</p>
-                    <p class="text-gray-600">Date: {{ now()->format('Y-m-d') }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">Invoice #: {{ $invoiceNumber }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">Date: {{ now()->format('Y-m-d') }}</p>
                 </div>
             </div>
         </div>
@@ -19,15 +19,15 @@
         <div class="p-6 border-b">
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <h2 class="font-semibold text-gray-700 mb-2">Bill To:</h2>
-                    <p class="text-gray-600">{{ $organization->name }}</p>
+                    <h2 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Bill To:</h2>
+                    <p class="text-gray-600 dark:text-gray-300">{{ $organization->name }}</p>
                     {{-- <p class="text-gray-600">{{ $organization->address ?? 'N/A' }}</p> --}}
                 </div>
                 <div>
-                    <h2 class="font-semibold text-gray-700 mb-2">Pay To:</h2>
-                    <p class="text-gray-600">{{ $accountName }}</p>
-                    <p class="text-gray-600">Bank: {{ $bankName }}</p>
-                    <p class="text-gray-600">Account: {{ $accountNumber }}</p>
+                    <h2 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Pay To:</h2>
+                    <p class="text-gray-600 dark:text-gray-300">{{ $accountName }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">Bank: {{ $bankName }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">Account: {{ $accountNumber }}</p>
                 </div>
             </div>
         </div>

@@ -54,7 +54,7 @@
                 <h2 class="text-2xl font-semibold mb-6 text">Quick Actions</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Make a deposit -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                    <div class="dashboard text rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
                         <div class="flex flex-col space-y-4">
                             <div class="bg-pink-50 w-12 h-12 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
                     </div>
 
                     <!-- Request an ad account -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                    <div class="dashboard text rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
                         <div class="flex flex-col space-y-4">
                             <div class="bg-purple-50 w-12 h-12 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                     </div>
 
                     <!-- Request a top-up -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                    <div class="dashboard text rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
                         <div class="flex flex-col space-y-4">
                             <div class="bg-teal-50 w-12 h-12 rounded-lg flex items-center justify-center">
                                 <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

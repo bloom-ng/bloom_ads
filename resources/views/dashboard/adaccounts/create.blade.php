@@ -2,14 +2,14 @@
     <div class="dashboard text container mx-auto px-6 py-8 h-full overflow-y-auto">
         <h3 class="text text text-3xl font-medium">Create Ad Account</h3>
 
-        <div class="dashboard mt-8 mb-8 bg-white rounded-lg shadow">
+        <div class="dashboard text mt-8 mb-8 rounded-lg shadow">
             <form action="{{ route('adaccounts.store') }}" method="POST" class="p-6 space-y-6">
                 @csrf
 
                 <div>
                     <label class="text" for="name">Account Name</label>
                     <input type="text" name="name" id="name" value="{{ old('name') }}"
-                        class="form-input forms mt-1 block w-full rounded-md " required>
+                        class="form-input forms mt-1 block w-full rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600" required>
                     @error('name')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -18,7 +18,7 @@
                 <div>
                     <label class="text" for="type">Platform Type</label>
                     <select name="type" id="type"
-                        class="form-select forms mt-1 block w-full rounded-md" required>
+                        class="form-select forms mt-1 block w-full rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600" required>
                         <option value="">Select Platform</option>
                         @foreach ($platforms as $platform)
                             <option value="{{ $platform['id'] }}"
@@ -35,7 +35,7 @@
                 <div>
                     <label class="text" for="timezone">Timezone</label>
                     <select name="timezone" id="timezone"
-                        class="form-select mt-1 block w-full rounded-md forms" required>
+                        class="form-select mt-1 block w-full rounded-md forms dark:bg-gray-700 dark:text-white dark:border-gray-600" required>
                         <option value="">Select Timezone</option>
                         @foreach ($timezones as $timezone)
                             <option value="{{ $timezone['id'] }}"
@@ -52,7 +52,7 @@
                 <div>
                     <label class="text" for="facebook_page_url">Page URL</label>
                     <input type="url" name="facebook_page_url" id="facebook_page_url" value="{{ old('facebook_page_url') }}"
-                        class="form-input mt-1 block w-full rounded-md forms" required
+                        class="form-input mt-1 block w-full rounded-md forms dark:bg-gray-700 dark:text-white dark:border-gray-600" required
                         placeholder="https://your-page"> 
                     @error('facebook_page_url')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -62,7 +62,7 @@
                 <div>
                     <label class="text" for="currency">Currency</label>
                     <select name="currency" id="currency"
-                        class="form-select mt-1 block w-full rounded-md forms" required>  
+                        class="form-select mt-1 block w-full rounded-md forms dark:bg-gray-700 dark:text-white dark:border-gray-600" required>  
                         <option value="">Select Currency</option>
                         @foreach ($currencies as $currency)
                             <option value="{{ $currency }}" {{ old('currency') == $currency ? 'selected' : '' }}>
@@ -79,7 +79,7 @@
                     <label class="text" for="business_manager_id">Business Manager ID</label>
                     <input type="text" name="business_manager_id" id="business_manager_id"
                         value="{{ old('business_manager_id') }}"
-                        class="form-input mt-1 block w-full rounded-md forms" pattern="[A-Za-z0-9]{1,16}"
+                        class="form-input mt-1 block w-full rounded-md forms dark:bg-gray-700 dark:text-white dark:border-gray-600" pattern="[A-Za-z0-9]{1,16}"
                         title="Must be between 1 and 16 characters long">
                     @error('business_manager_id')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -89,7 +89,7 @@
                 <div>
                     <label class="text" for="landing_page">Landing Page</label>
                     <input type="url" name="landing_page" id="landing_page" value="{{ old('landing_page') }}"
-                        class="form-input mt-1 block w-full rounded-md forms">
+                        class="form-input mt-1 block w-full rounded-md forms dark:bg-gray-700 dark:text-white dark:border-gray-600">
                     @error('landing_page')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

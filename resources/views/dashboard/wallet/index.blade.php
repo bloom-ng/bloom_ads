@@ -87,7 +87,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                    {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                                            {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                         {{ ucfirst($transaction->type) }}
                                                     </span>
                                                 </td>
@@ -103,7 +103,7 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                                    {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                                            {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                         {{ ucfirst($transaction->status) }}
                                                     </span>
                                                 </td>
@@ -146,7 +146,7 @@
 
     <!-- Fund Wallet Modal -->
     <div id="fundModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
-        <div class="bg-white p-8 rounded-lg max-w-md w-full">
+        <div class="dashboard text p-8 rounded-lg max-w-md w-full">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-medium">Fund Wallet</h3>
                 <button onclick="closeFundModal()" class="text-gray-500 hover:text-gray-700">
@@ -159,13 +159,14 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Amount</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
                     <input type="number" id="fundAmount" step="1" min="100000"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-4 py-2"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-4 py-2 text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                         placeholder="Enter amount" oninput="updateFundingPreview()">
 
                     <!-- Add the conversion preview div -->
-                    <div id="fundingConversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded mt-2"
+                    <div id="fundingConversionPreview"
+                        class="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-3 rounded mt-2"
                         style="display: none;">
                         <p id="fundingRateDisplay" class="mb-2"></p>
                         <p id="fundingConvertedAmountDisplay"></p>
@@ -205,7 +206,7 @@
 
                     <!-- Message for foreign currency high amounts -->
                     <div id="foreignCurrencyMessage" style="display: none;"
-                        class="text-center p-4 bg-gray-50 rounded-lg mt-4">
+                        class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg mt-4">
                     </div>
 
                     <!-- Generate Invoice Button -->
@@ -236,7 +237,7 @@
                     <label class="block text-sm font-medium mb-2">From Currency</label>
                     <div class="relative">
                         <select name="source_currency" id="transferSourceCurrency" required
-                            class=" text-black w-full pl-12 pr-20 py-2 border rounded appearance-none"
+                            class="text-black dark:text-white dark:bg-gray-700 w-full pl-12 pr-20 py-2 border dark:border-gray-600 rounded appearance-none"
                             onchange="updateConversionPreview()">
                             @foreach ($organization->wallets as $wallet)
                                 <option value="{{ $wallet->currency }}" data-wallet-id="{{ $wallet->id }}"
@@ -258,7 +259,7 @@
                     <label class="block text-sm font-medium mb-2">To Currency</label>
                     <div class="relative">
                         <select name="destination_currency" id="transferDestinationCurrency" required
-                            class="text-black w-full pl-12 py-2 border rounded appearance-none"
+                            class="text-black dark:text-white dark:bg-gray-700 w-full pl-12 py-2 border dark:border-gray-600 rounded appearance-none"
                             onchange="updateConversionPreview()">
                             <option value="NGN">NGN</option>
                             <option value="USD">USD</option>
@@ -273,11 +274,12 @@
                 <div>
                     <label class="block text-sm font-medium mb-2">Amount</label>
                     <input type="number" name="amount" id="transferAmount" required
-                        class="w-full p-2 border rounded text-black" step="0.01" min="0"
-                        oninput="updateConversionPreview()">
+                        class="w-full p-2 border dark:border-gray-600 rounded text-black dark:text-white dark:bg-gray-700"
+                        step="0.01" min="0" oninput="updateConversionPreview()">
                 </div>
 
-                <div id="conversionPreview" class="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                <div id="conversionPreview"
+                    class="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-3 rounded">
                     <p id="rateDisplay" class="mb-2"></p>
                     <p id="convertedAmountDisplay"></p>
                 </div>
@@ -305,7 +307,7 @@
                 <div class="w-full">
                     <label for="bank_code" class="block text-sm font-medium mb-2">Select Bank</label>
                     <select name="bank_code" id="bank_code" required
-                        class="w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
+                        class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm text-black dark:text-white dark:bg-gray-700">
                         <option value="">Loading banks...</option>
                     </select>
                 </div>
@@ -314,7 +316,7 @@
                     <label for="account_number" class="block text-sm font-medium mb-2">Account
                         Number</label>
                     <input type="text" name="account_number" id="account_number" required
-                        class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
+                        class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm py-2 px-3 sm:text-sm text-black dark:text-white dark:bg-gray-700"
                         placeholder="Enter account number">
                     <p class="mt-1 text-sm text-gray-500" id="account_name_display"></p>
                 </div>
@@ -323,7 +325,7 @@
                     <label for="withdrawAmount" class="block text-sm font-medium mb-2">Amount</label>
                     <div class="relative rounded-md shadow-sm">
                         <input type="number" name="amount" id="withdrawAmount" required min="100" step="0.01"
-                            class="w-full rounded-md border-gray-300 shadow-sm py-2 px-3 sm:text-sm"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm py-2 px-3 sm:text-sm text-black dark:text-white dark:bg-gray-700"
                             placeholder="Enter amount">
                     </div>
                     <p class="mt-1 text-sm text-gray-300">Available balance: <span
@@ -333,7 +335,7 @@
                 <!-- Fee Details Section -->
                 <div class="fee-details hidden">
                     <div class="dashboard rounded-md p-4">
-                        <h3 class="text-sm font-medium text-gray-700 mb-3">Transaction Details</h3>
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">Transaction Details</h3>
                         <div class="space-y-2">
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-400">Amount:</span>
@@ -347,7 +349,7 @@
                                 <span class="text-gray-400">VAT:</span>
                                 <span id="vat_amount" class="font-medium">-</span>
                             </div>
-                            <div class="border-t border-gray-200 my-2"></div>
+                            <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
                             <div class="flex justify-between text-sm font-medium">
                                 <span class="text-gray-500">Total Amount:</span>
                                 <span id="total_amount">-</span>
@@ -373,7 +375,7 @@
     <!-- Receipt Modal -->
     <div id="receiptModal"
         class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center overflow-auto">
-        <div class="bg-white p-8 rounded-lg max-w-2xl w-full">
+        <div class="dashboard text p-8 rounded-lg max-w-2xl w-full">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold">Transaction Receipt</h2>
                 <button onclick="closeReceiptModal()" class="text-gray-500 hover:text-gray-700">
@@ -580,7 +582,7 @@
             const modal = document.createElement('div');
             modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
             modal.innerHTML = `
-                <div class="bg-white p-8 rounded-lg max-w-md w-full">
+                <div class="dashboard text p-8 rounded-lg max-w-md w-full">
                     <h2 class="text-2xl font-bold mb-4">Bank Transfer Required</h2>
                     <p class="mb-6 text-gray-600">For amounts above ₦500,000, please make a bank transfer and send evidence of payment to payments@billing.ad</p>
                     <button onclick="this.parentElement.parentElement.remove()" 

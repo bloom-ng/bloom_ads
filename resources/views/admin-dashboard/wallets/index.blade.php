@@ -2,7 +2,7 @@
     <div class="w-full overflow-x-hidden border-t flex flex-col">
         <main class="w-full flex-grow p-6">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl text-black pb-6">Wallet</h1>
+                <h1 class="text-3xl text pb-6">Wallet</h1>
                 <div class="space-x-4">
                     <button onclick="openModal('creditModal')"
                         class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
@@ -17,19 +17,21 @@
 
             <!-- Credit (Fund) Modal -->
             <div id="creditModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-                <div class="bg-white p-8 rounded-lg max-w-md w-full">
+                <div class="dashboard bg-white dark:bg-gray-800 text p-8 rounded-lg max-w-md w-full">
                     <h2 class="text-2xl font-bold mb-4">Fund Wallet</h2>
                     <form id="creditForm" method="POST">
                         @csrf
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount</label>
                             <input type="number" name="amount" required step="0.01" min="0.01"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                             <input type="text" name="description" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600">
                         </div>
                         <div class="flex justify-end space-x-3 mt-4">
                             <button type="button" onclick="closeModal('creditModal')"
@@ -47,19 +49,21 @@
 
             <!-- Debit Modal -->
             <div id="debitModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-                <div class="bg-white p-8 rounded-lg max-w-md w-full">
+                <div class="dashboard text p-8 rounded-lg max-w-md w-full">
                     <h2 class="text-2xl font-bold mb-4">Debit Wallet</h2>
                     <form id="debitForm" method="POST">
                         @csrf
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount</label>
                             <input type="number" name="amount" required step="0.01" min="0.01"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
                             <input type="text" name="description" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600">
                         </div>
                         <div class="flex justify-end space-x-3 mt-4">
                             <button type="button" onclick="closeModal('debitModal')"
@@ -76,52 +80,63 @@
 
             <div class="w-full">
                 <!-- Transactions Table -->
-                <div class="bg-white shadow-md rounded my-6">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6">
                     <div class="p-6 overflow-x-auto">
                         <h2 class="text-2xl font-bold mb-4">Transactions</h2>
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                        Date
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                        Type
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                                         Description</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                        Amount
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Currency
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                        Currency
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                        Status
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($transactions as $transaction)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                             {{ $transaction->created_at->format('M d, Y H:i') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span
                                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                                                {{ $transaction->type === 'credit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                 {{ ucfirst($transaction->type) }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                             {{ $transaction->description }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                             {{ number_format($transaction->amount, 2) }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                             {{ $transaction->currency }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span
                                                 class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                                                {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                 {{ ucfirst($transaction->status) }}
                                             </span>
                                         </td>

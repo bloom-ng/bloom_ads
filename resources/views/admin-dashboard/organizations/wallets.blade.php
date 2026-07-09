@@ -6,26 +6,23 @@
                     <h1 class="text-3xl text-black text pb-6">Wallets of {{ $organization->name }}</h1>
                     <div class="mt-4">
                         <form action="" method="GET" class="flex items-center">
-                            <input type="text" 
-                                   name="search" 
-                                   placeholder="Search wallets..." 
-                                   value="{{ request('search') }}"
-                                   class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
-                            <button type="submit" 
-                                    class="btn-search hover:bg-blue-700 text-white px-4 py-2">
+                            <input type="text" name="search" placeholder="Search wallets..."
+                                value="{{ request('search') }}"
+                                class="rounded-l px-4 py-2 border focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                            <button type="submit" class="btn-search hover:bg-blue-700 text-white px-4 py-2">
                                 Search
                             </button>
                         </form>
                     </div>
                 </div>
-                <a href="{{ route('admin.organizations.index') }}" 
-                   class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                <a href="{{ route('admin.organizations.index') }}"
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Back to Businesses
                 </a>
             </div>
-            
+
             <div class="w-full mt-6">
-                <div class="bg-white shadow-md rounded my-6">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded my-6">
                     <table class="min-w-max w-full table-auto">
                         <thead>
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -50,20 +47,21 @@
                                 </tr>
                             @else
                                 @foreach($wallets as $wallet)
-                                <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                    <td class="py-3 px-6 text-left">{{ $wallet->id }}</td>
-                                    <td class="py-3 px-6 text-left">{{ number_format($wallet->getBalance(), 2) }}</td>
-                                    <td class="py-3 px-6 text-left">{{ $wallet->currency }}</td>
-                                    <td class="py-3 px-6 text-center">{{ $wallet->created_at->format('Y-m-d') }}</td>
-                                    <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
-                                    <td class="py-3 px-6 text-center">
-                                        <div class="relative inline-block text-left" x-data="{ open: false }">
-                                            <a href="{{ route('admin.wallets.show', $wallet) }}" class="flex items-center text-blue-600 hover:text-blue-900">
-                                                <span>View</span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-6 text-left">{{ $wallet->id }}</td>
+                                        <td class="py-3 px-6 text-left">{{ number_format($wallet->getBalance(), 2) }}</td>
+                                        <td class="py-3 px-6 text-left">{{ $wallet->currency }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $wallet->created_at->format('Y-m-d') }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $wallet->updated_at->format('Y-m-d') }}</td>
+                                        <td class="py-3 px-6 text-center">
+                                            <div class="relative inline-block text-left" x-data="{ open: false }">
+                                                <a href="{{ route('admin.wallets.show', $wallet) }}"
+                                                    class="flex items-center text-blue-600 hover:text-blue-900">
+                                                    <span>View</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             @endif
                         </tbody>
@@ -75,12 +73,13 @@
 
     <!-- Fund Wallet Modal -->
     <div id="fundModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg w-full max-w-md">
+        <div class="dashboard text p-8 rounded-lg w-full max-w-md">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-medium">Fund Wallet</h3>
                 <button onclick="closeFundModal()" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -88,12 +87,13 @@
             <form action="" method="POST" id="fundForm" class="space-y-4">
                 @csrf
                 <input type="hidden" id="walletId" name="wallet_id">
-                
+
                 <div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                    <label for="amount"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount</label>
                     <div class="relative">
                         <input type="number" id="amount" name="amount" step="0.01" min="0.01" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                             placeholder="Enter amount">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <span class="text-gray-500 sm:text-sm" id="currencyLabel"></span>
@@ -102,9 +102,10 @@
                 </div>
 
                 <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <label for="description"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                     <input type="text" id="description" name="description" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#F48857] focus:ring-[#F48857] sm:text-sm text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600"
                         placeholder="Enter transaction description">
                 </div>
 
@@ -113,8 +114,7 @@
                         class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
                         Cancel
                     </button>
-                    <button type="submit"
-                        class="bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
+                    <button type="submit" class="bg-[#F48857] text-black px-4 py-2 rounded-md hover:bg-[#F48857]/80">
                         Fund Wallet
                     </button>
                 </div>

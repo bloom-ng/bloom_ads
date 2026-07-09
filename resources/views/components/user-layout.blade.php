@@ -13,6 +13,11 @@
 
     <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // This tells the CDN to respect your .dark class!
+        }
+    </script>
 
     <!-- Include Poppins Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,6 +54,7 @@
                 background-color: white !important;
                 color: black !important;
             }
+
             html.dark * {
                 /* Force light mode colors for all elements */
                 background-color: inherit !important;
@@ -98,6 +104,7 @@
             border: 1px solid #000080;
             color: #000080;
         }
+
         .wallet-button:hover {
             background-color: #000080;
             color: white;
@@ -109,6 +116,7 @@
             border: 1px solid #FFFFFF;
             color: #FFFFFF;
         }
+
         .dark .wallet-button:hover {
             background-color: white;
             color: #000080;
@@ -118,12 +126,12 @@
 
         button {
             border: 1px solid #000080;
-            color: #000080;            
+            color: #000080;
         }
 
         .dark .button {
             border: 1px solid #FFFFFF;
-            color: #FFFFFF;    
+            color: #FFFFFF;
         }
 
         .bg-sidebar {
@@ -132,7 +140,7 @@
 
         .dark .bg-sidebar {
             background: #000019;
-        }       
+        }
 
         .dark .active-nav-link {
             background: #CECEFF;
@@ -141,16 +149,17 @@
         }
 
         .dark .dark-hidden {
-            display: none;            
+            display: none;
         }
 
         .dark .dark-block {
             display: block;
         }
-        
+
         /* Ensures elements with dark-block are hidden in light mode */
         .dark-block {
-            display: none; /* Default behavior in light mode */
+            display: none;
+            /* Default behavior in light mode */
         }
 
         .dark .active-nav-link:hover {
@@ -190,13 +199,15 @@
         }
 
         .inactive-nav-link {
-            color: black; /* Black text for light mode inactive links */
+            color: black;
+            /* Black text for light mode inactive links */
         }
 
         /* For inactive nav link in dark mode */
         .dark .inactive-nav-link {
-            color: white; /* White text for dark mode inactive links */
-        }        
+            color: white;
+            /* White text for dark mode inactive links */
+        }
 
         .inverse-text {
             color: #f0f0f0;
@@ -222,13 +233,13 @@
             color: #F0F0F0;
         }
 
-        .btn{
+        .btn {
             border-radius: 0.75rem;
             font-size: 18px;
             color: white;
         }
 
-        .btn-primary{
+        .btn-primary {
             background: #ffffff;
             border-radius: 0.75rem;
             border: 1px solid #000080;
@@ -236,7 +247,7 @@
             color: #000080;
         }
 
-        .dark .btn-primary{
+        .dark .btn-primary {
             border-radius: 0.75rem;
             border: 1px solid #000080;
             font-size: 18px;
@@ -263,15 +274,16 @@
             color: white;
             font-size: 0.75rem;
         }
+
         .card-btn:hover {
             background: #000080;
         }
-        
+
         .btn {
             background: #000080;
             border-radius: 0.75rem;
             font-size: 18px;
-        }        
+        }
 
         .dark #darklink {
             color: white;
@@ -286,8 +298,8 @@
             color: #FFFFFF;
         }
 
-        .forms{
-            box-shadow: 0 0 4px 0 rgba(0,0,0,0.1);
+        .forms {
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
             appearance: none;
             border: 1px solid #ccc;
             border-radius: 0.25rem;
@@ -298,7 +310,7 @@
             line-height: 1.25;
             outline: none;
             transition: all 0.15s ease-in-out;
-            
+
         }
     </style>
 
@@ -308,13 +320,13 @@
     <script>
         // Check if device is mobile
         const isMobile = window.matchMedia('(max-width: 640px)').matches;
-        
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             // Remove dark mode class on mobile
             if (isMobile) {
                 document.documentElement.classList.remove('dark');
             }
-            
+
             // Initialize dark mode from user preference
             document.documentElement.classList.toggle('dark', {{ auth()->user()->dark_mode ? 'true' : 'false' }});
         });
@@ -334,7 +346,7 @@
                 backgroundColor: "green",
                 stopOnFocus: true,
                 ariaLive: "polite",
-                onClick: function() {}
+                onClick: function () { }
             }).showToast();
         </script>
     @endif
@@ -350,7 +362,7 @@
                 backgroundColor: "red",
                 stopOnFocus: true,
                 ariaLive: "polite",
-                onClick: function() {}
+                onClick: function () { }
             }).showToast();
         </script>
     @endif
@@ -367,7 +379,7 @@
                     backgroundColor: "red",
                     stopOnFocus: true,
                     ariaLive: "polite",
-                    onClick: function() {}
+                    onClick: function () { }
                 }).showToast();
             </script>
         @endforeach
@@ -393,26 +405,21 @@
             @endif
         </div>
         <nav class="text-base font-semibold">
-            <a href="/dashboard"
-                class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="/dashboard" class="flex items-center {{ $page == 'dashboard' ? 'active-nav-link' : 'inactive-nav-link' }} 
                     opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     <!-- Image switching based on active class and dark mode -->
                     @if($page == 'dashboard')
                         <!-- Active State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/dashboardIcon.png') }}"
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/darkDashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/darkDashboardIcon.png') }}"
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/dashboardIconInactive.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/dashboardIconInactive.png') }}"
                             alt="Inactive Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/dashboardIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/dashboardIcon.png') }}"
                             alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
@@ -425,83 +432,66 @@
                 <span class="mr-3">
                     @if($page == 'wallet')
                         <!-- active state -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/walletIcon.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/walletIcon.png') }}"
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/walleticonblack.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/walleticonblack.png') }}"
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/walletIconInactive.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/walletIconInactive.png') }}"
                             alt="Inactive Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/walletIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/walletIcon.png') }}"
                             alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
                 Wallet
             </a>
             <a href="/dashboard/adaccounts"
-            class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : 'inactive-nav-link' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'adaccounts' ? 'active-nav-link' : 'inactive-nav-link' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'adaccounts')
                         <!-- active state -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/adaccountIcon.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/adaccountIcon.png') }}"
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/darkadaccountIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/darkadaccountIcon.png') }}"
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/adaccountIconInactive.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/adaccountIconInactive.png') }}"
                             alt="Inactive Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/adaccountIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/adaccountIcon.png') }}"
                             alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
                 <p class="pl-2">Ad Accounts</p>
             </a>
-            <a href="{{ route('organizations.index') }}"
-                class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
+            <a href="{{ route('organizations.index') }}" class="flex items-center {{ $page == 'organizations' ? 'active-nav-link' : 'inactive-nav-link' }} 
                 opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'organizations')
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/organizationIcon.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/darkUserIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/organizationIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/darkUserIcon.png') }}" alt="">
                     @else
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('images/organizationIconInactive.png') }}" alt="">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('images/organizationIcon.png') }}" alt="">
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('images/organizationIconInactive.png') }}" alt="">
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('images/organizationIcon.png') }}" alt="">
                     @endif
                 </span>
                 <p class="pl-2">Business</p>
             </a>
             <a href="{{ route('settings.index') }}"
-            class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : 'inactive-nav-link' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                class="flex items-center {{ $page == 'settings' ? 'active-nav-link' : 'inactive-nav-link' }} opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
                 <span class="mr-3">
                     @if($page == 'settings')
                         <!-- active state -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/settingsIcon.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/settingsIcon.png') }}"
                             alt="Active Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/darksettingsIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/darksettingsIcon.png') }}"
                             alt="Active Dashboard Dark Mode">
                     @else
                         <!-- Inactive State -->
-                        <img class="w-8 h-8 dark-hidden" 
-                            src="{{ asset('/images/settingsIconInactive.png') }}" 
+                        <img class="w-8 h-8 dark-hidden" src="{{ asset('/images/settingsIconInactive.png') }}"
                             alt="Inactive Dashboard Light Mode">
-                        <img class="w-8 h-8 dark-block dark-hidden" 
-                            src="{{ asset('/images/settingsIcon.png') }}" 
+                        <img class="w-8 h-8 dark-block dark-hidden" src="{{ asset('/images/settingsIcon.png') }}"
                             alt="Inactive Dashboard Dark Mode">
                     @endif
                 </span>
@@ -521,23 +511,23 @@
         <!-- Desktop Header -->
         <header class="w-full items-center bg-white py-4 px-6 header hidden sm:flex">
             <div x-data="{ isOpen: false }" class="relative w-full flex justify-end items-center">
-            <!-- Dark Mode Toggle -->
-            <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 ">
-            <!-- Sun Icon -->
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="mr-4 p-2 rounded-lg text-gray-600 ">
+                    <!-- Sun Icon -->
                     <svg id="sunIcon" class="w-6 h-6" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
                         </path>
                     </svg>
                     <!-- Moon Icon -->
                     <svg id="moonIcon" class="w-6 h-6 hidden" fill="none" stroke="#000000" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                         </path>
                     </svg>
                 </button>
                 <script>
-                    document.addEventListener('DOMContentLoaded', function() {
+                    document.addEventListener('DOMContentLoaded', function () {
                         const darkModeToggle = document.querySelector('#darkModeToggle');
                         const sunIcon = document.querySelector('#moonIcon');
                         const moonIcon = document.querySelector('#sunIcon');
@@ -547,7 +537,7 @@
                         sunIcon.classList.toggle('hidden', isDarkMode);
                         moonIcon.classList.toggle('hidden', !isDarkMode);
 
-                        darkModeToggle.addEventListener('click', function() {
+                        darkModeToggle.addEventListener('click', function () {
                             let darkMode = document.documentElement.classList.contains('dark') ? 0 : 1;
 
                             fetch('/update-dark-mode', {
@@ -560,32 +550,35 @@
                                     dark_mode: darkMode
                                 })
                             })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    // Toggle dark mode class
-                                    document.documentElement.classList.toggle('dark', darkMode === 1);
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Toggle dark mode class
+                                        document.documentElement.classList.toggle('dark', darkMode === 1);
 
-                                    // Manually toggle icon visibility
-                                    sunIcon.classList.toggle('hidden', darkMode === 1);
-                                    moonIcon.classList.toggle('hidden', darkMode === 0);
-                                }
-                            })
-                            .catch(error => console.log(error));
+                                        // Manually toggle icon visibility
+                                        sunIcon.classList.toggle('hidden', darkMode === 1);
+                                        moonIcon.classList.toggle('hidden', darkMode === 0);
+                                    }
+                                })
+                                .catch(error => console.log(error));
                         });
                     });
                 </script>
                 <button @click="isOpen = !isOpen"
                     class="realtive mr-2 z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <img src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ auth()->user()->name }}" />
+                    <img
+                        src="https://ui-avatars.com/api/?color=6c5ce7&background=fff&name={{ auth()->user()->name }}" />
                 </button>
                 <button x-show="isOpen" @click="isOpen = false"
                     class="h-full w-full fixed inset-0 cursor-default"></button>
                 <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg bg-sidebar shadow-lg py-2 mt-16">
-                    <a href="{{ route('account') }}" class="block px-4 py-2 account-link dark:hover:opacity-50">Account</a>
+                    <a href="{{ route('account') }}"
+                        class="block px-4 py-2 account-link dark:hover:opacity-50">Account</a>
                     <form method="POST" action="{{ route('user.logout') }}" class="block">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 account-link dark:hover:opacity-50">
+                        <button type="submit"
+                            class="block w-full text-left px-4 py-2 account-link dark:hover:opacity-50">
                             Logout
                         </button>
                     </form>
@@ -656,13 +649,15 @@
         {{ $slot }}
         <div class="flex-grow"></div>
         <footer class="flex bg-white footer justify-between items-center w-full max-w-screen text-right p-4">
-            <p>Billing is a product of <a href="https://bloomdigitmedia.com" class="underline text text-black">BLOOM
-                    DIGITAL MEDIA LTD.</a> {{ date('Y') }}. All Rights Reserved</p>
+            <p><a href="https://bloomdigitmedia.com" class="underline text text-black">BLOOM
+                    DIGITAL MEDIA LTD.</a> {{ date('Y') }}.</p>
             <div class="flex">
-                <a class="dark-hidden" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg==" target="_blank">
+                <a class="dark-hidden" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
+                    target="_blank">
                     <img src="/images/instagram.png" alt="Instagram Link" />
                 </a>
-                <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg==" target="_blank">
+                <a class="dark-block" href="https://www.instagram.com/billing.ads?igsh=MTdjZWN4cXhyaDVkeg=="
+                    target="_blank">
                     <img src="/images/darkInstagram.png" alt="Instagram Link" />
                 </a>
 
@@ -673,17 +668,20 @@
                     <img src="/images/darkTwitter.png" alt="X Link" />
                 </a>
 
-                <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank">
+                <a class="dark-hidden" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr"
+                    target="_blank">
                     <img src="/images/facebook.png" alt="Facebook Link" />
                 </a>
                 <a class="dark-block" href="https://www.facebook.com/share/1Z1b3CEDeG/?mibextid=wwXIfr" target="_blank">
                     <img src="/images/darkFacebook.png" alt="Facebook Link" />
                 </a>
 
-                <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank">
+                <a class="dark-hidden" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                    target="_blank">
                     <img src="/images/linkedin.png" alt="LinkedIn Link" />
                 </a>
-                <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/" target="_blank">
+                <a class="dark-block" href="https://www.linkedin.com/company/bloom-digital-media-nigeria/"
+                    target="_blank">
                     <img src="/images/darkLinkedin.png" alt="LinkedIn Link" />
                 </a>
             </div>

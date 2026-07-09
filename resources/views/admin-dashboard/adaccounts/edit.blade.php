@@ -9,16 +9,16 @@
             </div>
 
             <div class="w-full mt-6">
-                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <form action="{{ route('admin.adaccounts.update', $adAccount->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="name">
                                 Name
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                                    id="name"
                                    type="text"
                                    name="name"
@@ -27,10 +27,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="type">
                                 Type
                             </label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                                     id="type"
                                     name="type"
                                     required>
@@ -41,10 +41,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="status">
                                 Status
                             </label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                                     id="status"
                                     name="status"
                                     required>
@@ -58,10 +58,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="business_manager_id">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="business_manager_id">
                                 Business Manager ID
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                                    id="business_manager_id"
                                    type="text"
                                    name="business_manager_id"
@@ -69,10 +69,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="landing_page">
+                            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="landing_page">
                                 Landing Page
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-white dark:bg-gray-700 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                                    id="landing_page"
                                    type="url"
                                    name="landing_page"

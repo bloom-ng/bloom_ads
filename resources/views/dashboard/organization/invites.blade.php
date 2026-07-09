@@ -16,7 +16,7 @@
                                         Email Address
                                     </label>
                                     <input
-                                        class="appearance-none block w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        class="appearance-none block w-full bg-gray-200 dark:bg-gray-700 text-black dark:text-white border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-800 focus:border-gray-500"
                                         id="email" type="email" name="email" required
                                         placeholder="user@example.com">
                                 </div>
@@ -26,7 +26,7 @@
                                         Role
                                     </label>
                                     <select
-                                        class="block appearance-none w-full bg-gray-200 text-black border border-gray-200 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        class="block appearance-none w-full bg-gray-200 dark:bg-gray-700 text-black dark:text-white border border-gray-200 dark:border-gray-600 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-800 focus:border-gray-500"
                                         id="role" name="role" required>
                                         <option value="admin">Admin</option>
                                         <option value="finance">Finance</option>
@@ -46,7 +46,7 @@
                     <div class="dashboard text p-6">
                         <h2 class="text-xl pb-3">Pending Invitations</h2>
                         <table class="min-w-full">
-                            <thead class="table-header text-black">
+                            <thead class="table-header text">
                                 <tr>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Role</th>
@@ -55,7 +55,7 @@
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-body text-gray-700">
+                            <tbody class="table-body text">
                                 @foreach ($pendingInvites as $invite)
                                     <tr>
                                         <td class="text-left py-3 px-4">{{ $invite->email }}</td>
@@ -98,7 +98,7 @@
                     <div class="dashboard text p-6">
                         <h2 class="text-xl pb-3">Business Members</h2>
                         <table class="min-w-full">
-                            <thead class="table-header text-black">
+                            <thead class="table-header text">
                                 <tr>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
@@ -107,7 +107,7 @@
                                     <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-body text-gray-700">
+                            <tbody class="table-body text">
                                 @foreach ($organization->users as $user)
                                     <tr>
                                         <td class="text-left py-3 px-4">{{ $user->name }}</td>
