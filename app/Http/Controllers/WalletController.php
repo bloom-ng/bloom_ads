@@ -23,6 +23,19 @@ use App\Mail\InvoiceRequestMail;
 
 class WalletController extends Controller
 {
+    /**
+     * Returns the current USD and GBP exchange rates as JSON.
+     * Called by the wallet page's polling interval so users always see live rates
+     * without needing to manually refresh the page.
+     */
+    public function getRates()
+    {
+        return response()->json([
+            'usd_rate' => (float) Wallet::getRate('usd'),
+            'gbp_rate' => (float) Wallet::getRate('gbp'),
+        ]);
+    }
+
     public function index()
     {
         $user = Auth::user();

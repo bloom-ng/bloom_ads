@@ -43,6 +43,9 @@ class AdminSettingsController extends Controller
             'value' => $request->input('value')
         ]);
 
+        // Always clear the AdminSetting-level cache for the updated key
+        Cache::forget("admin_setting_{$adminSetting->key}");
+
         // If currency margin was updated, recalculate rates
         if ($adminSetting->key === 'currency_margin') {
             $margin = $request->input('value');
@@ -66,6 +69,21 @@ class AdminSettingsController extends Controller
                 ['name' => 'GBP RATE', 'value' => $gbpBloomRate]
             );
         }
+
+        // CRITICAL: Always flush the Wallet::getRate() caches for both currencies.
+        // These are separate from the AdminSetting cache and are used everywhere
+        // the user side displays or converts exchange rates. Without this, users
+        // see stale rates for up to 5 minutes after an admin changes any rate.
+        Cache::forget('currency_rate_usd');
+        Cache::forget('currency_rate_gbp');
+
+        // Also clear the AdminSetting-level caches for the Bloom rates and API rates,
+        // so the admin settings page itself also reflects the latest values immediately.
+        Cache::forget('admin_setting_usd_rate');
+        Cache::forget('admin_setting_gbp_rate');
+        Cache::forget('admin_setting_usd_api_rate');
+        Cache::forget('admin_setting_gbp_api_rate');
+        Cache::forget('admin_setting_currency_margin');
 
         return redirect()->route('admin.adminsettings.index')
             ->with('success', 'Setting updated successfully');

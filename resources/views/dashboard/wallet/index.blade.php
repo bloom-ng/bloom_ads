@@ -441,8 +441,10 @@
             });
         });
 
-        const USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
-        const GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
+        // Mutable rate variables — populated on page load, then kept fresh by the
+        // live-rate poller below. Using `let` so the poller can reassign them.
+        let USD_RATE = {{ \App\Models\Wallet::getRate('usd') }};
+        let GBP_RATE = {{ \App\Models\Wallet::getRate('gbp') }};
 
         function submitFlutterwavePayment() {
             const amount = document.getElementById('fundAmount').value;
@@ -977,5 +979,86 @@
         document.getElementById("withdrawAmount").addEventListener("change", function () {
             calculateFees();
         });
+
+        // ─── Live rate polling ───────────────────────────────────────────────────
+        // Fetches fresh exchange rates from the server every 60 seconds so users
+        // never convert with stale numbers just because they left the tab open.
+        (function startRatePoller() {
+            const POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
+
+            // Small "Rates updated" toast shown whenever new rates differ from the
+            // currently loaded ones — keeps the user informed without being intrusive.
+            function flashRatesUpdatedBadge() {
+                let badge = document.getElementById('ratesUpdatedBadge');
+                if (!badge) {
+                    badge = document.createElement('div');
+                    badge.id = 'ratesUpdatedBadge';
+                    badge.style.cssText = [
+                        'position:fixed', 'bottom:24px', 'right:24px', 'z-index:9999',
+                        'background:#16a34a', 'color:#fff', 'font-size:13px',
+                        'font-weight:500', 'padding:8px 16px', 'border-radius:8px',
+                        'box-shadow:0 4px 12px rgba(0,0,0,.2)', 'opacity:0',
+                        'transition:opacity .3s ease', 'pointer-events:none'
+                    ].join(';');
+                    badge.textContent = '✓ Exchange rates updated';
+                    document.body.appendChild(badge);
+                }
+                // Fade in
+                badge.style.opacity = '1';
+                clearTimeout(badge._hideTimer);
+                badge._hideTimer = setTimeout(() => { badge.style.opacity = '0'; }, 3000);
+            }
+
+            // Re-runs the active conversion previews so users see the new amount
+            // immediately without touching anything.
+            function refreshOpenPreviews() {
+                // Fund modal preview
+                const fundAmountInput = document.getElementById('fundAmount');
+                if (fundAmountInput && document.getElementById('fundModal')?.style.display !== 'none') {
+                    updateFundingPreview();
+                }
+                // Convert-funds modal preview
+                const transferAmountInput = document.getElementById('transferAmount');
+                if (transferAmountInput && document.getElementById('transferModal')?.style.display !== 'none') {
+                    updateConversionPreview();
+                }
+            }
+
+            function pollRates() {
+                fetch('{{ route("wallet.rates") }}', {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Rate fetch failed: ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    const newUsd = parseFloat(data.usd_rate);
+                    const newGbp = parseFloat(data.gbp_rate);
+
+                    if (isNaN(newUsd) || isNaN(newGbp)) return; // ignore malformed response
+
+                    const changed = (newUsd !== USD_RATE || newGbp !== GBP_RATE);
+
+                    USD_RATE = newUsd;
+                    GBP_RATE = newGbp;
+
+                    if (changed) {
+                        flashRatesUpdatedBadge();
+                        refreshOpenPreviews();
+                    }
+                })
+                .catch(err => {
+                    // Silently ignore network errors — stale rates are better than
+                    // a broken UI. The next poll will try again.
+                    console.warn('[Billing] Rate poll error:', err);
+                });
+            }
+
+            // Start the interval. The first automatic fetch happens after 60 s;
+            // the initial values already came from PHP on page load.
+            setInterval(pollRates, POLL_INTERVAL_MS);
+        })();
+        // ────────────────────────────────────────────────────────────────────────
     </script>
 </x-user-layout>

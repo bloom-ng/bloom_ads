@@ -283,6 +283,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/settings', [SettingsController::class, 'updateTwoFactor'])->name('settings.2fa-update');
     Route::get('/settings/2fa', [SettingsController::class, 'showTwoFactorForm'])->name('settings.2fa-form');
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::get('/wallet/rates', [WalletController::class, 'getRates'])->name('wallet.rates');
     Route::post('/wallet', [WalletController::class, 'create'])->name('wallet.create');
     Route::post('/wallet/fund/paypal', [WalletController::class, 'fundWithPaypal'])->name('wallet.fund.paypal');
     Route::post('/wallet/fund/flutterwave', [WalletController::class, 'fundWithFlutterwave'])->name('wallet.fund.flutterwave');
