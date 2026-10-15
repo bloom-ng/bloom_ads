@@ -96,7 +96,6 @@ class WalletController extends Controller
 
         $wallet = $organization->wallets()->create([
             'currency' => $validated['currency'],
-            'balance' => 0
         ]);
 
         // Send email notification to all admins
@@ -415,10 +414,7 @@ class WalletController extends Controller
 
             // Get or create destination wallet
             $destinationWallet = $organization->wallets()
-                ->firstOrCreate(
-                    ['currency' => $validated['destination_currency']],
-                    ['balance' => 0]
-                );
+                ->firstOrCreate(['currency' => $validated['destination_currency']]);
 
             // Calculate conversion rate and converted amount
             $rate = 1;
