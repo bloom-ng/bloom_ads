@@ -8,7 +8,7 @@ use App\Models\OrganizationInvite;
 use App\Models\User;
 use App\Models\UserSettings;
 use App\Mail\NewUserRegistrationMail;
-use App\Mail\TwoFactorCodeMail;
+use App\Services\TwoFactorCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Mail;
 
 class SignupController extends Controller
 {
@@ -32,21 +31,22 @@ class SignupController extends Controller
 
     public function register(Request $request)
     {
+        // Validate before the try so field errors (e.g. a taken email) reach the form instead of the generic failure
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'user_type' => 'required|in:direct_advertiser,agency,partner',
+            'business_name' => session('invite_data') ? 'nullable|string|max:255' : 'required|string|max:255',
+            'country_code' => 'required',
+            'phone_number' => 'required',
+            'country' => 'required',
+            'weblink' => $request->user_type === 'direct_advertiser' ? 'nullable' : 'required|url',
+            'terms_accepted' => 'required|accepted',
+        ]);
+
         DB::beginTransaction();
         try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8',
-                'user_type' => 'required|in:direct_advertiser,agency,partner',
-                'business_name' => session('invite_data') ? 'nullable|string|max:255' : 'required|string|max:255',
-                'country_code' => 'required',
-                'phone_number' => 'required',
-                'country' => 'required',
-                'weblink' => $request->user_type === 'direct_advertiser' ? 'nullable' : 'required|url',
-                'terms_accepted' => 'required|accepted',
-            ]);
-
             // Create user
             $user = User::create([
                 'name' => $request->name,
@@ -114,7 +114,7 @@ class SignupController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request, TwoFactorCodeService $twoFactor)
     {
         $request->validate([
             'email' => 'required|email',
@@ -123,36 +123,26 @@ class SignupController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return back()->with('error', 'User not found');
+        // One message for both cases so the form can't be used to check which emails have accounts
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->with('error', 'Invalid email or password.');
         }
-
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Incorrect password');
-        }
-
-        session(['user_id' => $user->id]);
 
         // Check if 2FA is enabled
-        if ($user->settings->two_factor_enabled) {
-            // Generate a random 6-digit code
-            $code = rand(100000, 999999); // Secure random 6-digit code
+        if ($user->settings?->two_factor_enabled) {
+            // Emails a hashed, expiring code; throws a validation error if sending is throttled or fails
+            $twoFactor->sendCode($user);
 
-            // Store the code in the session for verification later
-            session(['2fa_code' => $code]);
-            Log::info('2FA Code Stored in Session: ' . session('2fa_code'));
-
-
-            // Send the code to the user's email
-            Mail::to($user->email)->send(new TwoFactorCodeMail($code));
+            session(['2fa_user_id' => $user->id]);
 
             // Redirect to the existing 2FA code entry page
             return redirect()->route('2fa.verify');
         }
 
-
         // Log the user in if 2FA is not enabled
         Auth::login($user);
+        $request->session()->regenerate();
+
         return redirect('/dashboard');
     }
 
@@ -283,28 +273,38 @@ class SignupController extends Controller
         return view('signup3', compact('countryCodes', 'countries'));
     }
 
-    public function verify2fa(Request $request)
+    public function verify2fa(Request $request, TwoFactorCodeService $twoFactor)
     {
         $request->validate([
             'code' => 'required|string',
         ]);
 
-        Log::info('Auth User:', ['user' => Auth::user()]);
-        Log::info('Session Data Before Verification:', session()->all());
-        // Check if the code matches the one stored in the session
-        Log::info('Full Session Data: ' . json_encode(session()->all()));
+        $user = User::find(session('2fa_user_id'));
 
-        // Check if user is authenticated
-        if ((string) $request->code === (string) session('2fa_code')) {
-            // Clear the session code
-            session()->forget('2fa_code');
-
-            // Re-authenticate the user
-            Auth::loginUsingId(session('user_id'));
-
-            // Redirect to the dashboard
-            return redirect()->intended('dashboard');
+        if (!$user) {
+            return redirect('/login')->withErrors(['code' => 'Your code has expired. Please log in again to get a new one.']);
         }
+
+        try {
+            $twoFactor->verifyCode($user, $request->code);
+        } catch (ValidationException $e) {
+            // Expired or out of attempts: a new code only comes from logging in again
+            if (!$twoFactor->pending($user)) {
+                session()->forget('2fa_user_id');
+
+                return redirect('/login')->withErrors($e->errors());
+            }
+
+            return back()->withErrors($e->errors());
+        }
+
+        session()->forget('2fa_user_id');
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        // Redirect to the dashboard
+        return redirect()->intended('dashboard');
     }
 
     public function showInviteSignup(Request $request)
