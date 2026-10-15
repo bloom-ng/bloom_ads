@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\AdminRockAdsAccountsController;
 use App\Http\Controllers\AdminMetaAdAccountsController;
 use App\Http\Controllers\BusinessManagerController;
+use App\Http\Controllers\PhoneVerificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -208,6 +209,13 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+// PHONE VERIFICATION (after email verification; see EnsurePhoneIsVerified)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/phone/verify', [PhoneVerificationController::class, 'show'])->name('phone.notice');
+    Route::post('/phone/verify/send', [PhoneVerificationController::class, 'send'])->name('phone.send');
+    Route::post('/phone/verify', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
+});
+
 // FORGOT PASSWORD ROUTES
 Route::get('/forgot-password', function () {
     return view('forgot');
@@ -256,7 +264,7 @@ Route::post('/reset-password', function (Request $request) {
 })->middleware('guest')->name('password.update');
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'phone.verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/update-dark-mode', [UsersController::class, 'updateDarkMode'])->name('update-dark-mode');
 

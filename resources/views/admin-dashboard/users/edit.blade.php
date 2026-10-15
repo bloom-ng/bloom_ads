@@ -62,7 +62,7 @@
                             class="bg-[#F48857] hover:bg-[#F48857]/80 text-gray-900 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                             Update User
                         </button>
-                        <a href="{{ route('users.index') }}" 
+                        <a href="{{ route('admin.users.index') }}" 
                             class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-bold">
                             Cancel
                         </a>

@@ -32,7 +32,7 @@ class UsersController extends Controller
             'country' => 'Nigeria'
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Initial user created successfully');
+        return redirect()->route('admin.users.index')->with('success', 'Initial user created successfully');
     }
 
     public function edit(User $user)
@@ -51,9 +51,16 @@ class UsersController extends Controller
             'country' => 'nullable|string|max:255',
         ]);
 
-        $user->update($validated);
+        $user->fill($validated);
 
-        return redirect()->route('users.index')
+        // A new number has to be verified again by the user
+        if ($user->isDirty(['phone', 'phone_country_code'])) {
+            $user->forceFill(['verified_phone' => null, 'phone_verified_at' => null]);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully');
     }
 
@@ -77,9 +84,9 @@ class UsersController extends Controller
 
     public function updateProfile(Request $request)
     {
+        // Phone number changes go through the SMS verification flow (PhoneVerificationController)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
         ]);
 
         auth()->user()->update($validated);

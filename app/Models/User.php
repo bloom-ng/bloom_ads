@@ -42,8 +42,24 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function hasVerifiedPhone(): bool
+    {
+        return $this->phone_verified_at !== null;
+    }
+
+    public function markPhoneAsVerified(string $countryCode, string $phone, string $e164): bool
+    {
+        return $this->forceFill([
+            'phone_country_code' => $countryCode,
+            'phone' => $phone,
+            'verified_phone' => $e164,
+            'phone_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
 
     /**
      * Send the email verification notification.
