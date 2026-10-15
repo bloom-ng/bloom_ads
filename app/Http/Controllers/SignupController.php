@@ -50,6 +50,22 @@ class SignupController extends Controller
 
         DB::beginTransaction();
         try {
+            $inviteData = session('invite_data');
+
+            // Mark invite as used only if it is still open and was sent to this email, so a cancelled, expired or already used invite can't grant its role
+            if ($inviteData && !OrganizationInvite::where('token', $inviteData['token'])
+                ->where('email', $request->email)
+                ->where('used', false)
+                ->where('expires_at', '>', now())
+                ->update(['used' => true])) {
+                DB::rollBack();
+                session()->forget('invite_data');
+
+                // Not back(): the invite link would 404 now and hide the error
+                return redirect('/signup1')
+                    ->withErrors(['email' => 'This invitation is no longer valid. Please ask for a new one.']);
+            }
+
             // Create user
             $user = User::create([
                 'name' => $request->name,
@@ -66,20 +82,19 @@ class SignupController extends Controller
             Log::info('User created successfully', ['user_id' => $user->id, 'email' => $user->email]);
 
             // Check if user is being invited to an organization
-            if ($inviteData = session('invite_data')) {
-                $organization = Organization::findOrFail($inviteData['organization_id']);
+            if ($inviteData) {
+                // Organization and role come from the invite just claimed
+                $invite = OrganizationInvite::where('token', $inviteData['token'])->firstOrFail();
+                $organization = $invite->organization;
 
                 // Attach user to organization with invited role
-                $user->organizations()->attach($organization->id, ['role' => $inviteData['role']]);
+                $user->organizations()->attach($organization->id, ['role' => $invite->role]);
 
                 // Create user settings
                 $user->settings()->create([
                     'current_organization_id' => $organization->id,
                     'preferences' => UserSettings::getPreferences()
                 ]);
-
-                // Mark invite as used
-                OrganizationInvite::where('token', $inviteData['token'])->update(['used' => true]);
 
                 // Clear invite data from session
                 session()->forget('invite_data');
@@ -248,7 +263,7 @@ class SignupController extends Controller
         }
     }
 
-    public function inviteSignup(Request $request)
+    public function inviteSignup(Request $request, TwoFactorCodeService $twoFactor)
     {
         $request->validate([
             'email' => 'required|email',
@@ -265,11 +280,35 @@ class SignupController extends Controller
         // Check if user already exists
         $existingUser = User::where('email', $invite->email)->first();
         if ($existingUser) {
-            // Add user to organization
-            $invite->organization->users()->attach($existingUser->id, ['role' => $invite->role]);
+            $claimed = DB::transaction(function () use ($invite, $existingUser) {
+                // Mark invite as used only if it still isn't, so two requests can't both accept it
+                if (!OrganizationInvite::whereKey($invite->id)->where('used', false)->update(['used' => true])) {
+                    return false;
+                }
 
-            // Mark invite as used
-            $invite->update(['used' => true]);
+                // Add user to organization; existing members keep their current role
+                if (!$invite->organization->users()->whereKey($existingUser->id)->exists()) {
+                    $invite->organization->users()->attach($existingUser->id, ['role' => $invite->role]);
+                }
+
+                return true;
+            });
+
+            abort_unless($claimed, 404);
+
+            // Same 2FA step as password login
+            if ($existingUser->settings?->two_factor_enabled) {
+                try {
+                    $twoFactor->sendCode($existingUser);
+                } catch (ValidationException $e) {
+                    // The invite is already accepted, so send them to sign in normally
+                    return redirect('/login')->withErrors($e->errors());
+                }
+
+                session(['2fa_user_id' => $existingUser->id]);
+
+                return redirect()->route('2fa.verify');
+            }
 
             // Log the user in
             Auth::login($existingUser);
