@@ -17,11 +17,14 @@ use App\Helpers\CountryHelper;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
 
 class SignupController extends Controller
 {
+    const MAX_LOGIN_ATTEMPTS = 5;
+
     public function index()
     {
         $admin = Auth::guard('admin')->user();
@@ -121,12 +124,25 @@ class SignupController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
+        // Password guesses per email + IP, as in Laravel Breeze's LoginRequest
+        $throttleKey = Str::transliterate(Str::lower($request->input('email')) . '|' . $request->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_LOGIN_ATTEMPTS)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return back()->with('error', "Too many login attempts. Please try again in {$seconds} " . ($seconds === 1 ? 'second' : 'seconds') . '.');
+        }
+
         $user = User::where('email', $request->email)->first();
 
         // One message for both cases so the form can't be used to check which emails have accounts
         if (!$user || !Hash::check($request->password, $user->password)) {
+            RateLimiter::hit($throttleKey);
+
             return back()->with('error', 'Invalid email or password.');
         }
+
+        RateLimiter::clear($throttleKey);
 
         // Check if 2FA is enabled
         if ($user->settings?->two_factor_enabled) {
@@ -158,13 +174,14 @@ class SignupController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function handleProviderCallback($provider)
+    public function handleProviderCallback(Request $request, TwoFactorCodeService $twoFactor, $provider)
     {
         try {
             $socialUser = Socialite::driver($provider)->user();
 
             // Get user type from session, default to direct_advertiser if not set
             $userType = session('oauth_user_type', 'direct_advertiser');
+            session()->forget('oauth_user_type');
 
             // Find existing user or create new one
             $user = User::where('email', $socialUser->getEmail())->first();
@@ -207,15 +224,27 @@ class SignupController extends Controller
                 // }
             }
 
-            Auth::login($user);
+            // Same 2FA step as password login
+            if ($user->settings?->two_factor_enabled) {
+                $twoFactor->sendCode($user);
 
-            // Clear the session
-            session()->forget('oauth_user_type');
+                session(['2fa_user_id' => $user->id]);
+
+                return redirect()->route('2fa.verify');
+            }
+
+            Auth::login($user);
+            $request->session()->regenerate();
 
             return redirect()->intended('/dashboard');
+        } catch (ValidationException $e) {
+            // Code sending throttled or failed; back() would point at the provider, so go to the login page
+            return redirect('/login')->withErrors($e->errors());
         } catch (\Exception $e) {
+            Log::error('OAuth login failed', ['provider' => $provider, 'exception' => $e]);
+
             return redirect('/login')
-                ->with('error', 'OAuth error: ' . $e->getMessage());
+                ->with('error', 'We could not sign you in with that account. Please try again.');
         }
     }
 
@@ -244,6 +273,7 @@ class SignupController extends Controller
 
             // Log the user in
             Auth::login($existingUser);
+            $request->session()->regenerate();
 
             return redirect()->route('dashboard')->with('success', 'You have been added to the organization.');
         }
