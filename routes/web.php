@@ -54,7 +54,7 @@ Route::middleware('guest:admin')->group(function () {
 
 Route::get('/fetch-currency-rates', function (Request $request) {
     $password = $request->query('password');
-    $validPassword = env('CURRENCY_FETCH_PASSWORD');
+    $validPassword = config('services.currency_fetch.password');
 
     if (!$validPassword || $password !== $validPassword) {
         return response()->json(['error' => 'Unauthorized'], 401);

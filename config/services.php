@@ -79,6 +79,10 @@ return [
         'api_key' => env('CURRENCY_FREAKS_API_KEY'),
     ],
 
+    'currency_fetch' => [
+        'password' => env('CURRENCY_FETCH_PASSWORD'),
+    ],
+
     'brevo' => [
         'api_key' => env('BREVO_API_KEY'),
         'sms_sender' => env('BREVO_SMS_SENDER'),
